@@ -698,6 +698,129 @@ EX_TYPES.push(
   { k: "phon", skill: "Четене и слушане", ic: "👂", t: "ö/e и ü/ie на слух", d: "Чуй и избери буквата (A14, A19)", gen: genPhon },
 );
 
+
+// ═════ Изречения: хиляди задачи от всички примери ═════
+let _sents = null, _sentKey = "";
+function sentPool() {
+  const key = [...S.lessons].sort().join(",");
+  if (_sents && _sentKey === key) return _sents;
+  const seen = new Set(), out = [];
+  for (const it of exPool(() => true)) for (const [de, bg] of examplesFor(it)) {
+    if (seen.has(de) || !bg || /[–„“"…]/.test(de)) continue;
+    const n = (de.match(WORD_RE) || []).length; if (n < 3 || n > 11) continue;
+    seen.add(de); out.push({ de, bg, it });
+  }
+  _sents = out; _sentKey = key; return out;
+}
+const rebuild = (de, T, idx, word) => de.slice(0, T[idx].at) + word + de.slice(T[idx].at + T[idx].w.length);
+const ART_FAM = { der: ["der", "den", "dem", "die", "das"], die: ["die", "der", "das", "den"], das: ["das", "der", "die", "dem"], den: ["den", "der", "dem", "die"], dem: ["dem", "den", "der"] };
+function einFam(t) { const m = t.match(/^(ein|kein|mein|dein|sein|ihr|unser|Ihr)(e|en|em|er|es)?$/i); if (!m) return null; return ["", "e", "en", "em"].map((e) => m[1] + e).filter((x) => x !== t); }
+// една „типична“ грешка в изречението → { wrong, idx, kind }
+function mutate(de) {
+  const A = XP.roles(de), T = A.tokens, res = A.res, cands = [];
+  T.forEach((tk, i) => {
+    const t = tk.w, lt = t.toLowerCase(), r = res[i];
+    const prevW = i > 0 ? T[i - 1].w.toLowerCase() : "";
+    if (r.kind === "art" && !["in", "an", "auf", "unter", "über", "vor", "hinter", "neben", "zwischen"].includes(prevW)) {
+      const fam = ART_FAM[lt] ? ART_FAM[lt].filter((x) => x !== lt) : einFam(t);
+      if (fam && fam.length) { let w = rnd(fam); if (t[0] === t[0].toUpperCase()) w = cap(w); cands.push({ idx: i, wrong: rebuild(de, T, i, w), kind: "член", w }); }
+    }
+    if (r.kind === "adj") { const m = lt.match(/^(.+?)(en|em|er|es|e)$/); if (m) { const w = m[1] + rnd(["e", "en", "er", "es"].filter((e) => e !== m[2])); cands.push({ idx: i, wrong: rebuild(de, T, i, w), kind: "окончание", w }); } }
+    const subjSie = T.some((x, k) => /^(sie|Sie)$/.test(x.w) && A.roles[k] === "subj");
+    if (i === A.vIdx && r.item && r.item.forms && !subjSie) {
+      const fs = [...new Set(r.item.forms.map((f) => f.split(" ")[0]))].filter((f) => f.toLowerCase() !== lt);
+      if (fs.length) { let w = rnd(fs); if (t[0] === t[0].toUpperCase()) w = cap(w); cands.push({ idx: i, wrong: rebuild(de, T, i, w), kind: "форма на глагола", w }); }
+    }
+    if (r.kind === "verb" && i !== A.vIdx && A.vIdx >= 0 && /представката/.test(r.html || "")) {
+      const v = T[A.vIdx]; const merged = de.slice(0, v.at) + t + v.w + de.slice(v.at + v.w.length, T[i].at).replace(/\s+$/, "") + de.slice(T[i].at + t.length);
+      cands.push({ idx: A.vIdx, wrong: merged, kind: "разделим глагол", w: t + v.w, sep: i });
+    }
+  });
+  if (A.vIdx === 1 && T.length > 3 && !["subj", "q"].includes(A.roles[0]) && A.roles[2] === "subj") {
+    const v = T[1], n = T[2];
+    const wrong = de.slice(0, v.at) + n.w + " " + v.w + de.slice(n.at + n.w.length);
+    cands.push({ idx: 1, wrong, kind: "словоред", w: n.w + " " + v.w });
+  }
+  const ok = cands.filter((c) => c.wrong !== de && c.wrong.toLowerCase() !== de.toLowerCase());
+  return ok.length ? rnd(ok) : null;
+}
+const mutWhy = (de, m) => (m.kind === "словоред" ? `<b>Словоред:</b> изречението започва с „${esc(XP.roles(de).tokens[0].w)}“, затова глаголът е веднага след него (2-ро място), а подлогът минава <b>след</b> глагола.<br>` : m.kind === "разделим глагол" ? "<b>Разделим глагол:</b> представката се откъсва и отива накрая.<br>" : "") + (XP.explain(de, m.sep ?? m.idx).html || "");
+function genRight() {
+  for (let k = 0; k < 30; k++) {
+    const S0 = rnd(sentPool()); if (!S0) break;
+    const ms = []; for (let n = 0; n < 8 && ms.length < 2; n++) { const m = mutate(S0.de); if (m && !ms.some((x) => x.wrong === m.wrong)) ms.push(m); }
+    if (ms.length < 2) continue;
+    return { kind: "mc", task: "Как се казва на немски? Избери правилното", prompt: `<div class="mid">${esc(S0.bg)}</div>`, options: shuffle([S0.de, ...ms.map((m) => m.wrong)]), answer: S0.de, item: S0.it, say: S0.de, full: S0.de, bg: S0.bg, keys: true,
+      explain: ms.map((m) => `<div class="xwrong">✗ <i>${esc(m.wrong)}</i> — грешка в: <b>${m.kind}</b> (<s>${esc(m.w)}</s>)</div>`).join("") + `<hr>${mutWhy(S0.de, ms[0])}` };
+  }
+  return genPick();
+}
+function genFehler() {
+  for (let k = 0; k < 30; k++) {
+    const S0 = rnd(sentPool()); if (!S0) break;
+    const m = mutate(S0.de); if (!m) continue;
+    const WT = (m.wrong.match(WORD_RE) || []);
+    const origT = XP.roles(S0.de).tokens.map((t) => t.w);
+    let bad = WT.findIndex((w, i) => w !== origT[i]); if (bad < 0) continue;
+    const badSet = WT.map((w, i) => i).filter((i) => WT[i] !== origT[i] || (m.kind === "словоред" && (i === 1 || i === 2)));
+    return { kind: "tap", task: "Намери грешката — цъкни грешната дума", sentence: m.wrong, tapAns: badSet, answer: m.kind === "словоред" ? `${origT[1]} (мястото на глагола)` : origT[bad] || "",
+      prompt: `<div class="meta">${esc(S0.bg)}</div>`, item: S0.it, say: S0.de, full: S0.de, bg: S0.bg, explain: `Правилно: <b>${esc(S0.de)}</b><br>Грешката беше в: <b>${m.kind}</b>.<hr>${mutWhy(S0.de, m)}` };
+  }
+  return genPick();
+}
+const ROLE_Q = { v: "спрегнатия <b>глагол</b>", subj: "<b>подлога</b> (кой/какво?)", obj: "<b>прякото допълнение</b> (какво?/кого? — Akkusativ)", end: "думата <b>в края</b> (2-ри глагол / представка)" };
+function genRoles() {
+  for (let k = 0; k < 40; k++) {
+    const S0 = rnd(sentPool()); if (!S0) break;
+    const A = XP.roles(S0.de), avail = Object.keys(ROLE_Q).filter((r) => A.roles.includes(r));
+    if (!avail.length) continue;
+    const r = rnd(avail), idxs = A.roles.map((x, i) => (x === r ? i : -1)).filter((i) => i >= 0);
+    return { kind: "tap", task: `Цъкни ${ROLE_Q[r]}`, sentence: S0.de, tapAns: idxs, answer: idxs.map((i) => A.tokens[i].w).join(" "), prompt: `<div class="meta">${esc(S0.bg)}</div>`, item: S0.it, say: S0.de, full: S0.de, bg: S0.bg, showAnat: true,
+      explain: `${r === "v" ? "Спрегнатият глагол е на <b>2-ро място</b> (във въпрос „да/не“ — на 1-во)." : r === "subj" ? "Подлогът отговаря на <b>кой/какво?</b> и стои в Nominativ. Глаголът се спряга според него." : r === "obj" ? "Прякото допълнение отговаря на <b>какво?/кого?</b> след глагола → Akkusativ (der → den, ein → einen)." : "В края отиват вторият глагол (след kann, möchte…), представката на разделимия глагол или zu + глагол."}<br>Отвори 🔍 до изречението за целия разбор.` };
+  }
+  return genPick();
+}
+function genMatch() {
+  const items = shuffle(exPool((i) => ["noun", "verb", "adj", "adv"].includes(i.type) && !/\s/.test(i.de))).filter((x, i, a) => a.findIndex((y) => y.bg === x.bg) === i).slice(0, 5);
+  return { kind: "match", task: "Свържи двойките: немски ↔ български", pairs: items.map((it) => [deFull(it), it.bg, it]), answer: items.map((it) => `${deFull(it)} = ${it.bg}`).join(" · "), explain: items.map((it) => `${deHTML(it)} = ${esc(it.bg)}`).join("<br>") };
+}
+function genListenOrder() {
+  for (let k = 0; k < 20; k++) {
+    const S0 = rnd(sentPool()); if (!S0) break;
+    const toks = S0.de.trim().split(/\s+/); if (toks.length < 3 || toks.length > 9) continue;
+    let sh = shuffle(toks); for (let n = 0; n < 6 && sh.join(" ") === S0.de; n++) sh = shuffle(toks);
+    return { kind: "order", task: "Чуй изречението и го подреди", prompt: `<button class="bigplay" data-say="${esc(S0.de)}">${SPK}<span>чуй пак</span></button>`, autoSay: S0.de, toks, sh, answer: S0.de, item: S0.it, say: S0.de, full: S0.de, bg: S0.bg,
+      explain: `Значение: <i>${esc(S0.bg)}</i>. Отвори 🔍 до изречението, за да видиш кое къде стои и защо.` };
+  }
+  return genModalOrder();
+}
+const QA = [["Woher kommst du?", "Aus Bulgarien.", ["In Bulgarien.", "Nach Bulgarien."], "Woher? → aus"], ["Wo wohnst du?", "In Sofia.", ["Aus Sofia.", "Nach Sofia."], "Wo? → in"],
+  ["Wohin fährst du?", "Nach Berlin.", ["In Berlin.", "Aus Berlin."], "Wohin? → nach"], ["Wie alt bist du?", "Ich bin dreißig Jahre alt.", ["Ich habe dreißig Jahre.", "Ich bin dreißig Jahre."], "на … години = … Jahre alt sein"],
+  ["Was bist du von Beruf?", "Ich bin Lehrer.", ["Ich bin ein Lehrer von Beruf.", "Ich arbeite Lehrer."], "професия — без член"], ["Hast du Geschwister?", "Ja, ich habe einen Bruder.", ["Ja, ich habe ein Bruder.", "Ja, ich bin einen Bruder."], "haben + Akkusativ: einen Bruder"],
+  ["Wann öffnet das Museum?", "Um neun Uhr.", ["Von neun Uhr.", "Am neun Uhr."], "точен час → um"], ["Wie lange ist das Museum geöffnet?", "Von neun bis siebzehn Uhr.", ["Um neun Uhr.", "Am Montag."], "Wie lange? → von … bis"],
+  ["Was kostet das Zimmer?", "Achtzig Euro pro Nacht.", ["Zwei Nächte.", "Mit Frühstück."], "Was kostet …? → цена"], ["Wie lange bleiben Sie?", "Zwei Nächte.", ["Achtzig Euro.", "Um zwei Uhr."], "Wie lange? → период"],
+  ["Wie heißen Sie?", "Ich heiße Anna Petrova.", ["Ich bin heiße Anna.", "Mein Name heißt Anna."], "heißen = казвам се"], ["Welche Sprachen sprechen Sie?", "Bulgarisch und Deutsch.", ["Aus Bulgarien.", "In Bulgarien."], "Welche Sprachen? → езици"],
+  ["Kannst du schwimmen?", "Ja, ich kann gut schwimmen.", ["Ja, ich kann gut schwimme.", "Ja, ich kann schwimmen gut."], "модален + инфинитив накрая"], ["Fährst du morgen mit?", "Nein, ich fahre nicht mit.", ["Nein, ich mitfahre nicht.", "Nein, ich fahre mit nicht."], "разделим глагол: nicht … mit"],
+  ["Was machst du am Wochenende?", "Ich besuche meine Eltern.", ["Ich besuche meinen Eltern.", "Am Wochenende."], "meine Eltern (мн.ч., Akkusativ)"], ["Was trinken Sie?", "Einen Kaffee, bitte.", ["Ein Kaffee, bitte.", "Eine Kaffee, bitte."], "der Kaffee → einen (Akkusativ)"],
+  ["Haben Sie noch ein Zimmer frei?", "Ja, wir haben noch Einzelzimmer frei.", ["Ja, wir sind noch Einzelzimmer frei.", "Ja, das Zimmer kostet achtzig Euro."], "отговор на въпроса"], ["Wo kann man Geld abheben?", "In der Bank.", ["Im Bank.", "In die Bank."], "die Bank → in der (къде?)"],
+  ["Wie spät ist es?", "Es ist drei Uhr.", ["Um drei Uhr.", "Es ist drei Stunden."], "Колко е часът? → Es ist … Uhr."], ["Was gibt es im Zimmer?", "Es gibt einen Fernseher und eine Minibar.", ["Es gibt ein Fernseher und eine Minibar.", "Es ist einen Fernseher."], "es gibt + Akkusativ"],
+  ["Wie geht es Ihnen?", "Gut, danke. Und Ihnen?", ["Ich heiße gut.", "Ich bin gut, danke. Und du?"], "учтиво: Und Ihnen?"], ["Wann kommt der Zug an?", "Um zehn Uhr.", ["Nach zehn Uhr an.", "Am zehn Uhr."], "um + час"],
+  ["Rauchen Sie?", "Nein, ich bin Nichtraucher.", ["Nein, ich rauche kein.", "Nein, ich bin kein Raucher nicht."], "отрицание"], ["Spielen Sie ein Instrument?", "Ja, ich spiele Klavier.", ["Ja, ich spiele das Klavier gern nicht.", "Ja, ich spiele ein Klavier."], "инструменти — без член"]];
+function genAnswer() {
+  const [q, a, wr, why] = rnd(QA);
+  const other = rnd(QA.filter((x) => x[0] !== q))[1];
+  return { kind: "mc", task: "Кой е правилният отговор?", prompt: `<button class="bigplay small" data-say="${esc(q)}">${SPK}</button><div class="exs">${esc(q)}</div>`, options: shuffle([a, ...wr, other].filter((x, i, arr) => arr.indexOf(x) === i).slice(0, 4)), answer: a, say: `${q} ${a}`, full: a, keys: true,
+    explain: `<b>${esc(a)}</b> — ${why}.` };
+}
+EX_TYPES.push(
+  { k: "right", skill: "Изречения", ic: "✅", t: "Как се казва? (кое е правилно)", d: "Хиляди изречения от всички уроци — едно правилно, две с типична грешка", gen: genRight },
+  { k: "fehler", skill: "Изречения", ic: "🔎", t: "Намери грешката", d: "Цъкни грешната дума — член, окончание, глагол, словоред", gen: genFehler },
+  { k: "roles", skill: "Изречения", ic: "🎨", t: "Глагол? Подлог? Допълнение?", d: "Цъкни правилната част — учиш как е построено изречението", gen: genRoles },
+  { k: "listenorder", skill: "Изречения", ic: "🎧", t: "Диктовка: чуй и подреди", d: "Чуваш изречение и го сглобяваш", gen: genListenOrder },
+  { k: "match", skill: "Думи и употреба", ic: "🔗", t: "Свържи двойките", d: "5 думи ↔ 5 превода (като „Ordnen Sie zu“)", gen: genMatch },
+  { k: "answer", skill: "Думи и употреба", ic: "💬", t: "Въпрос → отговор", d: "Избери правилния отговор на въпроса", gen: genAnswer },
+);
+
 // ── сесия
 let exSess = null;
 function startEx(k, opts = {}) {
@@ -721,11 +844,20 @@ function drawEx() {
   if (s.i >= s.qs.length) return exDone();
   const q = s.qs[s.i];
   let answered = false;
+  stopAudio();
   const next = () => { s.i++; drawEx(); window.scrollTo(0, 0); };
   let body = "";
   if (q.kind === "mc") body = `<div class="opts">${q.options.map((o, n) => `<button class="opt" data-n="${n}"><kbd>${n + 1}</kbd><span>${esc(o)}</span></button>`).join("")}</div>`;
   else if (q.kind === "type") body = `<input class="answer" id="exa" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(q.hint || "напиши тук…")}">
     <div class="uml">${["ä", "ö", "ü", "ß"].map((c) => `<button data-c="${c}" tabindex="-1">${c}</button>`).join("")}</div>`;
+  else if (q.kind === "tap") {
+    let k = 0;
+    body = `<div class="tapline">${esc(q.sentence).replace(WORD_RE, (w) => `<button class="tapw" data-i="${k++}">${w}</button>`)}</div>`;
+  }
+  else if (q.kind === "match") {
+    const L = shuffle(q.pairs.map((p, i) => ({ t: p[0], i }))), Rr = shuffle(q.pairs.map((p, i) => ({ t: p[1], i })));
+    body = `<div class="matchg"><div>${L.map((x) => `<button class="mt ml" data-m="${x.i}" data-say="${esc(x.t)}">${esc(x.t)}</button>`).join("")}</div><div>${Rr.map((x) => `<button class="mt mr" data-m="${x.i}">${esc(x.t)}</button>`).join("")}</div></div>`;
+  }
   else if (q.kind === "bank") {
     let k = 0;
     body = `<div class="banktxt">${q.parts.map((p) => `<p>${esc(p).replace(/\{([^}]+)\}/g, () => `<button class="bk" data-b="${k++}">&nbsp;</button>`)}</p>`).join("")}</div><div class="opool" id="bp"></div>`;
@@ -734,9 +866,9 @@ function drawEx() {
   view.innerHTML = `<div class="stage exstage">
     <div class="pinfo"><span><button class="link" id="exback">← ${esc(s.title)}</button></span><span>${s.i + 1} / ${s.qs.length} · ✓ ${s.score}</span></div>
     <div class="prog"><i style="width:${(s.i / s.qs.length) * 100}%"></i></div>
-    <div class="card excard" style="cursor:default"><div class="extask">${q.task}</div>${q.prompt}</div>
+    <div class="card excard" style="cursor:default"><div class="extask">${q.task}</div>${q.prompt || ""}</div>
     ${body}<div class="exfb" id="fb"></div>
-    <div class="keys">${q.kind === "mc" ? "1–" + q.options.length + " – отговор · " : q.kind === "order" ? "цъкни думите поред · Backspace – махни · " : q.kind === "bank" ? "цъкни празното място, после думата · " : ""}Enter – напред · Esc – назад</div></div>`;
+    <div class="keys">${q.kind === "mc" ? "1–" + q.options.length + " – отговор · " : q.kind === "order" ? "цъкни думите поред · Backspace – махни · " : q.kind === "bank" ? "цъкни празното място, после думата · " : q.kind === "match" ? "цъкни немска дума, после превода ѝ · " : ""}Enter – напред · Esc – назад</div></div>`;
   $("#exback").onclick = renderExercises;
   if (q.autoSay) setTimeout(() => speak(q.autoSay, { auto: true }), 150);
   const pd = view.querySelector("[data-play-dlg]");
@@ -753,7 +885,8 @@ function drawEx() {
       ${q.item ? `<div class="exlinks">${openBtn(q.item)} <button class="link" data-train="${esc(q.item.id)}">🏋️ Тренирай думата</button></div>` : ""}
       <button class="btn primary" id="exnext" style="margin-top:10px;width:100%">Напред <kbd style="color:inherit">Enter</kbd></button>`;
     $("#exnext").onclick = next;
-    if (q.say) speak(q.say, { auto: true });
+    if (q.showAnat && q.full && typeof anatomyHTML === "function") { const sx = $("#fb .sent .sx"); if (sx) { sx.insertAdjacentHTML("afterend", anatomyHTML(q.full)); $("#fb .anat")?.classList.add("on"); } }
+    if (q.say && q.kind !== "bank") speak(q.say, { auto: true });
   };
   if (q.kind === "mc") {
     const pick = (n) => {
@@ -781,6 +914,25 @@ function drawEx() {
         finish(ok, inp.value);
       } else if (e.key === "Escape") renderExercises();
     };
+  } else if (q.kind === "tap") {
+    view.querySelector(".tapline").onclick = (e) => {
+      const b = e.target.closest(".tapw"); if (!b || answered) return;
+      const i = +b.dataset.i, ok = q.tapAns.includes(i);
+      view.querySelectorAll(".tapw").forEach((x) => { if (q.tapAns.includes(+x.dataset.i)) x.classList.add("right"); });
+      if (!ok) b.classList.add("wrong");
+      finish(ok, b.textContent);
+    };
+    keyHandler = (e) => { if (e.key === "Enter" && answered) next(); else if (e.key === "Escape") renderExercises(); };
+  } else if (q.kind === "match") {
+    let sel = null, miss = 0, done = 0;
+    view.querySelector(".matchg").addEventListener("click", (e) => {
+      const b = e.target.closest(".mt"); if (!b || answered || b.classList.contains("ok")) return;
+      if (b.classList.contains("ml")) { view.querySelectorAll(".ml").forEach((x) => x.classList.remove("sel")); b.classList.add("sel"); sel = b; return; }
+      if (!sel) { b.classList.add("shake"); setTimeout(() => b.classList.remove("shake"), 400); return; }
+      if (sel.dataset.m === b.dataset.m) { sel.classList.add("ok"); b.classList.add("ok"); sel.classList.remove("sel"); sel = null; done++; if (done === q.pairs.length) finish(miss === 0, miss ? `${miss} грешни опита` : "без грешка"); }
+      else { miss++; b.classList.add("bad"); sel.classList.add("bad"); const s1 = sel; setTimeout(() => { b.classList.remove("bad"); s1.classList.remove("bad"); }, 500); }
+    });
+    keyHandler = (e) => { if (e.key === "Enter" && answered) next(); else if (e.key === "Escape") renderExercises(); };
   } else if (q.kind === "bank") {
     const fill = q.blanks.map(() => null); let cur = 0; const pool = q.bank.map((t, i) => ({ t, i, used: false }));
     const draw = () => {
@@ -849,7 +1001,7 @@ function renderExercises() {
   const skills = [...new Set(EX_TYPES.map((t) => t.skill))];
   view.innerHTML = `<h2>Упражнения</h2>
     <p class="hint">Вдъхновени от упражненията в учебника (Begegnungen A1, Kapitel 2), но изреченията се сглобяват наново всеки път — примерите не свършват. След всеки отговор има <b>обяснение защо</b>. Звукът се пуска след отговора.</p>
-    <div class="modes" style="margin-top:8px">
+    <div class="modes exheros" style="margin-top:8px">
       <button class="mode exhero" data-ex="mix"><span class="ic">🎲</span><b>Микс от всичко</b><span>15 разнообразни задачи</span></button>
       <button class="mode" data-ex="weak"><span class="ic">🎯</span><b>Слабите ми думи</b><span>Тренировка на думите, които бъркаш</span></button>
       <div class="mode exsearch"><span class="ic">🏋️</span><b>Тренирай конкретна дума</b><input class="search" id="exw" placeholder="напиши дума (немски или български)…" style="margin-top:6px"><div id="exwl"></div></div>

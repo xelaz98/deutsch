@@ -80,7 +80,7 @@ function sentHTML(de, bg, it) {
     const g = LEXM[w.toLowerCase()];
     return `<span class="w ${forms.has(w.toLowerCase()) ? "hl" : ""}" data-i="${n++}" data-w="${esc(w)}" data-g="${esc(g || "—")}" data-t="[${esc(translit(w))}]">${w}</span>`;
   });
-  return `<div class="sent" data-s="${esc(de)}"><button class="say" data-say="${esc(de)}" title="Чуй изречението">${SPK}</button>
+  return `<div class="sent" data-s="${esc(de)}"><div class="sbtns"><button class="say" data-say="${esc(de)}" title="Чуй изречението">${SPK}</button><button class="anat" title="Разбор: кое какво е в изречението">🔍</button></div>
     <div class="sx"><div class="sde">${html}</div><div class="sbg" title="Посочи или цъкни, за да видиш превода">${esc(bg)}</div></div></div>`;
 }
 const exHTML = (it) => { const e = exampleFor(it); return e ? sentHTML(e[0], e[1], it) : ""; };
@@ -135,6 +135,12 @@ async function audioURL(t) {
 let curAudio = null, lastSaid = "", lastAt = 0;
 function markPlaying(text, on) {
   document.querySelectorAll("[data-say]").forEach((b) => b.classList.toggle("playing", on && b.dataset.say === text));
+}
+function stopAudio() {
+  if (typeof seqToken !== "undefined") seqToken++;
+  if (curAudio) { curAudio.pause(); curAudio = null; }
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  document.querySelectorAll(".playing").forEach((b) => b.classList.remove("playing"));
 }
 function speechFallback(text, slow) {
   if (!("speechSynthesis" in window)) return toast("Няма звук — провери интернет връзката");
@@ -195,6 +201,38 @@ document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-say]");
   if (b) { e.stopPropagation(); speak(b.dataset.say); }
 });
+// „Разбор“: изречението по части + словоред
+const ROLE = { subj: ["Подлог", "кой/какво? — Nominativ"], v: ["Глагол", "спрегнат — 2-ро място"], obj: ["Допълнение", "какво?/кого? — Akkusativ"], dat: ["Dativ", "на кого?"],
+  pp: ["С предлог", "къде? с какво? кога?"], end: ["Край", "2-ри глагол / представка / zu"], neg: ["Отрицание", "nicht"], conj: ["Съюз", "свързва"], q: ["Въпрос", "въпросителна дума"], other: ["Друго", "кога, как, колко…"] };
+function anatomyHTML(de) {
+  const { tokens: T, roles, vIdx } = XP.roles(de);
+  const chip = (i) => `<span class="ana r-${roles[i]}">${esc(T[i].w)}</span>`;
+  const present = [...new Set(roles)].filter((r) => r !== "other" || roles.filter((x) => x === "other").length);
+  const words = (r) => T.filter((_, i) => roles[i] === r).map((t) => t.w).join(" ");
+  const parts = [];
+  if (vIdx >= 0) parts.push(vIdx === 0 ? `Глаголът <b>${esc(T[0].w)}</b> е <b>най-отпред</b> — ${/\?\s*$/.test(de) ? "въпрос с отговор „да/не“" : "молба/заповед"}.` : `Глаголът <b>${esc(T[vIdx].w)}</b> е на <b>2-ро място</b>.`);
+  if (roles.includes("subj")) parts.push(`Кой/какво? → <b>${esc(words("subj"))}</b> (подлог).`);
+  if (roles.includes("obj")) parts.push(`Какво/кого? → <b>${esc(words("obj"))}</b> (Akkusativ).`);
+  if (roles.includes("dat")) parts.push(`На кого? → <b>${esc(words("dat"))}</b> (Dativ).`);
+  if (roles.includes("end")) parts.push(`В края: <b>${esc(words("end"))}</b>.`);
+  // словоред I | II | средата | край
+  let lastEnd = T.length; while (lastEnd > 0 && roles[lastEnd - 1] === "end") lastEnd--;
+  const cols = vIdx > 0 ? [["I", T.slice(0, vIdx).map((_, i) => i)], ["II · глагол", [vIdx]], ["средата", T.slice(vIdx + 1, lastEnd).map((_, k) => vIdx + 1 + k)], ["край", T.slice(lastEnd).map((_, k) => lastEnd + k)]]
+    : vIdx === 0 ? [["I · глагол", [0]], ["средата", T.slice(1, lastEnd).map((_, k) => 1 + k)], ["край", T.slice(lastEnd).map((_, k) => lastEnd + k)]] : null;
+  return `<div class="anabox"><div class="analine">${T.map((_, i) => chip(i)).join(" ")}</div>
+    <div class="analeg">${present.map((r) => `<span><i class="r-${r}"></i><b>${ROLE[r][0]}</b> ${ROLE[r][1]}</span>`).join("")}</div>
+    ${parts.length ? `<div class="anasum">${parts.join(" ")}</div>` : ""}
+    ${cols ? `<div class="anacols">${cols.map(([h, ix]) => `<div><small>${h}</small><div>${ix.map(chip).join(" ") || "—"}</div></div>`).join("")}</div>` : ""}
+    <div class="muted" style="font-size:12.5px;margin-top:6px">👆 Цъкни дума в изречението за подробното „Защо?“</div></div>`;
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest(".anat"); if (!a) return;
+  e.stopPropagation();
+  const sent = a.closest(".sent"), box = sent.querySelector(".anabox");
+  if (box) { box.remove(); a.classList.remove("on"); return; }
+  a.classList.add("on");
+  sent.querySelector(".sx").insertAdjacentHTML("afterend", anatomyHTML(sent.dataset.s));
+}, true);
 // „Защо?“ панел под изречението
 function showWhy(wEl) {
   const sent = wEl.closest(".sent"), de = sent.dataset.s, i = +wEl.dataset.i;
@@ -443,6 +481,7 @@ function openLessons() {
 }
 function go(tab) { S.tab = tab; store.set("tab", tab); closePanel(); renderNav(); renderSub(); render(); window.scrollTo(0, 0); $("#top")?.classList.remove("hide"); }
 function render() {
+  stopAudio();
   keyHandler = null; view.onclick = null; activeQuiz = null;
   ({ home: renderHome, basics: renderBasics, ex: renderExercises, dict: renderDict, cards: renderCardsHome, quiz: renderQuizHome, verbs: renderVerbs, grammar: renderGrammar })[S.tab]();
 }
@@ -565,6 +604,7 @@ function cardFace(it, side) { // side: "front" | "back"
 }
 function drawCard(s) {
   if (s.i >= s.q.length) return cardsDone(s);
+  if (!s.flipped) stopAudio();
   const it = s.q[s.i];
   const g = it.type === "noun" ? "g-" + artCls(it) : "";
   view.innerHTML = `<div class="stage">
@@ -705,7 +745,13 @@ function drawQ(s) {
   if (s.i >= s.qs.length) return quizDone(s);
   const Q = s.qs[s.i], it = Q.it;
   let answered = false;
-  const advance = () => { s.i++; drawQ(s); };
+  stopAudio();
+  const advance = () => { s.i++; drawQ(s); window.scrollTo(0, 0); };
+  const showNext = () => {
+    if ($("#qnext")) return;
+    view.querySelector(".stage").insertAdjacentHTML("beforeend", `<button class="btn primary nextbtn" id="qnext">Напред →</button>`);
+    $("#qnext").onclick = advance;
+  };
 
   if (s.mode === "mc" || s.mode === "listenmc") {
     const prompt = Q.hidden ? `<button class="bigplay" data-say="${esc(deFull(it))}">${SPK}<span>чуй пак</span></button><div class="big" id="reveal" hidden>${deHTML(it)}</div>`
@@ -716,7 +762,7 @@ function drawQ(s) {
     if (Q.hidden) speak(deFull(it), { auto: true }); // само при упражнение на слух
     const pick = (n) => {
       if (answered) return advance();
-      answered = true;
+      answered = true; showNext();
       const ok = Q.opts[n] === it;
       view.querySelectorAll(".opt").forEach((b, k) => { if (Q.opts[k] === it) b.classList.add("right"); else if (k === n) b.classList.add("wrong"); });
       next(s, ok, it);
@@ -737,7 +783,7 @@ function drawQ(s) {
       <div class="keys">1–4 – отговор · Enter – напред</div></div>`;
     const pick = (n) => {
       if (answered) return advance();
-      answered = true;
+      answered = true; showNext();
       const ok = Q.opts[n] === Q.target;
       view.querySelectorAll(".opt").forEach((b, k) => { if (Q.opts[k] === Q.target) b.classList.add("right"); else if (k === n) b.classList.add("wrong"); });
       $("#cc").innerHTML = sentHTML(Q.ex[0], Q.ex[1], it) + `<div class="meta">${deHTML(it)} — ${esc(it.bg)}</div>` + openBtn(it);
@@ -760,7 +806,7 @@ function drawQ(s) {
       $("#op").innerHTML = free.map((c, k) => `<button class="chipw" data-f="${k}">${esc(c.t)}</button>`).join("");
     };
     const check = () => {
-      answered = true;
+      answered = true; showNext();
       const ok = placed.map((c) => c.t).join(" ") === Q.toks.join(" ");
       $("#ol").classList.add(ok ? "right" : "wrong");
       $("#fb").className = "fb " + (ok ? "ok" : "bad");
@@ -791,7 +837,7 @@ function drawQ(s) {
       <div class="fb" id="fb"></div><div class="keys">1 der · 2 die · 3 das · Enter – напред</div></div>`;
     const pick = (a) => {
       if (answered) return advance();
-      answered = true;
+      answered = true; showNext();
       const ok = a === it.art;
       $("#gc").className = "card g-" + it.art;
       $("#gc .big").innerHTML = deHTML(it);
@@ -858,7 +904,7 @@ function drawQ(s) {
   const check = () => {
     if (answered) return advance();
     if (!inp.value.trim()) { if (say) speak(say, { auto: true }); return; }
-    answered = true;
+    answered = true; showNext();
     const ok = accept(inp.value);
     inp.classList.add(ok ? "right" : "wrong"); inp.readOnly = true;
     $("#fb").className = "fb " + (ok ? "ok" : "bad");

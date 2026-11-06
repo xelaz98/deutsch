@@ -518,6 +518,81 @@ table.xt tr.on td{background:var(--accent-2);font-weight:700}
 .ocard{background:var(--soft);border-radius:12px;padding:10px 14px;text-align:left;font-size:15px;line-height:1.6;margin-top:6px}
 .exfilter{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px 0 2px;padding-bottom:4px}
 .exfilter .chip{white-space:nowrap;padding:7px 13px;font-size:14px}
+
+/* ═════ v4: телефон + общи поправки ═════ */
+@media (hover:none){ kbd, .keys{display:none !important} }
+.nextbtn{width:100%;margin-top:12px;font-size:17px}
+@media (max-width:760px){
+  .exheros{grid-template-columns:1fr !important}
+  .exheros .mode{min-height:0}
+  #exnext,.nextbtn{position:sticky;bottom:calc(74px + env(safe-area-inset-bottom));z-index:6;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  #bp{position:sticky;bottom:calc(70px + env(safe-area-inset-bottom));background:var(--bg);padding:10px 0 6px;margin:0 -4px;z-index:6;border-top:1px solid var(--line)}
+  .banktxt{font-size:16px;padding:10px 12px}
+  .btns{gap:8px} .btn{padding:12px 6px}
+  .card{min-height:230px;padding:24px 16px}
+  .ring{width:90px;height:90px} .ring b{font-size:20px}
+  .hero{flex-direction:row;align-items:center} .hero > div:first-child{flex:1}
+  .hello{font-size:24px}
+  .cta{width:100%;justify-content:center}
+  .lt-b .btn{flex:1}
+  .opts{gap:8px} .opt{padding:12px}
+  .xbox{font-size:14px;padding:10px 12px}
+  table.xt{font-size:12.5px}
+  .sh{padding:16px}
+}
+
+/* разбор на изречение */
+.sbtns{display:flex;flex-direction:column;gap:2px;flex:none}
+.anat{border:0;background:transparent;width:30px;height:30px;border-radius:8px;font-size:15px;opacity:.75}
+.anat:hover,.anat.on{background:var(--accent-2);opacity:1}
+.anabox{flex-basis:100%;margin:8px 0 2px 34px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;animation:rev .2s ease-out;text-align:left}
+.analine{font-size:18px;line-height:2.2;font-weight:600}
+.ana{padding:2px 7px;border-radius:7px;border-bottom:3px solid transparent}
+.r-subj{background:color-mix(in srgb,#3b82f6 18%,transparent);border-color:#3b82f6 !important}
+.r-v{background:color-mix(in srgb,#ef4444 18%,transparent);border-color:#ef4444 !important}
+.r-obj{background:color-mix(in srgb,#16a34a 18%,transparent);border-color:#16a34a !important}
+.r-dat{background:color-mix(in srgb,#a855f7 18%,transparent);border-color:#a855f7 !important}
+.r-pp{background:color-mix(in srgb,#0ea5e9 16%,transparent);border-color:#0ea5e9 !important}
+.r-end{background:color-mix(in srgb,#f97316 20%,transparent);border-color:#f97316 !important}
+.r-neg{background:color-mix(in srgb,#64748b 20%,transparent);border-color:#64748b !important}
+.r-conj,.r-q{background:color-mix(in srgb,#eab308 18%,transparent);border-color:#eab308 !important}
+.r-other{background:var(--soft)}
+.analeg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted);margin-top:6px}
+.analeg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border-bottom:3px solid}
+.analeg b{color:var(--ink)}
+.anasum{margin-top:8px;font-size:14.5px;line-height:1.6}
+.anacols{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;margin-top:10px}
+.anacols > div{background:var(--soft);border-radius:10px;padding:6px 8px;font-size:14px}
+.anacols small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.anacols .ana{display:inline-block;margin:2px 0}
+@media (max-width:760px){.anabox{margin-left:0}.anacols{grid-auto-flow:row}}
+
+/* цъкни дума / свържи двойки */
+.tapline{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-top:12px;font-size:21px;line-height:2.3;text-align:center}
+.tapw{border:1px solid var(--line);background:var(--soft);border-radius:10px;padding:2px 10px;font-size:20px;font-weight:600;margin:2px}
+.tapw:hover{border-color:var(--accent)}
+.tapw.right{background:color-mix(in srgb,var(--ok) 20%,transparent);border-color:var(--ok)} .tapw.wrong{background:color-mix(in srgb,var(--bad) 20%,transparent);border-color:var(--bad)}
+.matchg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.matchg > div{display:flex;flex-direction:column;gap:8px}
+.mt{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px 10px;font-size:16px;font-weight:600;min-height:52px;transition:.15s}
+.mt.sel{border-color:var(--accent);background:var(--accent-2)}
+.mt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent);opacity:.65}
+.mt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,transparent)}
+.shake{animation:shk .3s}
+@keyframes shk{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.xwrong{font-size:14px;margin:2px 0}
+.bigplay.small{width:56px;height:56px;margin:0 auto 6px}
+.bigplay.small svg{width:24px;height:24px}
+
+.two > *,.gwrap > *{min-width:0}
+.gbody{overflow-x:auto}
+@media (max-width:760px){
+  .excard{min-height:0;padding:18px 14px}
+  .gbody{padding:4px 14px 16px}
+  table.g{font-size:13px} table.g td,table.g th{padding:5px 6px}
+  .gnav{margin:0 -16px;padding:6px 16px}
+  .lp-h{flex-wrap:wrap} .lp-h span{white-space:normal}
+}
 </style>
 </head>
 <body>

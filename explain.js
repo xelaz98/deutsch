@@ -104,7 +104,7 @@ const XP = (() => {
   function finiteVerb(T) {
     for (let k = 0; k < T.length; k++) {
       const t = lc(T[k].w);
-      if (SEIN.has(t)) return k;
+      if (SEIN.has(t) || t === "gibt") return k;
       const c = VERBF.get(t);
       if (c && c.some((x) => x.idx.length) && !(k === T.length - 1 && T.length > 3 && c.some((x) => x.inf))) return k;
     }
@@ -307,7 +307,37 @@ const XP = (() => {
       }
       if (/chen$|lein$/.test(t) && w[0] === w[0].toUpperCase()) { res[i] = { kind: "noun", html: `<b>${esc(w)}</b> — <b>умалително</b> (-chen/-lein = малко). Умалителните са <b>винаги das</b>, често с умлаут: die Hand → das H<b>ä</b>ndchen.` }; return; }
     });
-    return { tokens: T, res };
+    // роли за „Разбор“: subj · v · obj · dat · pp (предложна група) · end (глагол накрая) · neg · conj · q · other
+    const roles = T.map(() => "other");
+    const NOMP = ["ich", "du", "er", "sie", "es", "wir", "ihr", "man"];
+    const PREPS = new Set([...Object.keys(DAT_P), ...Object.keys(AKK_P), ...Object.keys(WECHSEL), ...Object.keys(CONTR)]);
+    T.forEach((tk, i) => {
+      const t = lc(tk.w), r = res[i];
+      if (i === vIdx) roles[i] = "v";
+      else if (r.kind === "verb") roles[i] = "end";
+      else if (t === "nicht") roles[i] = "neg";
+      else if (CONJ0[t] || CONJ_END[t]) roles[i] = "conj";
+      else if (QW[t]) roles[i] = "q";
+      else if (PREPS.has(t) && r.kind === "prep") roles[i] = "pp";
+    });
+    // съществителни групи
+    for (const [j, info] of npInfo) {
+      if (info.adjOf !== undefined) continue;
+      const st = info.artI ?? j;
+      const prev = st > 0 ? lc(T[st - 1].w) : "";
+      const role = PREPS.has(prev) && roles[st - 1] === "pp" ? "pp" : info.c === "Nom" ? "subj" : info.c === "Akk" ? "obj" : "dat";
+      for (let k = st; k <= j; k++) roles[k] = role;
+    }
+    T.forEach((tk, i) => {
+      const t = lc(tk.w);
+      if (roles[i] !== "other") return;
+      if (res[i].kind === "noun") { const prev = i > 0 ? lc(T[i - 1].w) : ""; roles[i] = PREPS.has(prev) ? "pp" : vIdx >= 0 && i < vIdx ? "subj" : "obj"; return; }
+      if (NOMP.includes(t) && !(t === "es" && T.some((x) => lc(x.w) === "gibt"))) { roles[i] = t === "sie" && i > vIdx && T.slice(vIdx + 1, i).some((x) => NOMP.includes(lc(x.w))) ? "obj" : "subj"; return; }
+      if (["mich", "dich", "ihn", "uns", "euch", "sich"].includes(t)) { roles[i] = "obj"; return; }
+      if (["mir", "dir", "ihm", "ihnen"].includes(t)) { roles[i] = "dat"; return; }
+      if (t === "zu" && res[i].kind === "conj") roles[i] = "end";
+    });
+    return { tokens: T, res, roles, vIdx };
   }
   const cache = new Map();
   return {
@@ -316,5 +346,6 @@ const XP = (() => {
       return cache.get(sentence).res[idx] || {};
     },
     analyze,
+    roles(sentence) { if (!cache.has(sentence)) cache.set(sentence, analyze(sentence)); return cache.get(sentence); },
   };
 })();
