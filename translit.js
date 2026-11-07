@@ -3,12 +3,12 @@
 const TR_WHOLE = {
   ukraine: "украине", usa: "у-ес-а", venedig: "венедих",
   verb: "верп", verben: "вербен", woher: "вохер", wohin: "вохин", chemiker: "хемикер",
-  november: "новембер", hiphop: "хипхоп", orchester: "оркестер", klavier: "клавир", e: "и", mail: "мейл", stabil: "стабил", ski: "ши", skier: "шиер", yoga: "йога", jazz: "джес", volleyball: "волибал", laptop: "лептоп", laptops: "лептопс", bzw: "бе-цет-ве", orange: "оранже", ca: "ка", ok: "окей",
+  november: "новембер", hiphop: "хипхоп", orchester: "оркестер", klavier: "клавир", e: "и", mail: "мейл", stabil: "стабил", steak: "стейк", steaks: "стейкс", cd: "це-де", cds: "це-декс", ski: "ши", skier: "шиер", yoga: "йога", jazz: "джес", volleyball: "волибал", laptop: "лептоп", laptops: "лептопс", bzw: "бе-цет-ве", orange: "оранже", ca: "ка", ok: "окей",
 };
 // подниз → транскрипция (prefix: само в началото на думата)
 const TR_SUBS = [
   ["ingenieur", "инженьор", true], ["journal", "журнал", true], ["computer", "компютер", true],
-  ["manager", "менеджер", true], ["hobby", "хоби"], ["restaurant", "ресторан"], ["fitnesscenter", "фитнессентер"], ["safe", "сейф"], ["toilett", "тоалет"], ["stück", "штюк"], ["straße", "штрасе"], ["abreise", "апрайзе", true], ["enthalt", "ентхалт"], ["ausstatt", "аусштат"], ["gehör", "гехьор"], ["garage", "гараже"], ["italien", "италиен", true], ["matchbox", "мечбокс"], ["sporthall", "шпортхал"], ["nachsch", "нахш"], ["igst", "ихст"], ["tourist", "турист"], ["museum", "музеум"], ["museen", "музеен"], ["rathaus", "ратхаус"], ["ausstell", "аусштел"], ["vokabul", "вокабул"], ["igkeit", "ихкайт"], ["univers", "универз"], ["violin", "виолин", true], ["chemie", "хеми", true], ["beend", "беенд", true], ["buchstab", "бухштаб", true],
+  ["manager", "менеджер", true], ["hobby", "хоби"], ["restaurant", "ресторан"], ["fitnesscenter", "фитнессентер"], ["safe", "сейф"], ["toilett", "тоалет"], ["stück", "штюк"], ["straße", "штрасе"], ["abreise", "апрайзе", true], ["enthalt", "ентхалт"], ["ausstatt", "аусштат"], ["gehör", "гехьор"], ["garage", "гараже"], ["italien", "италиен", true], ["matchbox", "мечбокс"], ["sporthall", "шпортхал"], ["nachsch", "нахш"], ["igst", "ихст"], ["violet", "виолет"], ["orangen", "оранжен", true], ["erdbeereis", "ертбеерайс"], ["hausauf", "хаусауф"], ["vokal", "вокал"], ["tourist", "турист"], ["museum", "музеум"], ["museen", "музеен"], ["rathaus", "ратхаус"], ["ausstell", "аусштел"], ["vokabul", "вокабул"], ["igkeit", "ихкайт"], ["univers", "универз"], ["violin", "виолин", true], ["chemie", "хеми", true], ["beend", "беенд", true], ["buchstab", "бухштаб", true],
   ["jogg", "джог", true], ["variant", "вариант", true], ["entsch", "ентш", true], ["sechst", "зекст", true],
   ["wirtschaft", "виртшафт"], ["ssprache", "сшпрахе"],
   ["familie", "фамилие"], ["sprache", "шпрахе"], ["städte", "штете"], ["stadt", "штат"],

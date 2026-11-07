@@ -9,7 +9,7 @@ const XP = (() => {
   const PERS = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"];
   const SEIN = new Set(["bin", "bist", "ist", "sind", "seid", "war", "waren", "wird", "wirst", "werde", "werden", "werdet", "bleibt", "bleibe", "bleiben", "bleibst"]);
   const DAT_P = { mit: "с", aus: "от (откъде)", bei: "при, във (фирма)", von: "от", zu: "към, до", nach: "след; за (град)", seit: "от (време)" };
-  const AKK_P = { für: "за", ohne: "без", gegen: "срещу; около (час)", durch: "през", um: "в (час); около" };
+  const AKK_P = { für: "за", ohne: "без", gegen: "срещу; около (час)", durch: "през; заради", um: "в (час); около", bis: "до" };
   const WECHSEL = { in: "в", an: "на, до", auf: "на, върху", unter: "под", über: "над", vor: "пред", hinter: "зад", neben: "до", zwischen: "между" };
   const CONTR = {
     im: ["in", "dem", "в (in + dem). Отговаря на „Wo? Къде?“ → Dativ. Използва се за der- и das-думи: im Zimmer, im Park. За die-думи: in der Stadt."],
@@ -19,6 +19,9 @@ const XP = (() => {
     ins: ["in", "das", "in + das (в, накъде?) → Akkusativ, защото има движение: ins Kino, ins Bett. Сравни: im Kino (къде? — вече съм там)."],
     vom: ["von", "dem", "von + dem (от) — за der- и das-думи: vom Bahnhof, vom Hotel."],
     beim: ["bei", "dem", "bei + dem (при) — beim Arzt = при лекаря."],
+    durchs: ["durch", "das", "durch + das (през) → Akkusativ: durchs Fenster."],
+    fürs: ["für", "das", "für + das (за) → Akkusativ: fürs Kind."],
+    ums: ["um", "das", "um + das (около) → Akkusativ: ums Haus."],
   };
   const PRON = {
     ich: ["аз", "Nom"], du: ["ти", "Nom"], er: ["той (или der-нещо: der Computer = er)", "Nom"], wir: ["ние", "Nom"],
@@ -30,12 +33,12 @@ const XP = (() => {
     wer: "кой? (подлог — Nominativ)", wen: "кого? (пряко допълнение — Akkusativ)", wem: "на кого? (Dativ)", warum: "защо?", welche: "кои/коя? (welch- + окончание като на die)", welcher: "кой? (der-дума)", welches: "кое? (das-дума)" };
   const CONJ0 = { und: "и", oder: "или", aber: "но", denn: "защото", sondern: "а (след отрицание)" };
   const CONJ_END = { weil: "защото", dass: "че", wenn: "ако / когато", ob: "дали" };
-  const SEP_PREF = ["an", "ab", "mit", "ein", "aus", "vor", "nach", "fern", "weg", "teil", "auf", "zurück", "zu", "los"];
+  const SEP_PREF = ["an", "ab", "mit", "ein", "aus", "vor", "nach", "fern", "weg", "teil", "auf", "zurück", "zu", "los", "her"];
   const EXTRA_ADJ = ["neu", "alt", "groß", "klein", "gut", "schön", "teuer", "billig", "modern", "praktisch", "bequem", "unbequem", "hell", "dunkel", "kalt", "warm", "weich", "hart", "schnell",
     "langsam", "interessant", "langweilig", "deutsch", "italienisch", "französisch", "englisch", "berühmt", "bedeutend", "naturwissenschaftlich", "technisch", "kühl", "schmal", "leer", "voll", "lang",
     "frei", "heiß", "jung", "wichtig", "unwichtig", "spannend", "historisch", "klassisch", "nett", "sauber", "schmutzig", "gesund", "schwer", "leicht", "schlecht", "preiswert", "hässlich", "beliebt",
     "perfekt", "nächst", "erst", "zweit", "dritt", "letzt", "lieb", "weiß", "schwarz", "rot", "blau", "grün", "gelb", "grau", "braun", "rund", "bulgarisch", "stabil", "fertig", "bereit", "einfach",
-    "unbekannt", "riesig", "zwanzigst", "neunzehnt", "einundzwanzigst", "kalt", "spät", "früh", "ganz", "viel", "wenig", "eigen", "toll", "super", "ruhig", "laut", "leise", "zufrieden", "unzufrieden"];
+    "unbekannt", "riesig", "zwanzigst", "neunzehnt", "einundzwanzigst", "kalt", "spät", "früh", "ganz", "viel", "wenig", "eigen", "toll", "super", "ruhig", "laut", "leise", "zufrieden", "unzufrieden", "dick", "dünn", "schlank", "schwierig", "müde", "frisch", "krank", "süß", "sauer", "fleißig", "falsch", "violett", "lila", "hellblau", "dunkelblau", "orange", "trennbar", "lecker", "kurz", "streng", "schlimm"];
   let NOUNS, ADJS, VERBF, SEPV;
   function build() {
     if (NOUNS) return;
@@ -244,7 +247,8 @@ const XP = (() => {
       // глаголи
       const vc = VERBF.get(t);
       if (vc && !(w[0] === w[0].toUpperCase() && i > 0)) {
-        const fin = vc.find((x) => x.idx.length) || null, infC = vc.find((x) => x.inf);
+        const lastW = T.length ? lc(T[T.length - 1].w) : "";
+        const fin = vc.find((x) => x.idx.length && SEPV.get(x.it.de) === lastW && i !== T.length - 1) || vc.find((x) => x.idx.length) || null, infC = vc.find((x) => x.inf);
         const modal = vIdx >= 0 && vIdx !== i && ["können", "möchten", "müssen", "wollen", "dürfen", "sollen", "mögen"].includes((VERBF.get(lc(T[vIdx].w)) || [])[0]?.it.de);
         if (infC && (i !== vIdx || !fin) && (modal || i === T.length - 1 || i > vIdx + 1)) {
           const v = infC.it;
@@ -265,7 +269,10 @@ const XP = (() => {
             }
           }
           const persons = idx.map((k) => PERS[k]).join(" / ");
-          const reg = regularForms(v.de.replace(/^sich /, "")), k0 = idx[0], irr = !/\s/.test(v.de) && v.forms[k0] !== reg[k0];
+          const inf0 = v.de.replace(/^sich /, ""), st0 = inf0.replace(/e?n$/, "");
+          const reg = /[td]$/.test(st0) || /(chn|ffn|gn|tm|dm)$/.test(st0) ? [st0 + "e", st0 + "est", st0 + "et", inf0, st0 + "et", inf0]
+            : /[sßzx]$/.test(st0) ? [st0 + "e", st0 + "t", st0 + "t", inf0, st0 + "t", inf0] : regularForms(inf0);
+          const k0 = idx[0], irr = !/\s/.test(v.de) && !/\s/.test(v.forms[k0]) && v.forms[k0] !== reg[k0];
           const wild = ["sein", "haben", "wissen", "werden", "können", "möchten", "müssen", "wollen", "dürfen", "sollen", "mögen"].includes(v.de);
           let pos = "";
           if (i === vIdx) {
@@ -273,6 +280,7 @@ const XP = (() => {
             else if (i === 0) pos = "Стои <b>най-отпред</b> — молба/заповед (… Sie!) или въпрос.";
             else if (T.slice(0, i).some((x) => CONJ_END[lc(x.w)])) pos = `Стои <b>накрая</b> заради <b>${esc(T.slice(0, i).find((x) => CONJ_END[lc(x.w)]).w)}</b> — в такова изречение глаголът бяга в края.`;
             else if (i === 1 || (T[0] && /^(Das|Die|Der|Mein|Meine|Dein|Ein|Eine)$/.test(T[0].w) && i === 2)) pos = "Стои на <b>2-ро място</b> — основното правило за немския глагол.";
+            else if (/^(ja|nein|doch)$/i.test(T[0].w) && i === 2) pos = `Стои на <b>2-ро място</b>. „${esc(T[0].w)},“ е извън изречението (място 0), затова: ${esc(T[1].w)} → <b>${esc(T[i].w)}</b>.`;
             else pos = `Стои на <b>2-ро място</b>: първото място заема „${esc(T.slice(0, i).map((x) => x.w).join(" "))}“, затова подлогът минава <b>след</b> глагола.`;
           } else if (T.slice(0, i).some((x) => CONJ_END[lc(x.w)])) pos = `Стои <b>накрая</b> заради <b>${esc(T.slice(0, i).find((x) => CONJ_END[lc(x.w)]).w)}</b>.`;
           const sep = SEPV.get(v.de);

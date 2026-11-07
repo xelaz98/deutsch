@@ -821,6 +821,221 @@ EX_TYPES.push(
   { k: "answer", skill: "Думи и употреба", ic: "💬", t: "Въпрос → отговор", d: "Избери правилния отговор на въпроса", gen: genAnswer },
 );
 
+
+// ═════ Урок 9: упражнения в стила на a1_skript_gr ═════
+const NP = (str) => { const [a, ...r] = str.split(" "); return { art: a, de: r.join(" ") }; }; // "der Tee" → {art, de}
+const PRON_OF = { der: "er", die: "sie", das: "es", pl: "sie" };
+// ── прилагателни: Ist … ? – Ja, es ist ziemlich … / Nein, er ist …
+const ADJQ = [["das Buch", "dick", "dünn"], ["das Haus", "klein", "groß"], ["die Frage", "schwierig", "einfach"], ["pl Getränke", "kalt", "warm"], ["der Laptop", "teuer", "billig"], ["das Brot", "alt", "frisch"],
+  ["pl Bananen", "billig", "teuer"], ["der Tee", "heiß", "kalt"], ["der Film", "spannend", "langweilig"], ["pl Äpfel", "teuer", "billig"], ["das Wasser", "warm", "kalt"], ["die Milch", "billig", "teuer"],
+  ["die Prüfung", "einfach", "schwierig"], ["die Studentin", "faul", "fleißig"], ["der Herr", "schlank", "dick"], ["das Auto", "langsam", "schnell"], ["der Film", "gut", "schlecht"], ["die Übung", "schwierig", "einfach"],
+  ["die Musik", "laut", "leise"], ["der Apfel", "süß", "sauer"], ["das Haus", "alt", "neu"], ["das Fahrrad", "alt", "neu"], ["der Mann", "alt", "jung"], ["das Ei", "hart", "weich"], ["die Antwort", "richtig", "falsch"],
+  ["der Wagen", "teuer", "billig"], ["der Kaffee", "kalt", "heiß"], ["die Lampe", "hell", "dunkel"], ["das Zimmer", "dunkel", "hell"], ["der Stuhl", "bequem", "unbequem"], ["die Tasche", "schwer", "leicht"],
+  ["das Bett", "hart", "weich"], ["die Suppe", "heiß", "kalt"], ["der Kuchen", "süß", "sauer"], ["das Kind", "krank", "gesund"], ["die Wohnung", "groß", "klein"], ["pl Schuhe", "neu", "alt"], ["die Jacke", "billig", "teuer"]];
+function genAdjQA() {
+  const [np, a, b] = rnd(ADJQ), { art: g0, de } = NP(np), pl = g0 === "pl", art = pl ? "die" : g0, pron = PRON_OF[g0];
+  const q = `${pl ? "Sind" : "Ist"} ${art} ${de} ${a}?`, verbS = pl ? "sind" : "ist";
+  if (Math.random() < 0.45) {
+    const full = `${q} – Ja, ${pron} ${verbS} ziemlich ${a}.`;
+    return { kind: "mc", task: "Отговори с местоимение (Übung 1)", prompt: `<div class="exs">${esc(q)}<br>– Ja, ${BLANK} ${verbS} ziemlich ${esc(a)}.</div>`, options: pl ? ["er", "sie", "es"] : ["er", "sie", "es"], answer: pron, say: full, full, keys: true,
+      explain: `${pl ? "Мн.ч. (die …) → <b>sie</b> (те) + sind" : `${art} ${esc(de)} → <b>${pron}</b> (${art === "der" ? "der → er" : art === "die" ? "die → sie" : "das → es"})`}. <b>ziemlich</b> = доста. След ist/sind прилагателното е без окончание.` };
+  }
+  const opts = shuffle([b, ...shuffle(ADJQ.flatMap((x) => [x[1], x[2]]).filter((x) => x !== a && x !== b)).filter((x, i, arr) => arr.indexOf(x) === i).slice(0, 3)]);
+  const full = `${q} – Nein, ${pron} ${verbS} ${b}.`;
+  return { kind: "mc", task: "Отговори с обратното (Übung 2)", prompt: `<div class="exs">${esc(q)}<br>– Nein, ${pron} ${verbS} ${BLANK}.</div>`, options: opts, answer: b, say: full, full, keys: true,
+    explain: `<b>${a}</b> ↔ <b>${b}</b>.${a === "alt" ? " Внимание: alt има няколко противоположности — alt ↔ neu (неща), alt ↔ jung (хора), alt ↔ frisch (храна)." : ""} ${pl ? "мн.ч. → sie" : `${art} → ${pron}`}.` };
+}
+// ── цветове
+const COLORS = [["die Tomate", "rot"], ["die Banane", "gelb"], ["die Gurke", "grün"], ["der Ozean", "blau"], ["die Milch", "weiß"], ["das Brot", "braun"], ["die Tafel", "schwarz"], ["der Himmel", "blau"],
+  ["die Wiese", "grün"], ["die Zitrone", "gelb"], ["der Schnee", "weiß"], ["die Erdbeere", "rot"], ["die Maus", "grau"], ["die Orange", "orange"], ["der Kaffee", "schwarz"], ["das Holz", "braun"]];
+function genFarbe() {
+  const [np, c] = rnd(COLORS), { art, de } = NP(np), pron = cap(PRON_OF[art]);
+  const right = `${pron} ist ${c}.`;
+  const wrongP = cap(rnd(["er", "sie", "es"].filter((x) => x !== PRON_OF[art])));
+  const wrongC = rnd(COLORS.map((x) => x[1]).filter((x) => x !== c));
+  const opts = shuffle([...new Set([right, `${wrongP} ist ${c}.`, `${pron} ist ${wrongC}.`, `${wrongP} ist ${wrongC}.`])]);
+  const full = `Welche Farbe hat ${art} ${de}? – ${right}`;
+  return { kind: "mc", task: "Welche Farbe? (цветове)", prompt: `<div class="exs">Welche Farbe hat ${art} ${esc(de)}?</div>`, options: opts, answer: right, say: full, full, keys: true,
+    explain: `${art} ${esc(de)} → <b>${pron}</b> (${art} → ${PRON_OF[art]}) + цвят <b>${c}</b>. Цветовете след ist нямат окончание. Светло/тъмно: <b>hell</b>blau, <b>dunkel</b>blau.` };
+}
+// ── силни глаголи: Ich nehme Tee. Du ___ Kaffee.
+const STRONG_T = [["nehmen", "Tee", "Kaffee"], ["schlafen", "zu Hause", "im Hotel"], ["tragen", "eine schwarze Jacke", "eine rote Jacke"], ["fahren", "nach Bremen", "nach München"], ["lesen", "ein Buch", "die Zeitung"],
+  ["helfen", "Peter", "Maria"], ["sprechen", "Deutsch", "Spanisch"], ["sehen", "Klaus heute", "Klaus morgen"], ["waschen", "das Auto", "die Hose"], ["essen", "Kuchen", "Obst"], ["treffen", "Klaus", "Anna"],
+  ["laufen", "schnell", "langsam"], ["vergessen", "den Schirm", "die Tasche"], ["empfehlen", "das Steak", "den Salat"], ["halten", "die Tasche", "den Schirm"], ["geben", "Peter das Buch", "Anna das Geld"]];
+function genStark() {
+  const [vde, o1, o2] = rnd(STRONG_T), v = verb(vde); if (!v) return genConj();
+  const [sp, si] = rnd([["Du", 1], ["Peter", 2], ["Anna", 2], ["Er", 2], ["Sie", 2], ["Ihr", 4]]);
+  const ans = v.forms[si], st = v.de.replace(/en$/, ""), fake = si === 1 ? st + (/[sßz]$/.test(st) ? "t" : "st") : si === 2 ? st + "t" : st + "t";
+  const opts = shuffle([...new Set([ans, fake, v.forms[1], v.forms[2], v.forms[4]])].slice(0, 4));
+  if (!opts.includes(ans)) opts[0] = ans;
+  const full = `Ich ${v.forms[0]} ${o1}. ${sp} ${ans} ${o2}.`;
+  return { kind: "mc", task: `Силен глагол: <b>${vde}</b> (${esc(v.bg)})`, prompt: `<div class="exs">Ich ${esc(v.forms[0])} ${esc(o1)}. ${esc(sp)} ${BLANK} ${esc(o2)}.</div>`, options: shuffle(opts), answer: ans, item: v, say: full, full, keys: true,
+    explain: `${sp.toLowerCase() === "ihr" ? "При <b>ihr</b> гласната НЕ се сменя" : "При <b>du</b> и <b>er/sie/es</b> гласната се сменя"}: <b>${esc(ans)}</b>. ${verbKind(v)}<div class="exconj">${conjTable(v)}</div>` };
+}
+// ── разделими / неразделими: подреди (Übung 1, 2)
+const BAU = [["besuchen", "Max", 2, "die Tante"], ["bezahlen", "Du", 1, "die Rechnung"], ["beginnen", "Der Kurs", 2, "am Montag"], ["empfehlen", "Ich", 0, "das Steak"], ["entlassen", "Die Firma", 2, "viele Arbeiter"],
+  ["erklären", "Der Lehrer", 2, "die Grammatik"], ["genießen", "Du", 1, "die Freizeit"], ["verstehen", "Ich", 0, "das Problem"], ["vergessen", "Paul", 2, "die Hausaufgabe"], ["verdienen", "Karl", 2, "viel Geld"],
+  ["zerreißen", "Maria", 2, "die Notiz"], ["abschließen", "Du", 1, "die Tür"], ["abfahren", "Der Bus", 2, "in zehn Minuten"], ["ankreuzen", "Du", 1, "die richtige Antwort"], ["aufstehen", "Er", 2, "um sieben Uhr"],
+  ["aussteigen", "Ich", 0, "in Frankfurt"], ["einkaufen", "Paul", 2, "Wurst und Käse"], ["herstellen", "Siemens", 2, "Computer"], ["vorlesen", "Die Studentin", 2, "das Referat"], ["zumachen", "Du", 1, "die Tür"],
+  ["zurückgeben", "Er", 2, "das Buch"], ["anrufen", "Ich", 0, "Anna"], ["einladen", "Ich", 0, "dich zum Essen"], ["aufräumen", "Du", 1, "dein Zimmer"], ["mitnehmen", "Ich", 0, "meinen Computer"]];
+function genBau() {
+  const [vde, subj, si, rest] = rnd(BAU), v = verb(vde); if (!v) return genTrennbar();
+  const parts = v.forms[si].split(" "), toks = [...subj.split(" "), parts[0], ...rest.split(" "), ...(parts[1] ? [parts[1] + "."] : [])];
+  if (!parts[1]) toks[toks.length - 1] += ".";
+  const sentence = toks.join(" ");
+  let sh = shuffle(toks); for (let n = 0; n < 6 && sh.join(" ") === sentence; n++) sh = shuffle(toks);
+  const sep = !!parts[1];
+  return { kind: "order", task: `Направи изречение: <b>${esc(vde)} – ${esc(subj.toLowerCase() === "ich" || subj === "Du" || subj === "Er" ? subj.toLowerCase() : subj)} – ${esc(rest)}</b>`, prompt: `<div class="meta">${esc(v.bg)} · ${sep ? "разделим ✂️" : "неразделим 🔒"}</div>`, toks, sh, answer: sentence, item: v, say: sentence, full: sentence,
+    explain: sep ? `<b>${esc(vde)}</b> е разделим (представка <b>${parts[1]}</b>): ${esc(parts[0])} е на 2-ро място, <b>${parts[1]}</b> отива в края.` : `<b>${esc(vde)}</b> е <b>неразделим</b> — be-, emp-, ent-, er-, ge-, ver-, zer- никога не се отделят: ${esc(v.forms[si])}.` };
+}
+// ── два пропуска (Übung 3): Du ___ im Supermarkt ___.
+const FILL2 = [["Ich", 0, "anrufen", "Anna"], ["Du", 1, "einkaufen", "im Supermarkt"], ["Wir", 3, "mitfahren", "morgen nicht nach München"], ["Ich", 0, "einladen", "dich zum Essen"], ["Klaus", 2, "bekommen", "morgen Besuch"],
+  ["Der Zug", 2, "abfahren", "in fünf Minuten"], ["Der Lehrer", 2, "erklären", "die Grammatik"], ["Maria", 2, "ausfüllen", "das Formular"], ["Ich", 0, "bestellen", "Rotwein"], ["Eva", 2, "vergessen", "oft Termine"],
+  ["Er", 2, "aufstehen", "um sieben Uhr"], ["Du", 1, "zumachen", "die Tür"], ["Wir", 3, "aufräumen", "das Zimmer"], ["Sie", 5, "mitnehmen", "den Schirm"]];
+function genFill2() {
+  const [subj, si, vde, rest] = rnd(FILL2), v = verb(vde); if (!v) return genBau();
+  const [stem, pre] = v.forms[si].split(" ");
+  const right = pre ? `${stem} … ${pre}` : stem;
+  const others = shuffle(FILL2.filter((x) => x[2] !== vde)).slice(0, 2).map((x) => { const f = verb(x[2])?.forms[si] || ""; const [a, b] = f.split(" "); return b ? `${a} … ${b}` : a; });
+  const wrongs = [pre ? `${pre}${stem}` : (v.forms[si === 1 ? 2 : 1] || stem), pre ? `${(v.forms[si === 1 ? 2 : 1] || "").split(" ")[0]} … ${pre}` : null, ...others].filter(Boolean);
+  const opts = shuffle([...new Set([right, ...wrongs])].slice(0, 4)); if (!opts.includes(right)) opts[0] = right;
+  const full = `${subj} ${stem} ${rest}${pre ? " " + pre : ""}.`;
+  return { kind: "mc", task: `Попълни глагола: <b>${esc(vde)}</b> (${esc(v.bg)})`, prompt: `<div class="exs">${esc(subj)} ${BLANK} ${esc(rest)}${pre ? " " + BLANK : ""}.</div>`, options: shuffle(opts), answer: right, item: v, say: full, full, keys: true,
+    explain: pre ? `<b>${esc(vde)}</b> е разделим: <b>${esc(stem)}</b> на 2-ро място, <b>${esc(pre)}</b> в края. Никога „${esc(pre + stem)}“ в изречение!` : `<b>${esc(vde)}</b> е неразделим — една дума: <b>${esc(stem)}</b>.` };
+}
+// ── глагол + Akkusativ (Übung 2): Ich kenne den Professor.
+const VAKK = [["besuchen", "Du", 1, "der Großvater"], ["bezahlen", "Ihr", 4, "die Fahrkarte"], ["buchen", "Du", 1, "die Reise"], ["hören", "Ihr", 4, "die CD"], ["kennen", "Ich", 0, "der Professor"], ["kaufen", "Sie", 5, "das Deutschbuch"],
+  ["lernen", "Wir", 3, "pl Wörter"], ["brauchen", "Du", 1, "das Wörterbuch"], ["trinken", "Ich", 0, "der Orangensaft"], ["verstehen", "Er", 2, "das Wort"], ["zählen", "Wir", 3, "pl Stühle"], ["essen", "Er", 2, "das Eis"],
+  ["lesen", "Du", 1, "die Zeitung"], ["nehmen", "Er", 2, "das Steak"], ["sehen", "Du", 1, "der Film"], ["tragen", "Eva", 2, "die Tasche"], ["haben", "Du", 1, "die Kamera"], ["putzen", "Er", 2, "pl Schuhe"], ["fragen", "Du", 1, "der Lehrer"], ["bestellen", "Ich", 0, "der Weißwein"]];
+function genVerbAkk() {
+  const [vde, subj, si, np] = rnd(VAKK), v = verb(vde); if (!v) return genAkk();
+  const { art: g, de } = NP(np), def = Math.random() < 0.55, pl = g === "pl";
+  const art = pl ? (def ? "die" : "") : def ? FORMS[g].acc : FORMS[g].indAcc;
+  const vf = v.forms[si], ansTxt = `${vf} ${art}`.trim();
+  const wrongArt = pl ? (def ? "der" : "eine") : def ? (g === "der" ? "der" : g === "die" ? "den" : "den") : (g === "der" ? "ein" : g === "die" ? "einen" : "einen");
+  const wrongV = v.forms[[1, 2, 0].find((k) => v.forms[k] !== vf)] || vf;
+  const opts = shuffle([...new Set([ansTxt, `${vf} ${wrongArt}`, `${wrongV} ${art}`.trim(), `${wrongV} ${wrongArt}`])]);
+  const full = `${subj} ${vf} ${art ? art + " " : ""}${de}${vde === "verstehen" ? " nicht" : ""}.`;
+  return { kind: "mc", task: `<b>${esc(vde)}</b> + Akkusativ ${def ? "(определен член)" : "(неопределен член)"}`, prompt: `<div class="exs">${esc(subj)} ${BLANK} ${esc(de)}${vde === "verstehen" ? " nicht" : ""}.</div><div class="meta">${pl ? "мн.ч." : artTag(g) + " " + esc(de)}</div>`,
+    options: opts, answer: ansTxt, item: v, say: full, full, keys: true,
+    explain: `${esc(subj)} → <b>${esc(vf)}</b>. ${esc(vde)} иска „какво?“ → <b>Akkusativ</b>: ${pl ? (def ? "мн.ч. → die" : "мн.ч. без член (няма „ein“ за много)") : g === "der" ? `der → <b>${def ? "den" : "einen"}</b> (само мъжкият род се сменя!)` : `${g} → <b>${art}</b> (без промяна)`}.` };
+}
+// ── местоимения в Akkusativ
+const PRAKK = [["der Tee", "Trinken"], ["das Bier", "Trinken"], ["der Orangensaft", "Trinken"], ["der Salat", "Essen"], ["das Kotelett", "Essen"], ["der Apfelsaft", "Trinken"], ["das Mineralwasser", "Trinken"], ["pl Bananen", "Essen"],
+  ["die Zigarette", "Rauchen"], ["die Salami", "Essen"], ["das Buch", "Lesen"], ["der Kuchen", "Essen"], ["die Verkäuferin", "Kennen"], ["der Film", "Kennen"], ["pl Studentinnen", "Kennen"], ["die Stadt", "Kennen"], ["das Hotel", "Kennen"], ["der Politiker", "Kennen"], ["die Suppe", "Essen"], ["die Milch", "Trinken"]];
+const ACCP = { der: "ihn", die: "sie", das: "es", pl: "sie" };
+function genPronAkk() {
+  const r = Math.random();
+  if (r < 0.3) { // Ich kenne Maria, aber sie kennt mich nicht.
+    const P = [["Ich", "kenne", "Maria", "sie", "kennt", "mich"], ["Du", "kennst", "den Juraprofessor", "er", "kennt", "dich"], ["Maria", "kennt", "den Lehrer", "er", "kennt", "sie"], ["Wir", "kennen", "Arnold Schwarzenegger", "er", "kennt", "uns"],
+      ["Ihr", "kennt", "mich", "ich", "kenne", "euch"], ["Das Mädchen", "kennt", "Paul", "er", "kennt", "es"], ["Herr Meier", "kennt", "Frau Schneider", "sie", "kennt", "ihn"], ["Frau Berg", "kennt", "dich", "du", "kennst", "sie"]];
+    const [s1, v1, o1, s2, v2, o2] = rnd(P), full = `${s1} ${v1} ${o1}, aber ${s2} ${v2} ${o2} nicht.`;
+    return { kind: "mc", task: "Кого? — местоимение в Akkusativ", prompt: `<div class="exs">${esc(s1)} ${esc(v1)} ${esc(o1)}, aber ${esc(s2)} ${esc(v2)} ${BLANK} nicht.</div>`, options: shuffle(["mich", "dich", "ihn", "sie", "es", "uns", "euch"].filter((x) => x !== o2).slice(0, 3).concat(o2)), answer: o2, say: full, full, keys: true,
+      explain: `Подлогът на първата част (<b>${esc(s1)}</b>) е обектът на втората → Akkusativ: <b>${o2}</b>. Таблицата: ich → mich, du → dich, er → <b>ihn</b>, sie → sie, es → es, wir → uns, ihr → euch, sie/Sie → sie/Sie.` };
+  }
+  const [np, vb] = rnd(PRAKK), { art: g, de } = NP(np), pl = g === "pl", art = pl ? "die" : FORMS[g].acc, p = ACCP[g];
+  const isKennen = vb === "Kennen", vIch = { Trinken: "trinke", Essen: "esse", Rauchen: "rauche", Lesen: "lese", Kennen: "kenne" }[vb];
+  const q = isKennen ? `Kennst du ${art} ${de}?` : `${vb} Sie ${art} ${de}?`;
+  const a = isKennen ? `Natürlich kenne ich ${p}.` : `Nein, ich ${vIch} ${p} nicht.`;
+  const shown = isKennen ? `Natürlich kenne ich ${BLANK}.` : `Nein, ich ${vIch} ${BLANK} nicht.`;
+  return { kind: "mc", task: "Замени с местоимение (ihn / sie / es)", prompt: `<div class="exs">${esc(q)}<br>– ${shown}</div>`, options: ["ihn", "sie", "es", "er"], answer: p, say: `${q} ${a}`, full: a, keys: true,
+    explain: `${pl ? "мн.ч." : artTag(g)} ${esc(de)} в Akkusativ → <b>${p}</b>. ${g === "der" ? "der → <b>ihn</b> (не „er“ — er е само за подлог!)" : g === "die" || pl ? "die / мн.ч. → <b>sie</b>" : "das → <b>es</b>"}.` };
+}
+// ── притежателни в Akkusativ
+const OWN = [["Ich", "mein", 0], ["Du", "dein", 1], ["Peter", "sein", 2], ["Anna", "ihr", 2], ["Wir", "unser", 3], ["Ihr", "euer", 4], ["Die Gäste", "ihr", 5]];
+const POSS_N = ["der Onkel", "der Großvater", "der Vater", "der Kugelschreiber", "der Computer", "der Schirm", "die Tante", "die Freundin", "die Mutter", "die Tasche", "das Fahrrad", "das Zimmer", "das Auto", "das Buch", "pl Schuhe", "pl Eltern", "pl Freunde"];
+const possAkk = (root, g) => { const e = g === "der" ? "en" : g === "die" || g === "pl" ? "e" : ""; return root === "euer" && e ? "eur" + e : root + e; };
+function genPossAkk() {
+  const [who, root, si] = rnd(OWN), pick = rnd(POSS_N), { art: g, de } = NP(pick);
+  const nom = Math.random() < 0.3;
+  const person = /Onkel|Großvater|Vater|Tante|Freundin|Mutter|Eltern|Freunde/.test(pick);
+  const vb = rnd(person ? [["besuchen"], ["fragen"], ["sehen"]] : [["suchen"], ["brauchen"], ["sehen"]]);
+  const v = verb(vb[0]), vf = v.forms[si];
+  const ans = nom ? (g === "die" || g === "pl" ? (root === "euer" ? "eure" : root + "e") : root) : possAkk(root, g);
+  const full = nom ? `Das ist ${ans} ${de}.` : `${who} ${vf} ${ans} ${de}.`;
+  const variants = [...new Set([root, root === "euer" ? "eure" : root + "e", root === "euer" ? "euren" : root + "en", root === "euer" ? "euer" : root + "er"])];
+  return { kind: "mc", task: nom ? `Чие е? (${esc(who)})` : "Притежателно в Akkusativ", prompt: `<div class="exs">${nom ? `<span class="muted">${esc(who)}:</span> Das ist ${BLANK} ${esc(de)}.` : `${esc(who)} ${esc(vf)} ${BLANK} ${esc(de)}.`}</div><div class="meta">${g === "pl" ? "мн.ч." : artTag(g) + " " + esc(de)}</div>`,
+    options: shuffle(variants.slice(0, 4)), answer: ans, say: full, full, keys: true,
+    explain: `${esc(who)} → <b>${root}</b>. ${nom ? "След „Das ist“ → Nominativ" : `${esc(vb[0])} → какво/кого? → <b>Akkusativ</b>`}: ${g === "pl" ? "мн.ч." : artTag(g)} → <b>${ans}</b>.${!nom && g === "der" ? " Мъжки род в Akkusativ: -en (meinen, seinen, euren)." : ""}${root === "euer" && ans !== "euer" ? " ⚠️ euer губи e: eure, euren." : ""}` };
+}
+// ── отрицание: nicht или kein, и къде стои nicht
+const NEG_T = [
+  ["Liest du?", "Nein, ich lese nicht.", ["Nein, ich lese kein.", "Nein, ich nicht lese."], "Само глагол → <b>nicht</b> в края."],
+  ["Lernst du Spanisch?", "Nein, ich lerne nicht Spanisch.", ["Nein, ich lerne kein Spanisch nicht.", "Nein, ich nicht lerne Spanisch."], "Езици/предмети на учене: nicht + език (често и „kein Spanisch“ — също е правилно разговорно)."],
+  ["Kennst du Lisa?", "Nein, ich kenne Lisa nicht.", ["Nein, ich kenne nicht Lisa nicht.", "Nein, ich kenne keine Lisa."], "Име/конкретен човек → <b>nicht</b> накрая."],
+  ["Tanzt du gern?", "Nein, ich tanze nicht gern.", ["Nein, ich tanze gern nicht.", "Nein, ich tanze kein gern."], "<b>nicht</b> стои пред gern."],
+  ["Wohnst du in Berlin?", "Nein, ich wohne nicht in Berlin.", ["Nein, ich wohne in Berlin nicht.", "Nein, ich wohne kein Berlin."], "<b>nicht</b> стои пред мястото (in Berlin)."],
+  ["Ist das ein Apfel?", "Nein, das ist kein Apfel.", ["Nein, das ist nicht ein Apfel.", "Nein, das ist keinen Apfel."], "ein + съществително → <b>kein</b>. След ist е Nominativ → kein (не keinen)."],
+  ["Ist das eine Orange?", "Nein, das ist keine Orange.", ["Nein, das ist nicht eine Orange.", "Nein, das ist kein Orange."], "eine → <b>keine</b>."],
+  ["Sind das Äpfel?", "Nein, das sind keine Äpfel.", ["Nein, das sind nicht Äpfel.", "Nein, das sind kein Äpfel."], "Мн.ч. без член → <b>keine</b>."],
+  ["Trinkst du Bier?", "Nein, ich trinke kein Bier.", ["Nein, ich trinke nicht Bier.", "Nein, ich trinke Bier nicht."], "Напитки и храни без член → <b>kein</b>."],
+  ["Hast du ein Auto?", "Nein, ich habe kein Auto.", ["Nein, ich habe nicht ein Auto.", "Nein, ich habe keinen Auto."], "ein Auto (das) → <b>kein</b> Auto."],
+  ["Hast du einen Computer?", "Nein, ich habe keinen Computer.", ["Nein, ich habe kein Computer.", "Nein, ich habe nicht einen Computer."], "einen (der, Akkusativ) → <b>keinen</b>."],
+  ["Bist du krank?", "Nein, ich bin nicht krank.", ["Nein, ich bin kein krank.", "Nein, ich bin krank nicht."], "Прилагателно → <b>nicht</b> пред него."],
+  ["Gehst du ins Kino?", "Nein, ich gehe nicht ins Kino.", ["Nein, ich gehe ins Kino nicht.", "Nein, ich gehe kein Kino."], "<b>nicht</b> пред посоката (ins Kino)."],
+  ["Arbeitet Paul morgen?", "Nein, er arbeitet morgen nicht.", ["Nein, er arbeitet nicht morgen nicht.", "Nein, er arbeitet kein morgen."], "При време (morgen) → <b>nicht</b> обикновено след него, в края."],
+  ["Kommst du mit?", "Nein, ich komme nicht mit.", ["Nein, ich komme mit nicht.", "Nein, ich nicht mitkomme."], "Разделим глагол → <b>nicht</b> пред представката."],
+  ["Kannst du schwimmen?", "Nein, ich kann nicht schwimmen.", ["Nein, ich kann schwimmen nicht.", "Nein, ich kann kein schwimmen."], "Модален + инфинитив → <b>nicht</b> пред инфинитива."],
+  ["Hast du Zeit?", "Nein, ich habe keine Zeit.", ["Nein, ich habe nicht Zeit.", "Nein, ich habe Zeit nicht."], "Съществително без член → <b>keine</b>."],
+  ["Besuchst du Klaus?", "Nein, ich besuche Klaus nicht.", ["Nein, ich besuche keinen Klaus.", "Nein, ich nicht besuche Klaus."], "Име → <b>nicht</b> накрая."]];
+function genNeg() {
+  const [q, a, w, why] = rnd(NEG_T);
+  return { kind: "mc", task: "Отговори с „не“ (nicht / kein)", prompt: `<div class="exs">${esc(q)}</div>`, options: shuffle([a, ...w]), answer: a, say: `${q} ${a}`, full: a, keys: true,
+    explain: `${why}<br>Правило: <b>kein</b> = „не + ein“ (пред съществително без член или с ein). <b>nicht</b> — за всичко останало.` };
+}
+// ── Ja / Nein / Doch
+const DOCH_V = [["Studierst du", "ich studiere", "ich studiere nicht"], ["Lernst du Deutsch", "ich lerne Deutsch", "ich lerne nicht Deutsch"], ["Kommst du aus Tokio", "ich komme aus Tokio", "ich komme nicht aus Tokio"],
+  ["Arbeitest du in München", "ich arbeite in München", "ich arbeite nicht in München"], ["Gehst du ins Kino", "ich gehe ins Kino", "ich gehe nicht ins Kino"], ["Trinkst du Tee", "ich trinke Tee", "ich trinke keinen Tee"],
+  ["Wohnst du in Passau", "ich wohne in Passau", "ich wohne nicht in Passau"], ["Reist du nach England", "ich reise nach England", "ich reise nicht nach England"], ["Hast du Zeit", "ich habe Zeit", "ich habe keine Zeit"]];
+function genDoch() {
+  const [q, a, aNeg] = rnd(DOCH_V), neg = Math.random() < 0.55, plus = Math.random() < 0.55;
+  const qq = neg ? (/ (Tee|Zeit)$/.test(q) ? q.replace(/ (Tee|Zeit)$/, (m, x) => ` ${x === "Tee" ? "keinen" : "keine"} ${x}`) + "?" : `${q.split(" ").slice(0, 2).join(" ")} nicht ${q.split(" ").slice(2).join(" ")}`.trim() + "?") : `${q}?`;
+  const ans = plus ? `${neg ? "Doch" : "Ja"}, ${a}.` : `Nein, ${aNeg}.`;
+  const opts = [...new Set([`Ja, ${a}.`, `Doch, ${a}.`, `Nein, ${aNeg}.`])];
+  return { kind: "mc", task: `Ja, Nein или Doch? (отговорът е ${plus ? "<b>положителен +</b>" : "<b>отрицателен −</b>"})`, prompt: `<div class="exs">${esc(qq)}</div>`, options: shuffle(opts), answer: ans, say: `${qq} ${ans}`, full: ans, keys: true,
+    explain: plus ? (neg ? "Въпросът е <b>отрицателен</b> („… nicht?“), а отговорът е „да“ → <b>Doch!</b> (Ja тук звучи грешно)." : "Нормален въпрос + „да“ → <b>Ja</b>.") : "Отговор „не“ → <b>Nein</b> + nicht/kein." };
+}
+// ── предлози с Akkusativ
+const PAKK = [["Paul arbeitet ohne ___ Pause.", "ohne", "die Pause", "ind"], ["Der Hund läuft um ___ Baum.", "um", "der Baum", "def"], ["Er läuft gegen ___ Stuhl.", "gegen", "der Stuhl", "def"],
+  ["Sie geht nie ohne ___ Schirm spazieren.", "ohne", "der Schirm", "ind"], ["Das Geschenk ist für ___ Großvater.", "für", "der Großvater", "def"], ["Peter geht durch ___ Stadt.", "durch", "die Stadt", "def"],
+  ["Robert fährt für ___ Woche nach Italien.", "für", "die Woche", "ind"], ["Wo ist der Schlüssel für ___ Keller?", "für", "der Keller", "def"], ["Er geht ohne ___ Erklärung.", "ohne", "die Erklärung", "ind"],
+  ["Wir spielen gegen ___ Mannschaft aus München.", "gegen", "die Mannschaft", "def"], ["Peter muss für ___ Prüfung lernen.", "für", "die Prüfung", "def"], ["Die Gäste sitzen um ___ Tisch.", "um", "der Tisch", "def"],
+  ["Er sieht durch ___ Fenster.", "durch", "das Fenster", "def"], ["Ich bin gegen ___ Plan.", "gegen", "der Plan", "def"], ["Das Buch ist für ___ Kind.", "für", "das Kind", "def"], ["Er kommt ohne ___ Grund.", "ohne", "der Grund", "ind"]];
+function genPraepAkk() {
+  const [s0, p, np, kind] = rnd(PAKK), { art: g } = NP(np);
+  if (Math.random() < 0.35) { // избери предлога
+    const art = kind === "def" ? FORMS[g].acc : FORMS[g].indAcc, full = s0.replace("___", art), shown = full.replace(new RegExp(`\\b${p} `), "___ ");
+    return { kind: "mc", task: "Кой предлог (+ Akkusativ)?", prompt: `<div class="exs">${esc(shown).replace("___", BLANK)}</div>`, options: shuffle([p, ...shuffle(["für", "ohne", "gegen", "durch", "um"].filter((x) => x !== p)).slice(0, 3)]),
+      answer: p, say: full, full, keys: true, explain: `<b>${p}</b> = ${{ für: "за", ohne: "без", gegen: "срещу; около", durch: "през", um: "около; в (час)", bis: "до" }[p]}. Предлозите <b>bis, durch, für, gegen, ohne, um</b> винаги искат <b>Akkusativ</b>. Мнемоника: „<b>DOGFUB</b>“ (durch, ohne, gegen, für, um, bis).` };
+  }
+  const art = kind === "def" ? FORMS[g].acc : FORMS[g].indAcc, full = s0.replace("___", art);
+  const opts = kind === "def" ? ["den", "die", "das", "dem", "der"] : ["einen", "eine", "ein", "einem"];
+  return { kind: "mc", task: `${p} + Akkusativ: кой член?`, prompt: `<div class="exs">${esc(s0).replace("___", BLANK)}</div><div class="meta">${artTag(g)} ${esc(NP(np).de)}</div>`, options: opts.slice(0, 4).includes(art) ? opts.slice(0, 4) : [...opts.slice(0, 3), art], answer: art, say: full, full, keys: true,
+    explain: `След <b>${p}</b> винаги е <b>Akkusativ</b>. ${artTag(g)} → <b>${art}</b>${g === "der" ? " (der → den / ein → einen)" : " (без промяна)"}.` };
+}
+// ── множествено число (8 типа)
+function genPlural() {
+  const it = rnd(exPool((i) => countable(i) && i.pl !== i.de && i.pl.length < 18));
+  const fakes = [...new Set([it.de + "e", it.de + "en", it.de + "s", it.de + "er", /e$|el$|er$/.test(it.de) ? it.de + "n" : null, deUml(it.pl) !== it.pl ? deUml(it.pl) : it.de + "e"].filter(Boolean))].filter((x) => x !== it.pl);
+  const opts = shuffle([it.pl, ...shuffle(fakes).slice(0, 3)]);
+  return { kind: "mc", task: "Множествено число", prompt: `<div class="exw">${deHTML(it)} → die ${BLANK}</div><div class="meta">${esc(it.bg)}</div>`, options: opts, answer: it.pl, item: it, say: "die " + it.pl, full: "die " + it.pl, keys: true,
+    explain: `die <b>${esc(it.pl)}</b> — ${pluralRule(it.de, it.pl)}. В мн.ч. членът е <b>винаги die</b>. Чести модели: -e (Tische), ¨-e (Säfte), -er/¨-er (Kinder, Männer), -(e)n (Frauen, Taschen), -s (Autos), без промяна (Fenster), ¨ (Mäntel).` };
+}
+EX_TYPES.push(
+  { k: "adjqa", skill: "Думи и употреба", ic: "↕️", t: "Ist es …? Ja / Nein + обратното", d: "Ist das Buch dick? – Ja, es ist ziemlich dick. / Nein, er ist langweilig.", gen: genAdjQA },
+  { k: "farbe", skill: "Думи и употреба", ic: "🎨", t: "Welche Farbe?", d: "Welche Farbe hat die Tomate? – Sie ist rot.", gen: genFarbe },
+  { k: "stark", skill: "Глаголи и словоред", ic: "💪", t: "Силни глаголи", d: "Ich nehme Tee. Du nimmst Kaffee. (a→ä, e→i, e→ie, au→äu)", gen: genStark },
+  { k: "bau", skill: "Глаголи и словоред", ic: "🧱", t: "Разделим или не? Направи изречение", d: "abschließen – du – die Tür → Du schließt die Tür ab.", gen: genBau },
+  { k: "fill2", skill: "Глаголи и словоред", ic: "✍️", t: "Попълни глагола (два пропуска)", d: "Du ___ im Supermarkt ___. → kaufst … ein", gen: genFill2 },
+  { k: "verbakk", skill: "Граматика", ic: "🎯", t: "Глагол + Akkusativ", d: "kennen – Ich ___ ___ Professor. → kenne den", gen: genVerbAkk },
+  { k: "pronakk", skill: "Граматика", ic: "👉", t: "ihn, sie, es, mich, dich…", d: "Trinken Sie den Kaffee? – Nein, ich trinke ihn nicht.", gen: genPronAkk },
+  { k: "possakk", skill: "Граматика", ic: "👜", t: "meinen, deine, sein… (Akkusativ)", d: "Ich besuche meinen Onkel. · Das ist ihre Kamera.", gen: genPossAkk },
+  { k: "neg", skill: "Граматика", ic: "🙅", t: "Отрицание: nicht или kein? Къде?", d: "Wohnst du in Berlin? – Nein, ich wohne nicht in Berlin.", gen: genNeg },
+  { k: "doch", skill: "Граматика", ic: "‼️", t: "Ja, Nein или Doch?", d: "Studierst du nicht? – Doch, ich studiere.", gen: genDoch },
+  { k: "praepakk", skill: "Граматика", ic: "🧭", t: "bis, durch, für, gegen, ohne, um", d: "Das Geschenk ist für den Großvater.", gen: genPraepAkk },
+  { k: "plural", skill: "Думи и употреба", ic: "👥", t: "Множествено число", d: "der Mantel → die Mäntel (8 модела)", gen: genPlural },
+);
+
 // ── сесия
 let exSess = null;
 function startEx(k, opts = {}) {

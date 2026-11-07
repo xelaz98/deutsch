@@ -401,6 +401,100 @@ const GRAMMAR = [
 <p class="tip">💡 Това е малко по-напреднала граматика — засега е достатъчно да го разпознаваш.</p>`
   },
   {
+    id: "stark", title: "Силни глаголи (смяна на гласната)", icon: "💪",
+    html: `
+<p>Някои глаголи сменят гласната — но <b>само при du и er/sie/es</b>. Всички останали лица са нормални.</p>
+<table class="g"><tr><th>смяна</th><th>глаголи</th><th>ich</th><th>du</th><th>er/sie/es</th></tr>
+<tr><td><b>a → ä</b></td><td>fahren, schlafen, tragen, waschen, halten, einladen</td><td>fahre</td><td>f<b>ä</b>hrst</td><td>f<b>ä</b>hrt</td></tr>
+<tr><td><b>e → i</b></td><td>geben, helfen, sprechen, essen, nehmen, treffen, vergessen</td><td>gebe</td><td>g<b>i</b>bst</td><td>g<b>i</b>bt</td></tr>
+<tr><td><b>e → ie</b></td><td>sehen, lesen, empfehlen</td><td>sehe</td><td>s<b>ie</b>hst</td><td>s<b>ie</b>ht</td></tr>
+<tr><td><b>au → äu</b></td><td>laufen</td><td>laufe</td><td>l<b>äu</b>fst</td><td>l<b>äu</b>ft</td></tr></table>
+<p class="tip">💡 <b>ihr</b> НЕ сменя: ihr fahrt, ihr gebt, ihr seht.</p>
+<h4>Капани</h4>
+<ul>
+<li><b>nehmen</b> → du <b>nimmst</b>, er <b>nimmt</b> (и двойно m!)</li>
+<li><b>essen</b> → du <b>isst</b>, er <b>isst</b> (еднакви)</li>
+<li><b>halten</b> → er <b>hält</b> (без -t) · ihr halt<b>et</b></li>
+<li><b>-t/-d</b> накрая на основата → +e: du wart<b>e</b>st, er red<b>e</b>t (но силните: du hältst)</li>
+</ul>`
+  },
+  {
+    id: "akkpron", title: "Местоимения: ihn, sie, es, mich…", icon: "👉",
+    html: `
+<table class="g"><tr><th>Nominativ (кой?)</th><th>ich</th><th>du</th><th>er</th><th>sie</th><th>es</th><th>wir</th><th>ihr</th><th>sie/Sie</th></tr>
+<tr><td><b>Akkusativ (кого?)</b></td><td><b>mich</b></td><td><b>dich</b></td><td><b>ihn</b></td><td>sie</td><td>es</td><td><b>uns</b></td><td><b>euch</b></td><td>sie/Sie</td></tr></table>
+<p>За неща — по рода: <i>Isst du <b>den</b> Kuchen? – Ja, ich esse <b>ihn</b>.</i> · <i>Trinkst du <b>die</b> Milch? – Ja, ich trinke <b>sie</b>.</i> · <i>Liest du <b>das</b> Buch? – Ja, ich lese <b>es</b>.</i> · <i>Kaufst du <b>die</b> Erdbeeren? – Ja, ich kaufe <b>sie</b>.</i></p>
+<p class="tip">🔑 der → den → <b>ihn</b> (всичко с <b>n</b>!). die → <b>sie</b>, das → <b>es</b> — не се променят.</p>
+<p><i><b>Ich</b> kenne Maria, aber <b>sie</b> kennt <b>mich</b> nicht.</i> — подлогът е Nominativ (ich, sie), обектът — Akkusativ (mich).</p>`
+  },
+  {
+    id: "possakk", title: "mein → meinen (Akkusativ)", icon: "👜",
+    html: `
+<table class="g"><tr><th></th><th><span class="art der">der</span></th><th><span class="art die">die</span></th><th><span class="art das">das</span></th><th><span class="art pl">мн.ч.</span></th></tr>
+<tr><td>Nominativ</td><td>mein</td><td>meine</td><td>mein</td><td>meine</td></tr>
+<tr><td><b>Akkusativ</b></td><td><b>meinen</b></td><td>meine</td><td>mein</td><td>meine</td></tr></table>
+<p>Същото за <b>dein, sein, ihr, unser, Ihr</b>: <i>Ich besuche mein<b>en</b> Onkel. Paul fragt sein<b>en</b> Vater. Wir besuchen unser<b>e</b> Eltern.</i></p>
+<p class="tip">⚠️ <b>euer</b> губи e: <b>eure</b> Tante, <b>euren</b> Großvater (но euer Auto).</p>
+<h4>Кое притежателно?</h4>
+<p>ich → mein · du → dein · er/es → sein · sie → ihr · wir → unser · ihr → euer · sie (мн.ч.) → ihr · Sie → Ihr<br>
+<i>Peter hat einen Computer. Das ist <b>sein</b> Computer. · Anna hat eine Kamera. Das ist <b>ihre</b> Kamera. · Das Mädchen trägt einen Hut. Das ist <b>sein</b> Hut.</i></p>`
+  },
+  {
+    id: "praepakk", title: "Предлози с Akkusativ", icon: "🧭",
+    html: `
+<p>Тези 6 предлога <b>винаги</b> са с Akkusativ (der → den, ein → einen). Мнемоника: <b>DOGFUB</b> — <b>d</b>urch, <b>o</b>hne, <b>g</b>egen, <b>f</b>ür, <b>u</b>m, <b>b</b>is.</p>
+<table class="g"><tr><th>предлог</th><th>значение</th><th>пример</th></tr>
+<tr><td><b>bis</b></td><td>до (време/място)</td><td>bis morgen, bis München</td></tr>
+<tr><td><b>durch</b></td><td>през; заради</td><td>durch die Stadt, durch einen Unfall</td></tr>
+<tr><td><b>für</b></td><td>за</td><td>für die Tante, für zwei Wochen</td></tr>
+<tr><td><b>gegen</b></td><td>срещу; против; около (час)</td><td>gegen den Baum, gegen den Plan</td></tr>
+<tr><td><b>ohne</b></td><td>без</td><td>ohne Schirm, ohne einen Grund</td></tr>
+<tr><td><b>um</b></td><td>около; в (час)</td><td>um den Tisch, um 18 Uhr</td></tr></table>
+<p class="tip">💡 Слети: durch<b>s</b> = durch das · für<b>s</b> = für das · um<b>s</b> = um das.</p>`
+  },
+  {
+    id: "neg", title: "Отрицание: nicht, kein, doch", icon: "🙅",
+    html: `
+<h4>kein = „не“ + ein</h4>
+<p>Пред съществително с <b>ein</b> или <b>без член</b>: <i>Ist das ein Apfel? – Nein, das ist <b>kein</b> Apfel. · Sind das Äpfel? – Nein, das sind <b>keine</b> Äpfel. · Ich trinke <b>kein</b> Bier.</i></p>
+<h4>nicht — всичко останало. Къде стои?</h4>
+<table class="g"><tr><th>отричам</th><th>nicht стои</th><th>пример</th></tr>
+<tr><td>само глагола</td><td>в края</td><td>Ich lese <b>nicht</b>.</td></tr>
+<tr><td>обект с der/die/das или име</td><td>в края</td><td>Ich kenne Lisa <b>nicht</b>. Ich trinke das Bier <b>nicht</b>.</td></tr>
+<tr><td>прилагателно / gern</td><td>пред него</td><td>Ich bin <b>nicht</b> krank. Ich tanze <b>nicht</b> gern.</td></tr>
+<tr><td>място / посока</td><td>пред него</td><td>Ich wohne <b>nicht</b> in Berlin.</td></tr>
+<tr><td>2-ри глагол / представка</td><td>пред него</td><td>Ich kann <b>nicht</b> schwimmen. Ich fahre <b>nicht</b> mit.</td></tr></table>
+<h4>Ja, Nein или Doch?</h4>
+<p><i>Studierst du? – <b>Ja</b>, ich studiere. / <b>Nein</b>, ich studiere nicht.</i><br>
+<i>Studierst du <b>nicht</b>? – <b>Doch</b>, ich studiere! / Nein, ich studiere nicht.</i></p>
+<p class="tip">💡 <b>Doch</b> = „да“ като отговор на <b>отрицателен</b> въпрос (с nicht/kein).</p>`
+  },
+  {
+    id: "praefix", title: "Представки: разделими или не?", icon: "🔒",
+    html: `
+<table class="g"><tr><th></th><th>представки</th><th>пример</th></tr>
+<tr><td><b>Неразделими</b> 🔒</td><td>be-, emp-, ent-, er-, ge-, ver-, zer-</td><td>Peter <b>bekommt</b> ein Schnitzel. Ich <b>verstehe</b> das Problem.</td></tr>
+<tr><td><b>Разделими</b> ✂️</td><td>ab-, an-, auf-, aus-, ein-, mit-, her-, vor-, zu-, zurück-, fern-, teil-</td><td>Der Zug <b>kommt</b> um 18 Uhr <b>an</b>. Du <b>schließt</b> die Tür <b>ab</b>.</td></tr></table>
+<p>Представката сменя значението: kommen (идвам) → <b>be</b>kommen (получавам) · stehen (стоя) → <b>ver</b>stehen (разбирам) · dienen (служа) → <b>ver</b>dienen (печеля).</p>
+<p class="tip">💡 Ударението: разделимите — на представката (<b>AN</b>kommen), неразделимите — на глагола (be<b>KOM</b>men).</p>`
+  },
+  {
+    id: "farben", title: "Цветове и противоположности", icon: "🌈",
+    html: `
+<p><b>rot</b> червен · <b>gelb</b> жълт · <b>grün</b> зелен · <b>blau</b> син · <b>violett / lila</b> лилав · <b>orange</b> оранжев · <b>braun</b> кафяв · <b>schwarz</b> черен · <b>weiß</b> бял · <b>grau</b> сив · <b>hell</b>blau светлосин · <b>dunkel</b>blau тъмносин</p>
+<p><i>Welche Farbe hat die Tomate? – <b>Sie</b> ist rot.</i> (die Tomate → sie)</p>
+<h4>Противоположности</h4>
+<table class="g"><tr><th>+</th><th>−</th><th>+</th><th>−</th></tr>
+<tr><td>warm / heiß</td><td>kalt</td><td>gesund</td><td>krank</td></tr>
+<tr><td>teuer</td><td>billig</td><td>fleißig</td><td>faul</td></tr>
+<tr><td>einfach / leicht</td><td>schwierig / schwer</td><td>dick</td><td>dünn / schlank</td></tr>
+<tr><td>schnell</td><td>langsam</td><td>gut</td><td>schlecht</td></tr>
+<tr><td>laut</td><td>leise</td><td>süß</td><td>sauer</td></tr>
+<tr><td>hart</td><td>weich</td><td>richtig</td><td>falsch</td></tr>
+<tr><td>spannend</td><td>langweilig</td><td>hell</td><td>dunkel</td></tr></table>
+<p class="tip">⚠️ <b>alt</b> има 3 противоположности: neu (das neue Haus), jung (der junge Mann), frisch (frisches Brot).</p>`
+  },
+  {
     id: "questions", title: "Въпросителни думи", icon: "?",
     html: `
 <table class="g"><tr><th>дума</th><th>значение</th><th>пример</th></tr>
