@@ -676,6 +676,17 @@ img,svg,table{max-width:100%}
 .hrow.c2 .topnav .ni{display:none}.hrow.c2 .topnav button{padding:8px 10px}
 .hrow.c3 .topnav [data-tab="grammar"]:not(.on){display:none}
 .hrow{flex-wrap:nowrap}
+
+/* пиктограми (ARASAAC) — същия размер като емоджи на мястото си */
+img.pic{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-align:-0.12em;background:#fff;border-radius:.18em;padding:.04em}
+.picq img.pic,.iemo img.pic,.sh-emo img.pic,.cemo img.pic{width:120px;height:120px;border-radius:14px;padding:6px}
+.opt.emopt img.pic{width:96px;height:96px;border-radius:12px;padding:4px}
+.opt.emopt span{font-size:60px;line-height:1}
+.opt.emopt kbd{align-self:flex-start}
+.emo img.pic{width:30px;height:30px;vertical-align:middle;margin-right:4px}
+@media (max-width:520px){.opt.emopt img.pic{width:84px;height:84px}.opt.emopt span{font-size:54px}}
+
+.credit{margin:18px 2px 4px;font-size:12px;color:var(--muted);line-height:1.5}.credit a{color:inherit}
 </style>
 </head>
 <body>
@@ -691,6 +702,7 @@ img,svg,table{max-width:100%}
 <script>window.STATIC_BUILD = true;</script>
 <script src="translit.js"></script>
 <script src="emoji.js"></script>
+<script src="pics.js"></script>
 <script src="data.js"></script>
 <script src="basics.js"></script>
 <script src="examples.js"></script>

@@ -521,7 +521,8 @@ function fitNav() {
 addEventListener("resize", fitNav);
 function openMore() {
   const rows = TABS.filter(([k]) => !BOTTOM_MAIN.includes(k)).map(([k, ic, l]) => `<button class="mrow ${S.tab === k ? "on" : ""}" data-go="${k}"><span class="ni">${ic}</span><span><b>${l}</b><small>${{ grammar: "Всички правила, обяснени просто", basics: "Азбука, звуци, четене, числа", verbs: "Таблици на всички глаголи", quiz: "Бързи тестове: превод, род, диктовка…" }[k] || ""}</small></span></button>`).join("");
-  openPanel("Още", `<div class="mlist">${rows}</div><h4 class="pn-sec">Настройки</h4>${settingsHTML()}`, (e) => {
+  openPanel("Още", `<div class="mlist">${rows}</div><h4 class="pn-sec">Настройки</h4>${settingsHTML()}
+    <p class="credit">Пиктограми: Sergio Palao, <a href="https://arasaac.org" target="_blank" rel="noopener">ARASAAC</a> (правителство на Арагон), лиценз CC BY-NC-SA 4.0.</p>`, (e) => {
     const g = e.target.closest("[data-go]"); if (g) { closePanel(); go(g.dataset.go); return; }
     settingsClick(e);
   });

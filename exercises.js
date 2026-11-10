@@ -1152,7 +1152,7 @@ function drawEx() {
   const next = () => { s.i++; drawEx(); window.scrollTo(0, 0); };
   let body = "";
   if (q.kind === "intro") body = `<button class="btn primary nextbtn" id="exnext">Разбрах →</button>`;
-  else if (q.kind === "mc") body = `<div class="opts ${q.emo ? "emog" : ""}">${q.options.map((o, n) => `<button class="opt ${q.emo ? "emopt" : ""}" data-n="${n}"><kbd>${n + 1}</kbd><span>${esc(o)}</span></button>`).join("")}</div>`;
+  else if (q.kind === "mc") body = `<div class="opts ${q.emo ? "emog" : ""}">${q.options.map((o, n) => `<button class="opt ${q.emo ? "emopt" : ""}" data-n="${n}"><kbd>${n + 1}</kbd><span>${q.emo ? o : esc(o)}</span></button>`).join("")}</div>`;
   else if (q.kind === "type") body = `<input class="answer" id="exa" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(q.hint || "напиши тук…")}">
     <div class="uml">${["ä", "ö", "ü", "ß"].map((c) => `<button data-c="${c}" tabindex="-1">${c}</button>`).join("")}</div>`;
   else if (q.kind === "tap") {
@@ -1185,7 +1185,7 @@ function drawEx() {
     if (q.item) { if (ok) { if (box(q.item) <= 0) grade(q.item, 1); } else grade(q.item, 0); }
     const full = q.full ? sentHTML(q.full, q.bg || "", q.item || null, { bd: "full" }) : "";
     $("#fb").className = "exfb on " + (ok ? "ok" : "bad");
-    $("#fb").innerHTML = `<div class="exhead">${ok ? "✓ Правилно!" : `✗ Не съвсем. Правилно е: <b>${esc(q.answer)}</b>`}</div>
+    $("#fb").innerHTML = `<div class="exhead">${ok ? "✓ Правилно!" : `✗ Не съвсем. Правилно е: <b>${q.emo ? q.answer : esc(q.answer)}</b>`}</div>
       ${full}${full ? `<div class="xhint">👆 Цъкни всяка дума в изречението за „Защо?“</div>` : ""}<div class="exwhy"><b>${ok ? "Защо:" : "Защо е така:"}</b> ${q.explain}</div>
       ${q.item ? `<div class="exlinks">${openBtn(q.item)} <button class="link" data-train="${esc(q.item.id)}">🏋️ Тренирай думата</button></div>` : ""}
       <button class="btn primary" id="exnext" style="margin-top:10px;width:100%">Напред <kbd style="color:inherit">Enter</kbd></button>`;
@@ -1298,8 +1298,8 @@ function exDone() {
     <div class="score">${pct >= 90 ? "🏆" : pct >= 70 ? "💪" : "📚"} ${s.score}/${total}</div><p class="meta">${esc(s.title)} · ${pct}%</p>
     <div class="xpgain">+${s.xp} ⭐</div>${learned ? `<h3>Думите от урока</h3>${learned}` : ""}
     ${s.wrong.length ? `<div class="exmist"><h3>Грешките ти — прочети защо</h3>${s.wrong.map(({ q, given }) => `<div class="exm">
-      <div class="extask">${q.task}</div><div>${q.full ? esc(q.full) : esc(q.answer)}</div>
-      <div class="muted">ти: <s>${esc(given || "—")}</s> → правилно: <b>${esc(q.answer)}</b></div><div class="exwhy">${q.explain}</div></div>`).join("")}</div>` : "<p>Без нито една грешка! 🎉</p>"}
+      <div class="extask">${q.task}</div><div>${q.full ? esc(q.full) : q.emo ? q.answer : esc(q.answer)}</div>
+      <div class="muted">ти: <s>${q.emo ? given || "—" : esc(given || "—")}</s> → правилно: <b>${q.emo ? q.answer : esc(q.answer)}</b></div><div class="exwhy">${q.explain}</div></div>`).join("")}</div>` : "<p>Без нито една грешка! 🎉</p>"}
     <div class="btns" style="grid-template-columns:1fr 1fr;width:100%"><button class="btn" id="exb">← Упражнения</button><button class="btn primary" id="exa2">${s.k === "word" ? "Пак" : s.k === "learn" ? "Следващи думи →" : "Още 10"} <kbd style="color:inherit">Enter</kbd></button></div>
   </div></div>`;
   $("#exb").onclick = renderExercises;
