@@ -1,0 +1,32 @@
+// Картинки (емоджи) за упражненията „картинка ↔ дума“ и за запомняне.
+// Правило: САМО предмети/неща, които картинката показва недвусмислено, и всяка картинка — за една-единствена дума.
+// Без дни, месеци, абстрактни думи, глаголи и прилагателни (освен цветовете) — там картинката може да се разбере по няколко начина.
+const EMOJI = {
+  // храна и напитки
+  Kaffee: "☕", Tee: "🍵", Milch: "🥛", Bier: "🍺", Wein: "🍷", Orangensaft: "🍊", Limonade: "🍋",
+  Tomate: "🍅", Gurke: "🥒", Apfel: "🍎", Banane: "🍌", Brot: "🍞", Ei: "🥚", Wurst: "🌭", Käse: "🧀", Salat: "🥗",
+  Steak: "🥩", Suppe: "🍲", Kuchen: "🍰", Pizza: "🍕", Eis: "🍦", Kartoffel: "🥔", Zigarette: "🚬",
+  // дрехи и лични вещи
+  Hose: "👖", Jacke: "🧥", Schuh: "👟", Hut: "👒", Tasche: "👜", Schirm: "☂️", Brille: "👓", Kamera: "📷", Geschenk: "🎁",
+  Schlüssel: "🔑", Kreditkarte: "💳", Münze: "🪙", Uhr: "⌚", Wecker: "⏰",
+  // вкъщи и в офиса
+  Buch: "📖", Zeitung: "📰", Brief: "✉️", Bleistift: "✏️", Kugelschreiber: "🖊️", Laptop: "💻", Drucker: "🖨️",
+  Telefon: "☎️", Fernseher: "📺", Radio: "📻", Lampe: "💡", Stuhl: "🪑", Bett: "🛏️", Dusche: "🚿", Spiegel: "🪞",
+  Fenster: "🪟", Tür: "🚪", Toilettenpapier: "🧻", Papierkorb: "🗑️", Teller: "🍽️", Puppe: "🪆", Stofftier: "🧸", CD: "💿",
+  // музика, спорт, игри
+  Gitarre: "🎸", Klavier: "🎹", Trompete: "🎺", Saxofon: "🎷", Geige: "🎻", Violine: "🎻",
+  Fußball: "⚽", Tennis: "🎾", Tischtennis: "🏓", Golf: "⛳", Ski: "🎿", Volleyball: "🏐", Schach: "♟️",
+  // превоз
+  Auto: "🚗", Fahrrad: "🚲", Motorrad: "🏍️", Zug: "🚆", Flugzeug: "✈️", Schiff: "🚢", Segelschiff: "⛵",
+  // сгради
+  Haus: "🏠", Hotel: "🏨", Schule: "🏫", Bank: "🏦",
+  // животни и природа
+  Maus: "🐭", Papagei: "🦜", Faultier: "🦥", Muschel: "🐚", Stein: "🪨", Baum: "🌳", Stern: "⭐", Herz: "❤️", Hand: "✋", Fuß: "🦶",
+  // хора — само там, където няма как да се сбърка
+  Baby: "👶", Großvater: "👴", Koch: "👨‍🍳", Polizist: "👮", Feuerwehrmann: "👨‍🚒", Roboter: "🤖",
+  // държави (знамена)
+  Bulgarien: "🇧🇬", Österreich: "🇦🇹", Schweiz: "🇨🇭", Türkei: "🇹🇷", Ukraine: "🇺🇦", USA: "🇺🇸", Niederlande: "🇳🇱",
+  // цветове
+  rot: "🔴", gelb: "🟡", grün: "🟢", blau: "🔵", lila: "🟣", violett: "🟣", orange: "🟠", braun: "🟤", schwarz: "⚫", weiß: "⚪",
+};
+const emojiOf = (it) => (it && (EMOJI[it.de] || null));

@@ -593,6 +593,89 @@ table.xt tr.on td{background:var(--accent-2);font-weight:700}
   .gnav{margin:0 -16px;padding:6px 16px}
   .lp-h{flex-wrap:wrap} .lp-h span{white-space:normal}
 }
+
+/* цветен превод */
+.rc-subj{box-shadow:inset 0 -3px 0 #3b82f6} .rc-v{box-shadow:inset 0 -3px 0 #ef4444} .rc-obj{box-shadow:inset 0 -3px 0 #16a34a} .rc-dat{box-shadow:inset 0 -3px 0 #a855f7}
+.rc-pp{box-shadow:inset 0 -3px 0 #0ea5e9} .rc-end{box-shadow:inset 0 -3px 0 #f97316} .rc-neg{box-shadow:inset 0 -3px 0 #64748b} .rc-conj,.rc-q{box-shadow:inset 0 -3px 0 #eab308}
+.bdsent .w{border-bottom:0;padding:0 2px;border-radius:4px}
+.bgc{border-radius:4px;padding:0 1px}
+.bdbg{font-size:15px;line-height:1.8;margin-top:4px;color:var(--ink)}
+.bdd{margin-top:8px} .bdd summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.bdrows{display:grid;gap:5px;margin-top:6px}
+.bdr{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:2px 10px;align-items:center;font-size:14.5px}
+.bdr .ana{justify-self:start}
+.bdg{font-weight:600} .bdg small{color:var(--muted);font-weight:400}
+.bdl{grid-column:2;color:var(--muted);font-size:12px;margin-top:-3px}
+.bdhint{font-size:12px;margin-top:6px}
+
+/* картинки, точки, конфети */
+.emo{font-size:20px;margin-right:6px;vertical-align:-2px}
+.sh-emo{font-size:64px;line-height:1.1}
+.cemo{font-size:64px;line-height:1.1;margin-bottom:6px}
+.picq{font-size:96px;line-height:1.1;margin:6px 0}
+.opt.emopt{justify-content:center;font-size:44px;min-height:84px}
+.opts.emog{grid-template-columns:1fr 1fr}
+.xpchip{font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-2);border-radius:99px;padding:3px 9px;margin-left:4px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
+.confetti i{position:absolute;top:-12px;width:9px;height:14px;border-radius:2px;animation:fall 2.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.9}}
+.introc{text-align:center}
+.introc .iemo{font-size:84px;line-height:1.1}
+.introc .iw{font-size:34px;font-weight:800;letter-spacing:-.02em;display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}
+.introc .ibg{font-size:21px;font-weight:600;margin-top:4px}
+.introc .imeta{color:var(--muted);margin-top:6px;font-size:14.5px}
+.introc .inote{background:var(--soft);border-radius:12px;padding:8px 12px;margin-top:10px;font-size:14px;text-align:left}
+.lbadge{display:inline-block;background:var(--accent-2);color:var(--accent);border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700;margin-bottom:8px}
+.xpgain{font-size:22px;font-weight:800;color:var(--accent);margin:6px 0}
+.learned{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.exlearn{background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;border-color:transparent}
+.exlearn span{color:rgba(255,255,255,.85)}
+
+/* поправки на прелели елементи */
+.search{min-width:0;max-width:100%}
+.mode{min-width:0;overflow:hidden}
+.exsearch .search{width:100%;display:block}
+.exsearch #exwl{display:flex;flex-wrap:wrap;gap:4px}
+.mode b,.mode span{overflow-wrap:anywhere}
+.chipw{max-width:100%;white-space:normal;text-align:left}
+.dlgap{background:var(--accent-2);border-radius:8px;padding:2px 6px;margin:0 -6px}
+.opt span{overflow-wrap:anywhere}
+img,svg,table{max-width:100%}
+
+.card .sent .say,.card .introc .say,.introc .iw .say,.excard .say{position:static}
+.card .sent{width:100%}
+
+.xpchip .lv{font-style:normal}
+.hright{min-width:0}
+@media (max-width:520px){
+  .hbtn span:not(.caret){display:none}
+  .xpchip .lv{display:none}
+  .hright{gap:6px}
+  #stats{white-space:nowrap}
+}
+
+/* начало: главният бутон е цветен, другите — спокойни */
+.cta.cta2{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.cta.cta2:hover{border-color:var(--accent)}
+@media (max-width:760px){
+  .hero{position:relative;display:block}
+  .hero .ring{position:absolute;top:16px;right:16px;width:64px;height:64px}
+  .hero .ring b{font-size:16px} .hero .ring small{font-size:10px}
+  .hero .hello,.hero .hint{padding-right:74px}
+  .hero .ctas{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .hero .ctas .cta{width:auto;padding:12px 10px}
+  .hero .ctas #go-lesson{grid-column:1/-1}
+}
+
+.opt.emopt{justify-content:center;text-align:center;display:flex;align-items:center}
+
+/* горното меню — винаги на един ред */
+.topnav{flex-wrap:nowrap;min-width:0}
+/* ако не се побира: c1 — 📚 без надпис и XP без нивото; c2 — без иконки; c3 — „Граматика“ отива в „Още“ */
+.hrow.c1 .hbtn span:not(.caret),.hrow.c1 .xpchip .lv{display:none}
+.hrow.c2 .topnav .ni{display:none}.hrow.c2 .topnav button{padding:8px 10px}
+.hrow.c3 .topnav [data-tab="grammar"]:not(.on){display:none}
+.hrow{flex-wrap:nowrap}
 </style>
 </head>
 <body>
@@ -607,6 +690,7 @@ table.xt tr.on td{background:var(--accent-2);font-weight:700}
 <nav id="tabbar"></nav>
 <script>window.STATIC_BUILD = true;</script>
 <script src="translit.js"></script>
+<script src="emoji.js"></script>
 <script src="data.js"></script>
 <script src="basics.js"></script>
 <script src="examples.js"></script>
@@ -614,6 +698,7 @@ table.xt tr.on td{background:var(--accent-2);font-weight:700}
 <script src="grammar.js"></script>
 <script src="explain.js"></script>
 <script src="exercises.js"></script>
+<script src="dialogs.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

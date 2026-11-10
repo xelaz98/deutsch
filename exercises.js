@@ -1036,6 +1036,94 @@ EX_TYPES.push(
   { k: "plural", skill: "Думи и употреба", ic: "👥", t: "Множествено число", d: "der Mantel → die Mäntel (8 модела)", gen: genPlural },
 );
 
+
+// ═════ Картинки и слух ═════
+const picPool = () => exPool((i) => !!emojiOf(i) && ["noun", "verb", "adj"].includes(i.type));
+const uniqEmo = (arr) => arr.filter((x, i, a) => a.findIndex((y) => emojiOf(y) === emojiOf(x)) === i && a.findIndex((y) => deFull(y) === deFull(x)) === i);
+function picOptions(it, n = 4) { return shuffle(uniqEmo([it, ...shuffle(picPool().filter((o) => o !== it && o.type === it.type))]).slice(0, n)); }
+function genPicDE(it0) {
+  const it = it0 || rnd(picPool()), opts = picOptions(it);
+  return { kind: "mc", task: "Какво е на картинката? (на немски)", prompt: `<div class="picq">${emojiOf(it)}</div>`, options: opts.map(deFull), answer: deFull(it), item: it, say: deFull(it), full: exampleFor(it)?.[0], bg: exampleFor(it)?.[1], keys: true,
+    explain: `${emojiOf(it)} = ${deHTML(it)} — ${esc(it.bg)}.${it.type === "noun" && it.art && it.art !== "pl" ? " " + (genderHint(it) || `Запомни го с члена и с картинката: ${artTag(it.art)} ${esc(it.de)}.`) : ""}` };
+}
+function genDEPic(it0) {
+  const it = it0 || rnd(picPool()), opts = picOptions(it);
+  return { kind: "mc", emo: true, task: "Коя картинка е това?", prompt: `<div class="exw">${deHTML(it)}</div>${trHTML(deFull(it))}`, autoSay: deFull(it), options: opts.map(emojiOf), answer: emojiOf(it), item: it, say: deFull(it), keys: true,
+    explain: `${deHTML(it)} = ${emojiOf(it)} ${esc(it.bg)}` };
+}
+function genListenPic(it0) {
+  const it = it0 || rnd(picPool()), opts = picOptions(it);
+  return { kind: "mc", emo: true, task: "Чуй и избери картинката", prompt: `<button class="bigplay" data-say="${esc(deFull(it))}">${SPK}<span>чуй пак</span></button>`, autoSay: deFull(it), options: opts.map(emojiOf), answer: emojiOf(it), item: it, say: deFull(it), keys: true,
+    explain: `Чу: ${deHTML(it)} [${esc(translit(deFull(it)))}] = ${emojiOf(it)} ${esc(it.bg)}` };
+}
+function genPicType(it0) {
+  const it = it0 || rnd(picPool()), noun = it.type === "noun" && ["der", "die", "das"].includes(it.art);
+  return { kind: "type", task: `Напиши на немски${noun ? " (с члена!)" : ""}`, prompt: `<div class="picq">${emojiOf(it)}</div><div class="meta">${esc(it.bg)}</div>`, answer: deFull(it),
+    accept: (v) => sameDe(v, deFull(it)) || (!noun && sameDe(v, it.de)), item: it, say: deFull(it), hint: noun ? "напр. der Apfel" : "",
+    explain: `${emojiOf(it)} = ${deHTML(it)} <span class="tr" style="display:inline">[${esc(translit(deFull(it)))}]</span>${noun ? " — без члена е половин дума!" : ""}` };
+}
+function genBGDE(it0) {
+  const it = it0 || rnd(exPool((i) => ["noun", "verb", "adj", "adv"].includes(i.type) && !/\s/.test(i.de)));
+  const opts = shuffle([it, ...shuffle(exPool((o) => o.type === it.type && o !== it && o.bg !== it.bg && !/\s/.test(o.de))).slice(0, 3)]);
+  return { kind: "mc", task: "Как е на немски?", prompt: `${emojiOf(it) ? `<div class="cemo">${emojiOf(it)}</div>` : ""}<div class="mid">${esc(it.bg)}</div>`, options: opts.map(deFull), answer: deFull(it), item: it, say: deFull(it), full: exampleFor(it)?.[0], bg: exampleFor(it)?.[1], keys: true,
+    explain: `${deHTML(it)} = ${esc(it.bg)}${it.note ? `<br>💡 ${esc(it.note)}` : ""}` };
+}
+function genDEBG(it0) {
+  const it = it0 || rnd(exPool((i) => ["noun", "verb", "adj", "adv"].includes(i.type)));
+  const opts = shuffle([it.bg, ...shuffle(exPool((o) => o.type === it.type && o !== it && o.bg !== it.bg)).slice(0, 3).map((o) => o.bg)]);
+  return { kind: "mc", task: "Какво значи?", prompt: `<div class="exw">${deHTML(it)}</div>${trHTML(deFull(it))}`, autoSay: deFull(it), options: opts, answer: it.bg, item: it, say: deFull(it), full: exampleFor(it)?.[0], bg: exampleFor(it)?.[1], keys: true,
+    explain: `${deHTML(it)} = <b>${esc(it.bg)}</b>` };
+}
+// ═════ Представяне на нова дума (за сесията) ═════
+function introQ(it) {
+  const ex = exampleFor(it);
+  const extra = it.type === "verb" ? `<div class="imeta">ich ${esc(it.forms[0])} · du ${esc(it.forms[1])} · er ${esc(it.forms[2])}</div>` : it.type === "noun" && it.pl ? `<div class="imeta">мн.ч.: die ${esc(it.pl)}</div>` : "";
+  return { kind: "intro", item: it, task: "Нова дума", autoSay: deFull(it),
+    prompt: `<div class="introc"><span class="lbadge">✨ нова дума</span>${emojiOf(it) ? `<div class="iemo">${emojiOf(it)}</div>` : ""}<div class="iw">${sayBtn(deFull(it))}${deHTML(it)}</div>${trHTML(deFull(it))}<div class="ibg">${esc(it.bg)}</div>${extra}
+      ${it.note ? `<div class="inote">💡 ${esc(it.note)}</div>` : ""}${ex ? sentHTML(ex[0], ex[1], it, { bd: "full" }) : ""}</div>` };
+}
+function learnItems(n = 5) {
+  const L = [...S.lessons].sort((a, b) => b - a);
+  const cand = ITEMS.filter((i) => i.lessons.some((l) => S.lessons.has(l)) && ["noun", "verb", "adj", "adv", "word"].includes(i.type) && !/\s–\s/.test(i.de));
+  const order = (i) => -Math.max(...i.lessons.filter((l) => S.lessons.has(l)));
+  const fresh = cand.filter((i) => box(i) < 0).sort((a, b) => order(a) - order(b));
+  const weak = shuffle(cand.filter((i) => box(i) >= 0 && box(i) <= 1));
+  const picked = [...fresh.slice(0, n)];
+  if (picked.length < n) picked.push(...weak.slice(0, n - picked.length));
+  return picked;
+}
+// генератор, който гръмне, просто се пропуска — сесията продължава
+function safeQ(f) { try { return f() || null; } catch (e) { console.warn("пропусната задача:", e); return null; } }
+function practiceFor(it) {
+  const gens = [];
+  if (emojiOf(it)) gens.push(genPicDE, genListenPic, genDEPic);
+  gens.push(genBGDE, genDEBG);
+  const out = shuffle(gens).slice(0, 2).map((g) => safeQ(() => g(it))).filter(Boolean);
+  const wt = (safeQ(() => genWordTraining(it)) || []).filter((q) => q && q.task !== "Чуй думата. Какво значи?");
+  out.push(...shuffle(wt).slice(0, 2));
+  return out;
+}
+function buildLearn() {
+  const items = learnItems(5); if (!items.length) return null;
+  const qs = [];
+  for (let k = 0; k < items.length; k += 2) {
+    const grp = items.slice(k, k + 2);
+    grp.forEach((it) => { if (box(it) < 0) qs.push(introQ(it)); });
+    qs.push(...shuffle(grp.flatMap(practiceFor)));
+  }
+  qs.push(...shuffle(items).slice(0, 3).map((it) => safeQ(() => (emojiOf(it) ? genPicType(it) : genBGDE(it)))));
+  for (let n = 0; n < 3; n++) qs.push(safeQ(() => rnd(EX_TYPES.filter((t) => t.gen && !["bank", "dialog", "match"].includes(t.k))).gen()));
+  return { qs: qs.filter(Boolean), items };
+}
+
+EX_TYPES.push(
+  { k: "picde", skill: "Картинки и слух", ic: "🖼️", t: "Картинка → немски", d: "🍎 → der Apfel", gen: () => genPicDE() },
+  { k: "depic", skill: "Картинки и слух", ic: "🔤", t: "Немски → картинка", d: "der Apfel → 🍎", gen: () => genDEPic() },
+  { k: "listenpic", skill: "Картинки и слух", ic: "👂", t: "Чуй → картинка", d: "Чуваш думата и избираш картинката", gen: () => genListenPic() },
+  { k: "pictype", skill: "Картинки и слух", ic: "⌨️", t: "Картинка → напиши", d: "🍞 → напиши „das Brot“", gen: () => genPicType() },
+  { k: "bgde", skill: "Картинки и слух", ic: "🇧🇬", t: "Български → немски", d: "„ябълка“ → der Apfel", gen: () => genBGDE() },
+  { k: "debg", skill: "Картинки и слух", ic: "🇩🇪", t: "Немски → български", d: "der Apfel → „ябълка“", gen: () => genDEBG() },
+);
 // ── сесия
 let exSess = null;
 function startEx(k, opts = {}) {
@@ -1043,13 +1131,14 @@ function startEx(k, opts = {}) {
   if (k === "mix") qs = [...Array(15)].map(() => rnd(EX_TYPES.filter((t) => t.gen)).gen());
   else if (k === "dialog") { const dlg = DIALOGS[dialogIdx++ % DIALOGS.length]; qs = dlg.qs.map((_, i) => genDialogQ(dlg, i)); }
   else if (k === "word") qs = genWordTraining(opts.item);
+  else if (k === "learn") { const L = buildLearn(); if (!L) { toast("Няма нови думи в избраните уроци — избери друг урок"); return; } qs = L.qs; opts.items = L.items; }
   else if (k === "weak") {
     const weak = shuffle(ITEMS.filter((i) => S.srs[i.id] && box(i) <= 1)).slice(0, 3);
     if (!weak.length) { toast("Нямаш „слаби“ думи — браво!"); return; }
     qs = weak.flatMap((it) => shuffle(genWordTraining(it)).slice(0, 4));
   } else { const t = EX_TYPES.find((x) => x.k === k); qs = [...Array(k === "bank" ? 4 : 10)].map(() => t.gen()); }
   const t = EX_TYPES.find((x) => x.k === k);
-  exSess = { k, title: k === "word" ? `Тренирай: ${opts.item.de}` : k === "mix" ? "Микс от всичко" : k === "weak" ? "Слабите думи" : t.t, qs, i: 0, score: 0, wrong: [], opts };
+  exSess = { k, title: k === "learn" ? "Урок: нови думи" : k === "word" ? `Тренирай: ${opts.item.de}` : k === "mix" ? "Микс от всичко" : k === "weak" ? "Слабите думи" : t.t, qs, i: 0, score: 0, wrong: [], opts, xp: 0 };
   if (S.tab !== "ex") { S.tab = "ex"; store.set("tab", "ex"); renderNav(); renderSub(); }
   keyHandler = null; view.onclick = null; activeQuiz = null;
   drawEx();
@@ -1062,7 +1151,8 @@ function drawEx() {
   stopAudio();
   const next = () => { s.i++; drawEx(); window.scrollTo(0, 0); };
   let body = "";
-  if (q.kind === "mc") body = `<div class="opts">${q.options.map((o, n) => `<button class="opt" data-n="${n}"><kbd>${n + 1}</kbd><span>${esc(o)}</span></button>`).join("")}</div>`;
+  if (q.kind === "intro") body = `<button class="btn primary nextbtn" id="exnext">Разбрах →</button>`;
+  else if (q.kind === "mc") body = `<div class="opts ${q.emo ? "emog" : ""}">${q.options.map((o, n) => `<button class="opt ${q.emo ? "emopt" : ""}" data-n="${n}"><kbd>${n + 1}</kbd><span>${esc(o)}</span></button>`).join("")}</div>`;
   else if (q.kind === "type") body = `<input class="answer" id="exa" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(q.hint || "напиши тук…")}">
     <div class="uml">${["ä", "ö", "ü", "ß"].map((c) => `<button data-c="${c}" tabindex="-1">${c}</button>`).join("")}</div>`;
   else if (q.kind === "tap") {
@@ -1079,7 +1169,7 @@ function drawEx() {
   }
   else body = `<div class="oline" id="ol"></div><div class="opool" id="op"></div>`;
   view.innerHTML = `<div class="stage exstage">
-    <div class="pinfo"><span><button class="link" id="exback">← ${esc(s.title)}</button></span><span>${s.i + 1} / ${s.qs.length} · ✓ ${s.score}</span></div>
+    <div class="pinfo"><span><button class="link" id="exback">← ${esc(s.title)}</button></span><span>${s.i + 1} / ${s.qs.length} · ✓ ${s.score} · ⭐ ${s.xp}</span></div>
     <div class="prog"><i style="width:${(s.i / s.qs.length) * 100}%"></i></div>
     <div class="card excard" style="cursor:default"><div class="extask">${q.task}</div>${q.prompt || ""}</div>
     ${body}<div class="exfb" id="fb"></div>
@@ -1091,19 +1181,24 @@ function drawEx() {
 
   const finish = (ok, given) => {
     answered = true;
-    if (ok) s.score++; else s.wrong.push({ q, given });
+    if (ok) { s.score++; s.xp += 10; addXP(10); } else s.wrong.push({ q, given });
     if (q.item) { if (ok) { if (box(q.item) <= 0) grade(q.item, 1); } else grade(q.item, 0); }
-    const full = q.full ? sentHTML(q.full, q.bg || "", q.item || null).replace('<div class="sbg" title="Посочи или цъкни, за да видиш превода"></div>', "") : "";
+    const full = q.full ? sentHTML(q.full, q.bg || "", q.item || null, { bd: "full" }) : "";
     $("#fb").className = "exfb on " + (ok ? "ok" : "bad");
     $("#fb").innerHTML = `<div class="exhead">${ok ? "✓ Правилно!" : `✗ Не съвсем. Правилно е: <b>${esc(q.answer)}</b>`}</div>
       ${full}${full ? `<div class="xhint">👆 Цъкни всяка дума в изречението за „Защо?“</div>` : ""}<div class="exwhy"><b>${ok ? "Защо:" : "Защо е така:"}</b> ${q.explain}</div>
       ${q.item ? `<div class="exlinks">${openBtn(q.item)} <button class="link" data-train="${esc(q.item.id)}">🏋️ Тренирай думата</button></div>` : ""}
       <button class="btn primary" id="exnext" style="margin-top:10px;width:100%">Напред <kbd style="color:inherit">Enter</kbd></button>`;
     $("#exnext").onclick = next;
+    // на малък екран обяснението остава под ръба — доскролвай до него
+    requestAnimationFrame(() => { const r = $("#fb")?.getBoundingClientRect(); if (r && r.top > innerHeight * 0.55) window.scrollBy({ top: r.top - innerHeight * 0.25, behavior: "smooth" }); });
     if (q.showAnat && q.full && typeof anatomyHTML === "function") { const sx = $("#fb .sent .sx"); if (sx) { sx.insertAdjacentHTML("afterend", anatomyHTML(q.full)); $("#fb .anat")?.classList.add("on"); } }
     if (q.say && q.kind !== "bank") speak(q.say, { auto: true });
   };
-  if (q.kind === "mc") {
+  if (q.kind === "intro") {
+    $("#exnext").onclick = next;
+    keyHandler = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); next(); } else if (e.key === "Escape") renderExercises(); };
+  } else if (q.kind === "mc") {
     const pick = (n) => {
       if (answered) return;
       const ok = q.options[n] === q.answer;
@@ -1195,14 +1290,17 @@ function drawEx() {
   }
 }
 function exDone() {
-  const s = exSess, pct = Math.round((s.score / s.qs.length) * 100);
+  const s = exSess, total = s.qs.filter((q) => q.kind !== "intro").length || 1, pct = Math.round((s.score / total) * 100);
+  if (pct >= 70) confetti();
+  const learned = s.k === "learn" && s.opts.items ? `<div class="learned">${s.opts.items.map((it) => `<button class="pill" data-open="${esc(it.id)}">${emojiOf(it) || ""} ${deHTML(it)} — ${esc(it.bg)}</button>`).join("")}</div>` : "";
   const best = store.get("exBest", {}); if (s.k !== "word" && (best[s.k] ?? -1) < pct) { best[s.k] = pct; store.set("exBest", best); }
   view.innerHTML = `<div class="stage"><div class="card done" style="cursor:default">
-    <div class="score">${pct >= 90 ? "🏆" : pct >= 70 ? "💪" : "📚"} ${s.score}/${s.qs.length}</div><p class="meta">${esc(s.title)} · ${pct}%</p>
+    <div class="score">${pct >= 90 ? "🏆" : pct >= 70 ? "💪" : "📚"} ${s.score}/${total}</div><p class="meta">${esc(s.title)} · ${pct}%</p>
+    <div class="xpgain">+${s.xp} ⭐</div>${learned ? `<h3>Думите от урока</h3>${learned}` : ""}
     ${s.wrong.length ? `<div class="exmist"><h3>Грешките ти — прочети защо</h3>${s.wrong.map(({ q, given }) => `<div class="exm">
       <div class="extask">${q.task}</div><div>${q.full ? esc(q.full) : esc(q.answer)}</div>
       <div class="muted">ти: <s>${esc(given || "—")}</s> → правилно: <b>${esc(q.answer)}</b></div><div class="exwhy">${q.explain}</div></div>`).join("")}</div>` : "<p>Без нито една грешка! 🎉</p>"}
-    <div class="btns" style="grid-template-columns:1fr 1fr;width:100%"><button class="btn" id="exb">← Упражнения</button><button class="btn primary" id="exa2">${s.k === "word" ? "Пак" : "Още 10"} <kbd style="color:inherit">Enter</kbd></button></div>
+    <div class="btns" style="grid-template-columns:1fr 1fr;width:100%"><button class="btn" id="exb">← Упражнения</button><button class="btn primary" id="exa2">${s.k === "word" ? "Пак" : s.k === "learn" ? "Следващи думи →" : "Още 10"} <kbd style="color:inherit">Enter</kbd></button></div>
   </div></div>`;
   $("#exb").onclick = renderExercises;
   const again = () => startEx(s.k, s.opts);
@@ -1217,6 +1315,7 @@ function renderExercises() {
   view.innerHTML = `<h2>Упражнения</h2>
     <p class="hint">Вдъхновени от упражненията в учебника (Begegnungen A1, Kapitel 2), но изреченията се сглобяват наново всеки път — примерите не свършват. След всеки отговор има <b>обяснение защо</b>. Звукът се пуска след отговора.</p>
     <div class="modes exheros" style="margin-top:8px">
+      <button class="mode exhero exlearn" data-ex="learn"><span class="ic">▶️</span><b>Продължи урока</b><span>5 нови думи: запознаване + картинки, слух, писане, изречения</span></button>
       <button class="mode exhero" data-ex="mix"><span class="ic">🎲</span><b>Микс от всичко</b><span>15 разнообразни задачи</span></button>
       <button class="mode" data-ex="weak"><span class="ic">🎯</span><b>Слабите ми думи</b><span>Тренировка на думите, които бъркаш</span></button>
       <div class="mode exsearch"><span class="ic">🏋️</span><b>Тренирай конкретна дума</b><input class="search" id="exw" placeholder="напиши дума (немски или български)…" style="margin-top:6px"><div id="exwl"></div></div>

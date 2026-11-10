@@ -1128,3 +1128,14 @@ Object.assign(LEX, {
   karl: "Карл (име)", boris: "Борис (име)", frankfurt: "Франкфурт", mach: "направи! затвори! (machen)", wohl: "добре (sich wohlfühlen)", robert: "Роберт (име)", hamburg: "Хамбург",
   wagen: "кола (der Wagen)", nächsten: "следващия", durchs: "през (durch das)", fürs: "за (für das)", ums: "около (um das)", schlimm: "лош, тежък",
 });
+Object.assign(LEX, {
+  brötchen: "хлебчета (das Brötchen)", cappuccino: "капучино", apfelkuchen: "ябълков сладкиш", kopfschmerzen: "главоболие", fieber: "температура (das Fieber)", tagen: "дни (дат. мн.ч.)",
+  tabletten: "таблетки (die Tablette)", achtzig: "осемдесет", gleis: "коловоз, перон (das Gleis)", geradeaus: "направо", kauf: "купи! (kaufen)", schokolade: "шоколад (die Schokolade)",
+  tom: "Том (име)", super: "супер", ivan: "Иван (име)", petrov: "Петров", roth: "Рот (фамилия)", neunhundert: "деветстотин", blaue: "синьо, синя", sechzig: "шестдесет", größe: "размер (die Größe)",
+  herzlichen: "сърдечен (Herzlichen Glückwunsch = честито)", glückwunsch: "поздравление (der Glückwunsch)", party: "парти (die Party)", mitbringen: "донеса (mitbringen)", kartoffelsalat: "картофена салата",
+  toll: "страхотно", getrennt: "поотделно", zweiundvierzig: "четиридесет и две", fünfundvierzig: "четиридесет и пет", stimmt: "вярно е (Stimmt so = задръжте рестото)", tun: "правя (tun)",
+  husten: "кашлица (der Husten)", dieser: "този", dreimal: "три пъти", diesen: "този (вин.п.)", schicken: "изпращам (schicken)", ungefähr: "около, приблизително", ausweis: "лична/читателска карта (der Ausweis)",
+  dieses: "това, този", zweimal: "два пъти", trainieren: "тренирам", unten: "долу", zweiundzwanzig: "двадесет и две", welcher: "кой (дат.п. на welche)", reihe: "ред (die Reihe)", vorne: "отпред",
+  flughafen: "летище (der Flughafen)", eilig: "бърз (es eilig haben = бързам)", sonne: "слънце (die Sonne)", deiner: "твоето (дат.п.)", lena: "Лена (име)", oh: "о", genau: "точно",
+  spanien: "Испания", krankenschwester: "медицинска сестра", thomas: "Томас (име)", wolf: "Волф (фамилия)", kindern: "деца (дат. мн.ч.)",
+});
