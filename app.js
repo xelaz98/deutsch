@@ -130,11 +130,29 @@ const cleanTTS = (t) => t.replace(/→.*$/, "").replace(/[–—]/g, ",").replac
 const ttsURL = (t) => "/tts?q=" + encodeURIComponent(cleanTTS(t));
 // Публичната (статична) версия няма сървър: пуска готовите mp3 от audio/ по същото име, което ползва server.py (sha1[:16]).
 const STATIC = !!window.STATIC_BUILD;
+// Звуците там са събрани в 256 пакета (audio/p/XX.bin + XX.json с отместванията) — GitHub Pages не смогва с хиляди отделни файлове.
+const audioPacks = new Map(), audioBlobs = new Map();
+function audioPack(id) {
+  if (!audioPacks.has(id)) {
+    const p = Promise.all([fetch(`audio/p/${id}.json`).then((r) => (r.ok ? r.json() : null)), fetch(`audio/p/${id}.bin`).then((r) => (r.ok ? r.arrayBuffer() : null))])
+      .then(([idx, buf]) => { if (!idx || !buf) throw new Error("няма пакет"); return { idx, buf }; });
+    p.catch(() => audioPacks.delete(id)); // при грешка — нов опит следващия път
+    audioPacks.set(id, p);
+  }
+  return audioPacks.get(id);
+}
 async function audioURL(t) {
   if (!STATIC) return ttsURL(t);
   if (!(window.crypto && crypto.subtle)) return null;
   const buf = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(cleanTTS(t)));
-  return "audio/" + [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16) + ".mp3";
+  const h = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+  if (audioBlobs.has(h)) return audioBlobs.get(h);
+  try {
+    const { idx, buf: pack } = await audioPack(h.slice(0, 2));
+    const e = idx[h]; if (!e) return null;
+    const url = URL.createObjectURL(new Blob([pack.slice(e[0], e[0] + e[1])], { type: "audio/mpeg" }));
+    audioBlobs.set(h, url); return url;
+  } catch { return null; }
 }
 let curAudio = null, lastSaid = "", lastAt = 0;
 function markPlaying(text, on) {
