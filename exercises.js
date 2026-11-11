@@ -1124,6 +1124,115 @@ EX_TYPES.push(
   { k: "bgde", skill: "Картинки и слух", ic: "🇧🇬", t: "Български → немски", d: "„ябълка“ → der Apfel", gen: () => genBGDE() },
   { k: "debg", skill: "Картинки и слух", ic: "🇩🇪", t: "Немски → български", d: "der Apfel → „ябълка“", gen: () => genDEBG() },
 );
+
+// ── урок 10 (Kapitel 3, C2, C7, A27, B3, B4)
+// C2: Brauchst du …? – Nein, ich brauche keinen/keine/kein …
+const BRAUCH_N = [["der", "Wecker"], ["das", "Radio"], ["die", "Lampe"], ["der", "Kugelschreiber"], ["die", "Brille"], ["der", "Drucker"], ["die", "Zeitung"], ["der", "Schlüssel"],
+  ["das", "Regal"], ["das", "Faxgerät"], ["die", "Kaffeemaschine"], ["das", "Wörterbuch"], ["der", "Terminkalender"], ["die", "Eintrittskarte"], ["der", "Computer"], ["das", "Auto"], ["die", "Tasche"], ["der", "Stuhl"]];
+const BRAUCH_P = [["Brauchst du", "ich brauche", "ти", "ми"], ["Braucht ihr", "wir brauchen", "ви", "ни"], ["Brauchen Sie", "ich brauche", "Ви", "ми"], ["Braucht er", "er braucht", "му", "му"], ["Braucht sie", "sie braucht", "ѝ", "ѝ"], ["Braucht man", "man braucht", "", ""]];
+const bgOf = (de) => (ITEMS.find((i) => i.de === de)?.bg || de).split(/[,;(]/)[0].trim();
+const INDEF_AKK = { der: "einen", die: "eine", das: "ein" }, KEIN_AKK = { der: "keinen", die: "keine", das: "kein" };
+function genBrauchen() {
+  const [art, n] = rnd(BRAUCH_N), [q, a, bq, ba] = rnd(BRAUCH_P), askArt = Math.random() < 0.5;
+  const full = `${q} ${INDEF_AKK[art]} ${n}? – Nein, ${a} ${KEIN_AKK[art]} ${n}.`, nb = bgOf(n);
+  const bg = `Трябва ли ${bq ? bq + " " : ""}${nb}? – Не, не ${ba ? ba + " " : ""}трябва ${nb}.`.replace("ли  ", "ли ");
+  if (askArt) return { kind: "mc", task: "Попълни члена (Akkusativ след brauchen)", prompt: `<div class="exs">${esc(q)} ___ ${esc(n)}?</div><div class="meta">${art} ${esc(n)}</div>`,
+    options: ["einen", "eine", "ein"], answer: INDEF_AKK[art], say: full, full, bg, keys: true,
+    explain: `${artTag(art)} ${esc(n)} → brauchen иска <b>Akkusativ</b>: ${art === "der" ? "само при der ein → <b>einen</b>" : `при ${art} не се сменя → <b>${INDEF_AKK[art]}</b>`}.` };
+  return { kind: "mc", task: "Отговори с „не“ (kein в Akkusativ)", prompt: `<div class="exs">${esc(q)} ${INDEF_AKK[art]} ${esc(n)}?</div><div class="exs">Nein, ${esc(a)} ___ ${esc(n)}.</div>`,
+    options: ["keinen", "keine", "kein", "nicht"], answer: KEIN_AKK[art], say: full, full, bg, keys: true,
+    explain: `${INDEF_AKK[art]} ${esc(n)} → <b>${KEIN_AKK[art]}</b> ${esc(n)}: kein се държи точно като ein (${art === "der" ? "einen → keinen" : art === "die" ? "eine → keine" : "ein → kein"}). „nicht“ не става — пред съществително с ein е <b>kein</b>.` };
+}
+// C7: сложни думи — последната дума решава члена
+const KOMPOS = [["das Zimmer", "die Nummer", "die Zimmernummer"], ["das Zimmer", "der Schlüssel", "der Zimmerschlüssel"], ["das Hotel", "das Restaurant", "das Hotelrestaurant"],
+  ["der Kredit", "die Karte", "die Kreditkarte"], ["das Bier", "der Garten", "der Biergarten"], ["die Musik", "das Instrument", "das Musikinstrument"], ["die Industrie", "der Roboter", "der Industrieroboter"],
+  ["das Hotel", "die Rezeption", "die Hotelrezeption"], ["die Stadt", "das Zentrum", "das Stadtzentrum"], ["die Industrie", "das Museum", "das Industriemuseum"], ["der Termin", "der Kalender", "der Terminkalender"],
+  ["der Computer", "das Programm", "das Computerprogramm"], ["das Telefon", "die Nummer", "die Telefonnummer"], ["das Internet", "der Anschluss", "der Internetanschluss"], ["das Hotel", "das Zimmer", "das Hotelzimmer"],
+  ["der Kaffee", "die Maschine", "die Kaffeemaschine"], ["das Wort", "das Buch", "das Wörterbuch"], ["der Eintritt", "die Karte", "die Eintrittskarte"], ["der Mittag", "das Essen", "das Mittagessen"], ["das Land", "die Hauptstadt", "die Landeshauptstadt"]];
+function genKompos() {
+  const [a, b, c] = rnd(KOMPOS), [art, word] = c.split(" ");
+  return { kind: "mc", task: "Сложна дума: кой член?", prompt: `<div class="exs">${esc(a)} + ${esc(b)} = ___ ${esc(word)}</div>`, options: ["der", "die", "das"], answer: art, say: `${a}, ${b}, ${c}`, keys: true,
+    explain: `<b>Последната дума решава члена</b>: ${esc(b)} → ${artTag(art)} ${esc(word)}. Първата част (${esc(a)}) само уточнява какво.${word.includes("s" + b.split(" ")[1].toLowerCase()) && !a.toLowerCase().endsWith("s") ? " (тук има -s- за „лепило“)" : ""}` };
+}
+// A27: части на деня
+const TAGESZ = [[9, "der Morgen", "morgens"], [11, "der Vormittag", "vormittags"], [13, "der Mittag", "mittags"], [16, "der Nachmittag", "nachmittags"], [20, "der Abend", "abends"], [23, "die Nacht", "nachts"]];
+const TZ_ACT = [["Ich trinke", "Kaffee", "пия кафе"], ["Ich lese", "die Zeitung", "чета вестника"], ["Ich lerne", "Deutsch", "уча немски"], ["Ich spiele", "Klavier", "свиря на пиано"], ["Ich mache", "einen Spaziergang", "се разхождам"], ["Ich sehe", "fern", "гледам телевизия"], ["Ich esse", "in der Kantine", "ям в стола"]];
+const TZ_BG = { morgens: "Сутрин", vormittags: "Предобед", mittags: "На обед", nachmittags: "Следобед", abends: "Вечер", nachts: "Нощем" };
+function genTageszeit() {
+  const [h, noun, adv] = rnd(TAGESZ), mode = rnd([0, 1, 2]);
+  if (mode === 0) return { kind: "mc", task: "Коя част от деня е?", prompt: `<div class="exw">ca. ${h}.00 Uhr</div>`, options: TAGESZ.map((t) => t[1]), answer: noun, say: noun, keys: true,
+    explain: `${h}.00 Uhr → <b>${esc(noun)}</b>. Morgen 8–10 · Vormittag 10–12 · Mittag 12–14 · Nachmittag 14–18 · Abend 18–22 · Nacht след 22. Всички са der, само <b>die Nacht</b>.` };
+  if (mode === 1) { const [a, b, bb] = rnd(TZ_ACT), bare = noun.split(" ")[1], full = `${a} ${adv} ${b}.`, bg = `${TZ_BG[adv]} ${bb}.`;
+    return { kind: "mc", task: `Всеки ден (${esc(noun)}) — как се казва?`, prompt: `<div class="exs">${esc(a)} ___ ${esc(b)}.</div><div class="meta">всеки ден по това време</div>`, options: shuffle([adv, bare, noun, adv.replace(/s$/, "")]), answer: adv, say: full, full, bg, keys: true,
+      explain: `Навик („всеки ден“) = част от деня + <b>-s</b>, с <b>малка</b> буква: ${esc(noun)} → <b>${adv}</b>. Същото значи „jeden ${esc(noun.split(" ")[1])}“.` }; }
+  const pairs = [["morgen", "утре"], ["der Morgen", "сутринта"], ["gestern", "вчера"], ["vorgestern", "онзи ден"], ["übermorgen", "вдругиден"], ["heute Abend", "довечера"], ["tagsüber", "през деня"], ["nachts", "нощем"]];
+  const [de, bg] = rnd(pairs);
+  return { kind: "mc", task: "Какво значи?", prompt: `<div class="exw">${esc(de)}</div>`, options: shuffle([bg, ...shuffle(pairs.filter((p) => p[1] !== bg)).slice(0, 3).map((p) => p[1])]), answer: bg, say: de, keys: true,
+    explain: `<b>${esc(de)}</b> = ${esc(bg)}. Капан: <b>morgen</b> (малка) = утре, <b>der Morgen</b> (голяма) = сутринта. Ред: vorgestern → gestern → heute → morgen → übermorgen.` };
+}
+// Ден от седмицата: heute → gestern / morgen / übermorgen
+const TAGE = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"], TAGE_BG = ["понеделник", "вторник", "сряда", "четвъртък", "петък", "събота", "неделя"];
+function genTage() {
+  const d = (Math.random() * 7) | 0, [w, off] = rnd([["morgen", 1], ["übermorgen", 2], ["gestern", -1], ["vorgestern", -2]]), ans = TAGE[(d + off + 7) % 7];
+  const full = `Heute ist ${TAGE[d]}. ${w[0].toUpperCase() + w.slice(1)} ${off > 0 ? "ist" : "war"} ${ans}.`;
+  const bg = `Днес е ${TAGE_BG[d]}. ${{ morgen: "Утре е", übermorgen: "Вдругиден е", gestern: "Вчера беше", vorgestern: "Онзи ден беше" }[w]} ${TAGE_BG[(d + off + 7) % 7]}.`;
+  return { kind: "mc", task: "Кой ден?", prompt: `<div class="exs">Heute ist ${TAGE[d]}. ${w[0].toUpperCase() + w.slice(1)} ${off > 0 ? "ist" : "war"} ___ .</div>`, options: shuffle([ans, ...shuffle(TAGE.filter((t) => t !== ans)).slice(0, 3)]), answer: ans, say: full, full, bg, keys: true,
+    explain: `${esc(w)} = ${{ morgen: "утре (+1)", übermorgen: "вдругиден (+2)", gestern: "вчера (−1)", vorgestern: "онзи ден (−2)" }[w]} → <b>${ans}</b> (съкратено ${ans.slice(0, 2)}.). За миналото: <b>war</b> (беше).` };
+}
+// B3: Wo liegt …?
+const STADT_LAGE = [["Berlin", "im Osten"], ["Hamburg", "im Norden"], ["München", "im Süden"], ["Köln", "im Westen"], ["Dresden", "im Osten"], ["Hannover", "im Norden"], ["Düsseldorf", "im Westen"],
+  ["Kassel", "in der Mitte"], ["Rostock", "im Nordosten"], ["Bremen", "im Nordwesten"], ["Stuttgart", "im Südwesten"], ["Passau", "im Südosten"], ["Frankfurt an der Oder", "im Osten"], ["Leipzig", "im Osten"]];
+const LAGE_BG = { "im Osten": "източната", "im Westen": "западната", "im Norden": "северната", "im Süden": "южната", "im Nordosten": "североизточната", "im Nordwesten": "северозападната", "im Südosten": "югоизточната", "im Südwesten": "югозападната" };
+const STADT_BG = { Berlin: "Берлин", Hamburg: "Хамбург", München: "Мюнхен", Köln: "Кьолн", Dresden: "Дрезден", Hannover: "Хановер", Düsseldorf: "Дюселдорф", Kassel: "Касел", Rostock: "Росток", Bremen: "Бремен", Stuttgart: "Щутгарт", Passau: "Пасау", "Frankfurt an der Oder": "Франкфурт на Одер", Leipzig: "Лайпциг" };
+function genLage() {
+  const [st, lage] = rnd(STADT_LAGE), full = `${st} liegt ${lage} von Deutschland.`;
+  const bg = lage === "in der Mitte" ? `${STADT_BG[st]} се намира в средата на Германия.` : `${STADT_BG[st]} се намира в ${LAGE_BG[lage]} част на Германия.`;
+  if (Math.random() < 0.5) { const word = lage.split(" ").pop(), right = lage.startsWith("in der") ? "in der" : "im";
+    return { kind: "mc", task: "im или in der?", prompt: `<div class="exs">${esc(st)} liegt ___ ${esc(word)} von Deutschland.</div>`, options: ["im", "in der", "in die", "am"], answer: right, say: full, full, bg, keys: true,
+      explain: right === "im" ? `der ${esc(word)} → in + dem = <b>im</b>. Всички посоки са der.` : `<b>die</b> Mitte → <b>in der</b> Mitte (единственото die).` }; }
+  return { kind: "mc", task: `Wo liegt ${esc(st)}? (по картата от учебника)`, prompt: `<div class="exs">${esc(st)} liegt ___ von Deutschland.</div>`, options: shuffle([lage, ...shuffle([...new Set(STADT_LAGE.map((x) => x[1]))].filter((x) => x !== lage)).slice(0, 3)]), answer: lage, say: full, full, bg, keys: true,
+    explain: `${esc(full)} · север = Norden, юг = Süden, изток = Osten, запад = Westen.` };
+}
+// B4: превъзходна степен
+const SUPER = [["berühmt", "das", "Wirtshaus", "berühmteste", "Кръчмата е най-прочута.", "най-прочутата кръчма"], ["bekannt", "die", "Bilder", "bekanntesten", "Картините са най-известни.", "най-известните картини"],
+  ["bedeutend", "das", "Museum", "bedeutendste", "Музеят е най-значим.", "най-значимият музей"], ["groß", "die", "Stadt", "größte", "Градът е най-голям.", "най-големият град"],
+  ["klein", "das", "Zimmer", "kleinste", "Стаята е най-малка.", "най-малката стая"], ["alt", "das", "Haus", "älteste", "Къщата е най-стара.", "най-старата къща"],
+  ["modern", "der", "Computer", "modernste", "Компютърът е най-модерен.", "най-модерният компютър"], ["interessant", "das", "Buch", "interessanteste", "Книгата е най-интересна.", "най-интересната книга"]];
+function genSuper() {
+  const [adj, art, n, sup, bgAm, bgPre] = rnd(SUPER), pl = n === "Bilder";
+  if (Math.random() < 0.5) {
+    const am = "am " + (sup.endsWith("en") ? sup : sup + "n"), wrong = ["am " + adj + "sten", adj + "er", "am " + adj + "esten"].filter((x) => x !== am);
+    const full = `${art === "die" && pl ? "Die Bilder sind" : `${art[0].toUpperCase() + art.slice(1)} ${n} ist`} ${am}.`;
+    return { kind: "mc", task: `Най-… : ${esc(adj)} → ?`, prompt: `<div class="exs">${esc(full.replace(am, "___"))}</div>`, options: shuffle([...new Set([am, ...wrong])]).slice(0, 4), answer: am, say: full, full, bg: bgAm, keys: true,
+      explain: `След глагола: <b>am …sten</b> → ${esc(am)}.${/[tdsßz]$/.test(adj) && !adj.endsWith("end") ? " След -t/-d/-s/-z се вмъква <b>-e-</b>." : adj.endsWith("end") ? " При -end: без -e- (bedeutendsten)." : ""}${["groß", "alt"].includes(adj) ? " Тук има и умлаут." : ""}` };
+  }
+  const full = `${art[0].toUpperCase() + art.slice(1)} ${sup} ${n}`;
+  return { kind: "mc", task: "Най-… пред съществително", prompt: `<div class="exs">${art} ___ ${esc(n)} (${esc(adj)})</div>`, options: shuffle([sup, adj + "er", "am " + sup + (sup.endsWith("en") ? "" : "n"), adj]), answer: sup, say: full, full, bg: bgPre, keys: true,
+    explain: `Пред съществително: член + <b>…ste</b>${pl ? " (мн.ч. → -sten)" : ""}: ${art} <b>${esc(sup)}</b> ${esc(n)}. „am …sten“ е само след ist/sind.` };
+}
+// A26: Öffnungszeiten — четене на табела
+const MUSEEN = [["Stadtmuseum", "Di.–So.", "10.00", "18.00", "Montag"], ["Ägyptisches Museum", "Di.–Sa.", "13.00", "17.00", "Sonntag und Montag"], ["Fotomuseum", "Mo.–Fr.", "14.00", "18.00", "Samstag und Sonntag"],
+  ["Industriemuseum", "Mo.–Sa.", "9.00", "18.00", "Sonntag"], ["Museum für Natur und Technik", "Mi.–So.", "10.00", "17.00", "Montag und Dienstag"]];
+function genOeffnung() {
+  const [m, days, from, to, closed] = rnd(MUSEEN), q = Math.random() < 0.5;
+  const sign = `<div class="ocard"><b>${esc(m)}</b><div>${esc(days)} ${from} bis ${to} Uhr</div></div>`;
+  if (q) { const full = `Das ${m.replace("Ägyptisches", "Ägyptische")} hat von ${from} bis ${to} Uhr geöffnet.`, bg = `Музеят е отворен от ${from} до ${to} часа.`, wrongs = [`von ${to} bis ${from} Uhr`, `um ${from} Uhr`, `bis ${from} Uhr`];
+    return { kind: "mc", task: "Wann hat das Museum geöffnet?", prompt: sign, options: shuffle([`von ${from} bis ${to} Uhr`, ...wrongs]), answer: `von ${from} bis ${to} Uhr`, say: full, full, bg, keys: true,
+      explain: `<b>von</b> … <b>bis</b> = от … до. ${esc(days)} = ${esc(days.replace("Mo.", "Montag").replace("Di.", "Dienstag").replace("Mi.", "Mittwoch").replace("Do.", "Donnerstag").replace("Fr.", "Freitag").replace("Sa.", "Samstag").replace("So.", "Sonntag").replace("–", " bis "))}.` }; }
+  const DAYBG = { Montag: "понеделник", Dienstag: "вторник", Mittwoch: "сряда", Samstag: "събота", Sonntag: "неделя" };
+  const full = `Am ${closed} ist das Museum geschlossen.`, bg = `В ${closed.split(" und ").map((d) => DAYBG[d]).join(" и ")} музеят е затворен.`.replace("В в", "Във в"), all = ["Montag", "Sonntag", "Samstag und Sonntag", "Montag und Dienstag", "Sonntag und Montag", "Mittwoch"];
+  return { kind: "mc", task: "Кога е затворено?", prompt: sign, options: shuffle([closed, ...shuffle(all.filter((x) => x !== closed)).slice(0, 3)]), answer: closed, say: full, full, bg, keys: true,
+    explain: `Отворено е ${esc(days)} → останалите дни е <b>geschlossen</b>: am ${esc(closed)}. Mo. Di. Mi. Do. Fr. Sa. So. = съкращенията на дните.` };
+}
+EX_TYPES.push(
+  { k: "brauchen", skill: "Граматика", ic: "🧰", t: "Brauchst du …? – Nein, … keinen", d: "einen → keinen, eine → keine, ein → kein (C2)", gen: genBrauchen },
+  { k: "kompos", skill: "Думи", ic: "🧩", t: "Сложни думи: кой член?", d: "das Hotel + der Schlüssel = der Hotelschlüssel (C7)", gen: genKompos },
+  { k: "tageszeit", skill: "Думи", ic: "🌅", t: "Части на деня", d: "morgens, der Nachmittag, übermorgen (A27)", gen: genTageszeit },
+  { k: "tage", skill: "Думи", ic: "📆", t: "gestern, morgen, übermorgen", d: "Heute ist Montag. Übermorgen ist …", gen: genTage },
+  { k: "lage", skill: "Четене и слушане", ic: "🧭", t: "Wo liegt …? Посоки", d: "Berlin liegt im Osten (B3)", gen: genLage },
+  { k: "super", skill: "Граматика", ic: "🏆", t: "Най-…: am berühmtesten", d: "das berühmteste Wirtshaus (B4)", gen: genSuper },
+  { k: "oeffnung", skill: "Четене и слушане", ic: "🏛️", t: "Работно време на музея", d: "Wann hat das Museum geöffnet? (A26)", gen: genOeffnung },
+);
 // ── сесия
 let exSess = null;
 function startEx(k, opts = {}) {

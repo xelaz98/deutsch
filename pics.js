@@ -178,4 +178,13 @@ const PICS = {
   "zerreißen": 2545,
   "zählen": 2714,
   "Ärztin": 8263,
+  // урок 10
+  "liegen": 8241,
+  "glücklich": 35547,
+  "Konzert": 11584,
+  "Hafen": 3145,
+  "Wirtshaus": 32358,
+  "Liter": 7145,
+  "LKW": 6956,
+  "Lastkraftwagen": 6956,
 };

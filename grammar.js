@@ -519,7 +519,15 @@ const GRAMMAR = [
 <tr><td>gern – с удоволствие</td><td><b>lieber</b> – предпочитам</td><td><b>am liebsten</b> – най-много обичам</td></tr>
 <tr><td>viel – много</td><td><b>mehr</b> – повече</td><td><b>am meisten</b> – най-много</td></tr></table>
 <p>Правилото: <b>+er</b> / <b>am …sten</b> (често с умлаут: groß → gr<b>ö</b>ßer). gern и viel са неправилни.</p>
-<p><i>Ich lese <b>gern</b> Krimis, <b>lieber</b> Romane und <b>am liebsten</b> Gedichte.</i></p>`
+<p><i>Ich lese <b>gern</b> Krimis, <b>lieber</b> Romane und <b>am liebsten</b> Gedichte.</i></p>
+<h4>Превъзходна степен: am …sten / der …ste (урок 10)</h4>
+<table class="g"><tr><th>основна</th><th>сравнителна</th><th>превъзходна</th></tr>
+<tr><td>berühmt</td><td>berühmt<b>er</b></td><td>am berühmt<b>esten</b></td></tr>
+<tr><td>bekannt</td><td>bekannt<b>er</b></td><td>am bekannt<b>esten</b></td></tr>
+<tr><td>bedeutend</td><td>bedeutend<b>er</b></td><td>am bedeutend<b>sten</b></td></tr>
+<tr><td>klein</td><td>klein<b>er</b></td><td>am klein<b>sten</b></td></tr></table>
+<p class="tip">💡 След <b>-t, -d, -s, -ß, -z</b> се вмъква <b>-e-</b>, за да се изговаря: berühmt<b>e</b>sten, bekannt<b>e</b>sten. Изключения: при <b>-end</b> (bedeutend) — без -e-: bedeutend<b>sten</b>; groß → am gr<b>ö</b>ß<b>ten</b> (без -e-, с умлаут).</p>
+<p><b>Пред съществително</b> → der/die/das + <b>-ste</b>: <i>das berühmte<b>ste</b> Wirtshaus der Welt, das bedeutend<b>ste</b> Museum, die bekannte<b>sten</b> Bilder</i> (мн.ч. -sten).</p>`
   },
   {
     id: "numbers", title: "Числа", icon: "#",
@@ -586,5 +594,61 @@ const GRAMMAR = [
 Мн.ч.: <b>die USA, die Niederlande</b> → in <b>den</b> USA.</p>
 <h4>Държава → език</h4>
 <p>Bulgarien → Bulgarisch · Deutschland → Deutsch · Polen → Polnisch · Tschechien → Tschechisch · Frankreich → Französisch</p>`
+  },
+  {
+    id: "tageszeit", title: "Части на деня: morgens, am Morgen, morgen", icon: "🌅",
+    html: `
+<table class="g"><tr><th>кога?</th><th>част от деня</th><th>всеки ден (навик)</th></tr>
+<tr><td>ca. 8–10 Uhr</td><td>der Morgen — сутрин</td><td><b>morgens</b></td></tr>
+<tr><td>ca. 10–12 Uhr</td><td>der Vormittag — предобед</td><td><b>vormittags</b></td></tr>
+<tr><td>ca. 12–14 Uhr</td><td>der Mittag — обед</td><td><b>mittags</b></td></tr>
+<tr><td>ca. 14–18 Uhr</td><td>der Nachmittag — следобед</td><td><b>nachmittags</b></td></tr>
+<tr><td>ca. 18–22 Uhr</td><td>der Abend — вечер</td><td><b>abends</b></td></tr>
+<tr><td>ab ca. 22 Uhr</td><td><b>die</b> Nacht — нощ</td><td><b>nachts</b></td></tr></table>
+<p>Всички са <b>der</b>, само <b>die Nacht</b> е die. С <b>-s</b> и малка буква = „всеки ден по това време“: <i>Ich trinke <b>morgens</b> Kaffee.</i> = <i><b>Jeden Morgen</b> trinke ich Kaffee.</i></p>
+<h4>Капанът: morgen или Morgen?</h4>
+<ul><li><b>morgen</b> (малка буква) = <b>утре</b>: <i>Morgen fahre ich nach Hamburg.</i></li>
+<li><b>der Morgen</b> (голяма буква) = <b>сутринта</b>: <i>Guten Morgen!</i></li>
+<li>Заедно: <i>morgen Vormittag</i> = утре предобед, <i>heute Abend</i> = довечера (частта от деня — с голяма буква).</li></ul>
+<h4>Дни подред</h4>
+<p>vorgestern (онзи ден) → gestern (вчера) → <b>heute</b> (днес) → morgen (утре) → übermorgen (вдругиден)</p>
+<h4>am, im или без предлог?</h4>
+<table class="g"><tr><th>предлог</th><th>с какво</th><th>пример</th></tr>
+<tr><td><b>um</b></td><td>час</td><td>um 8 Uhr</td></tr>
+<tr><td><b>am</b></td><td>ден, част от деня</td><td>am Montag, am Abend (но: in der Nacht)</td></tr>
+<tr><td><b>im</b></td><td>месец, сезон</td><td>im November, im Sommer</td></tr>
+<tr><td><b>im Jahr</b> / без предлог</td><td>година</td><td>im Jahr 1999 · 1999 (никога „in 1999“!)</td></tr></table>
+<p class="tip">💡 Дните се съкращават с две букви и точка: Mo. Di. Mi. Do. Fr. Sa. So. — <i>von Di. bis Sa. geöffnet</i>.</p>
+<p class="tip">💡 Stunde ≠ Uhr: <i>Der Film dauert zwei <b>Stunden</b></i> (колко дълго) · <i>Er beginnt um zwei <b>Uhr</b></i> (в колко часа).</p>`
+  },
+  {
+    id: "himmel", title: "Wo liegt …? Посоките на света", icon: "🧭",
+    html: `
+<table class="g"><tr><td>der Nordwesten<br><small>северозапад</small></td><td><b>der Norden</b><br><small>север</small></td><td>der Nordosten<br><small>североизток</small></td></tr>
+<tr><td><b>der Westen</b><br><small>запад</small></td><td><b>die Mitte</b><br><small>средата</small></td><td><b>der Osten</b><br><small>изток</small></td></tr>
+<tr><td>der Südwesten<br><small>югозапад</small></td><td><b>der Süden</b><br><small>юг</small></td><td>der Südosten<br><small>югоизток</small></td></tr></table>
+<p>Посоките са <b>der</b> → „къде?“ = <b>im</b> (in + dem): <i>Berlin liegt <b>im</b> Osten von Deutschland.</i></p>
+<p class="tip">⚠️ Само <b>die Mitte</b> е die → <b>in der</b> Mitte: <i>Kassel liegt <b>in der</b> Mitte von Deutschland.</i></p>
+<p>Въпрос: <i><b>Wo liegt</b> München?</i> — Отговор: <i>München <b>liegt im Süden</b> von Deutschland.</i> (liegen = намирам се — за градове, сгради, хотели)</p>`
+  },
+  {
+    id: "komposita", title: "Сложни думи и имена (das Hotelzimmer)", icon: "🧩",
+    html: `
+<p>Немският лепи думи една за друга. <b>Последната дума решава члена</b> (и множественото число):</p>
+<table class="g"><tr><th>части</th><th>нова дума</th></tr>
+<tr><td>das Telefon + <span class="art die">die</span> Nummer</td><td><span class="art die">die</span> Telefonnummer</td></tr>
+<tr><td>das Internet + <span class="art der">der</span> Anschluss</td><td><span class="art der">der</span> Internetanschluss</td></tr>
+<tr><td>das Hotel + <span class="art der">der</span> Schlüssel</td><td><span class="art der">der</span> Hotelschlüssel</td></tr>
+<tr><td>das Hotel + <span class="art das">das</span> Zimmer</td><td><span class="art das">das</span> Hotelzimmer</td></tr>
+<tr><td>das Hotel + das Zimmer + <span class="art der">der</span> Schlüssel</td><td><span class="art der">der</span> Hotelzimmerschlüssel</td></tr>
+<tr><td>der Computer + <span class="art das">das</span> Programm</td><td><span class="art das">das</span> Computerprogramm</td></tr></table>
+<p class="tip">💡 Понякога се добавя -s- за лепило: der Wirt + s + das Haus = das Wirt<b>s</b>haus, die Öffnung + s + die Zeit = die Öffnung<b>s</b>zeit.</p>
+<h4>Прилагателни в имена — с главна буква</h4>
+<p>В имена прилагателното се пише <b>с голяма буква</b>: <i>das <b>D</b>eutsche Museum, der <b>E</b>nglische Garten, die <b>S</b>üddeutsche Zeitung</i>.<br>
+Иначе — с малка: <i>die <b>d</b>eutsche Sprache, eine <b>e</b>nglische Kollegin</i>. Окончанието се сменя както обикновено: <i>Ich besuche <b>den</b> Englisch<b>en</b> Garten.</i></p>
+<h4>Wer? или Wen? (Kapitel 3, C9)</h4>
+<p><b>sein</b> → двете страни са Nominativ: <i>Er ist <b>ein guter</b> Arzt.</i> (Wer?)<br>
+Повечето глаголи искат Akkusativ (Wen? Was?): <i>Ich brauche <b>ein</b> Auto. Das Zimmer hat <b>einen</b> Fernseher. Sie besucht <b>ihren</b> Freund.</i></p>
+<p class="tip">📋 Глаголи с Akkusativ: besuchen, bezahlen, brauchen, es gibt, essen, finden, haben, hören, kennen, kosten, lesen, machen, möchten, öffnen, parken, sehen, studieren, trinken, bewundern, umfassen.</p>`
   },
 ];

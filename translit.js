@@ -3,7 +3,8 @@
 const TR_WHOLE = {
   ukraine: "украине", usa: "у-ес-а", venedig: "венедих",
   verb: "верп", verben: "вербен", woher: "вохер", wohin: "вохин", chemiker: "хемикер",
-  november: "новембер", hiphop: "хипхоп", orchester: "оркестер", klavier: "клавир", e: "и", mail: "мейл", stabil: "стабил", steak: "стейк", steaks: "стейкс", cd: "це-де", cds: "це-декс", ski: "ши", skier: "шиер", yoga: "йога", jazz: "джес", volleyball: "волибал", laptop: "лептоп", laptops: "лептопс", bzw: "бе-цет-ве", orange: "оранже", ca: "ка", ok: "окей",
+  november: "новембер", hiphop: "хипхоп", orchester: "оркестер", klavier: "клавир", e: "и", mail: "мейл", stabil: "стабил", steak: "стейк", steaks: "стейкс", cd: "це-де", cds: "це-декс", ski: "ши", skier: "шиер", yoga: "йога", jazz: "джес", volleyball: "волибал", laptop: "лептоп", laptops: "лептопс", bzw: "бе-цет-ве", orange: "оранже", ca: "цирка", ok: "окей",
+  lkw: "ел-ка-ве", pkw: "пе-ка-ве", z: "цет", b: "бе", hofbräuhaus: "хофбройхаус", geehrter: "геертер", geehrte: "геерте", liter: "литер",
 };
 // подниз → транскрипция (prefix: само в началото на думата)
 const TR_SUBS = [

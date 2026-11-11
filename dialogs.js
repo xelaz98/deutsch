@@ -145,3 +145,28 @@ EX_TYPES.push(
   { k: "dlgfill", skill: "Четене и слушане", ic: "🧩", t: "Коя реплика липсва?", d: "24 ситуации: пекарна, лекар, гара, пазаруване…", gen: genDlgFill },
   { k: "dlgorder", skill: "Четене и слушане", ic: "🔀", t: "Подреди диалога", d: "Сглоби разговора в правилния ред", gen: genDlgOrder },
 );
+
+// урок 10 (Kapitel 3, A26–A27): обаждане в музея и имейлът на Петер
+const DIALOGS3 = [
+  { title: "Обаждане в музея", ic: "🏛️", lines: [
+    ["Besucher", "Ja, guten Tag. Ich habe eine Frage. Wann hat das Stadtmuseum geöffnet?", "Да, добър ден. Имам въпрос. Кога е отворен Градският музей?"],
+    ["Museum", "Das Stadtmuseum hat von 10 bis 18 Uhr geöffnet.", "Градският музей е отворен от 10 до 18 часа."],
+    ["Besucher", "Haben Sie immer geöffnet, von Montag bis Sonntag?", "Винаги ли сте отворени, от понеделник до неделя?"],
+    ["Museum", "Nein, am Montag ist das Museum geschlossen.", "Не, в понеделник музеят е затворен."],
+    ["Besucher", "Und wie viel kostet eine Eintrittskarte?", "А колко струва един входен билет?"],
+    ["Museum", "Eine Eintrittskarte kostet 2,50 Euro. Sonntags ist der Eintritt frei.", "Един билет струва 2,50 евро. В неделя входът е свободен."],
+    ["Besucher", "Kann ich mit Kreditkarte bezahlen?", "Мога ли да платя с кредитна карта?"],
+    ["Museum", "Nein, wir nehmen nur Bargeld.", "Не, приемаме само пари в брой."],
+    ["Besucher", "Gut. Danke für die Auskunft. Auf Wiederhören!", "Добре. Благодаря за информацията. Довиждане!"]],
+    qs: [["Das Museum hat bis 18 Uhr geöffnet.", true, 1], ["Am Montag ist das Museum geöffnet.", false, 3], ["Sonntags kostet der Eintritt nichts.", true, 5], ["Man kann mit Kreditkarte bezahlen.", false, 7]] },
+  { title: "Имейл от Мюнхен", ic: "✉️", lines: [
+    ["Peter", "Liebe Klara, viele Grüße aus München.", "Мила Клара, много поздрави от Мюнхен."],
+    ["Peter", "Mein Hotel liegt im Zentrum. Das Hotelzimmer ist sehr groß.", "Хотелът ми се намира в центъра. Хотелската стая е много голяма."],
+    ["Peter", "Es hat einen Fernseher und zum Glück einen Internetanschluss.", "Има телевизор и за щастие интернет връзка."],
+    ["Peter", "Heute Abend um 20 Uhr gibt das Orchester ein Konzert und ich spiele, wie immer, Klavier.", "Довечера в 20 часа оркестърът изнася концерт и аз, както винаги, свиря на пиано."],
+    ["Peter", "Aber bis 20 Uhr habe ich noch etwas Zeit. Ich möchte das Deutsche Museum besuchen.", "Но до 20 часа имам още малко време. Искам да посетя Германския музей."],
+    ["Peter", "Vielleicht mache ich auch noch einen Spaziergang und trinke ein Bier. Aber nur ein Bier!", "Може би ще се разходя и ще изпия една бира. Но само една!"],
+    ["Peter", "Liebe Grüße, dein Peter", "Сърдечни поздрави, твой Петер"]],
+    qs: [["Peters Hotel liegt im Zentrum.", true, 1], ["Das Hotelzimmer ist klein.", false, 1], ["Peter spielt heute Abend Gitarre.", false, 3], ["Peter möchte ein Museum besuchen.", true, 4], ["Peter trinkt drei Bier.", false, 5]] },
+];
+DIALOGS.push(...DIALOGS3.map((d) => ({ title: `${d.ic} ${d.title}`, lines: d.lines, qs: d.qs })));

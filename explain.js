@@ -77,6 +77,17 @@ const XP = (() => {
     }
     return null;
   }
+  // превъзходна степен: berühmteste, am bekanntesten, größte, ältesten → { base, end }
+  const SUP_IRR = { best: "gut", meist: "viel", liebst: "gern", höchst: "hoch", nächst: "nah" };
+  const deUml = (x) => x.replace(/ä/g, "a").replace(/ö/g, "o").replace(/ü/g, "u");
+  function supSplit(w) {
+    const t = lc(w);
+    for (const k in SUP_IRR) { const e = t.slice(k.length); if (t.startsWith(k) && ["e", "en", "er", "es", "em"].includes(e)) return { base: SUP_IRR[k], end: e }; }
+    const m = t.match(/^(.+?)(e?st|(?<=ß)t)(e|en|er|es|em)$/);
+    if (!m) return null;
+    for (const b of [m[1], deUml(m[1])]) if (b.length > 2 && ADJS.has(b)) return { base: b, end: m[3] };
+    return null;
+  }
   const ARTDEF = { der: 1, die: 1, das: 1, den: 1, dem: 1, des: 1 };
   const EINW = /^(ein|kein|mein|dein|sein|ihr|unser|unsr|euer|eur|jed|dies|welch)(e|en|em|er|es)?$/i;
   const OWNER = { mein: "ich → мой", dein: "du → твой", sein: "er/es → негов", ihr: "sie → неин / техен", unser: "wir → наш", euer: "ihr → ваш", eur: "ihr → ваш", Ihr: "Sie → Ваш (учтиво)" };
@@ -200,6 +211,17 @@ const XP = (() => {
     T.forEach((tk, i) => {
       if (res[i].html) return;
       const w = tk.w, t = lc(w), prev = i > 0 ? lc(T[i - 1].w) : "", np = npInfo.get(i);
+      // превъзходна степен (най-…)
+      const sp = w[0] === w[0].toLowerCase() && !VERBF.has(t) && supSplit(w);
+      if (sp) {
+        const gl = (typeof LEXM !== "undefined" && LEXM[sp.base]) || "", isAm = prev === "am";
+        const irr = Object.values(SUP_IRR).includes(sp.base), eIns = /[tdsßz]$/.test(sp.base) && !sp.base.endsWith("end") && !irr && sp.base !== "groß";
+        res[i] = { kind: "adj", html: `<b>${esc(w)}</b> — <b>превъзходна степен</b> („най-…“) от <b>${esc(sp.base)}</b>${gl ? ` (${esc(gl)})` : ""}.<br>${isAm
+          ? "<b>am …sten</b> = „най-…“, когато думата <b>не стои пред съществително</b>: <i>Das Museum ist <b>am</b> bedeutend<b>sten</b>.</i> (най-значим) · <i>Ich lese <b>am</b> lieb<b>sten</b> Gedichte.</i> (най-много обичам)"
+          : `Стои <b>пред съществително</b> с der/die/das → <b>…ste</b> (ед.ч. Nominativ) или <b>…sten</b> (мн.ч. и другите падежи): <i>das berühmteste Wirtshaus, die bekanntesten Bilder</i>.`}${eIns ? `<div class="xtip">💡 След -t/-d/-s/-z се вмъква <b>-e-</b>, за да се изговаря: ${esc(sp.base)} → ${esc(sp.base)}<b>e</b>sten.</div>` : sp.base.endsWith("end") ? `<div class="xtip">💡 При -end няма -e-: bedeutend → bedeutend<b>sten</b>.</div>` : ""}${irr ? `<div class="xtip">⚠️ Неправилна форма: ${esc(sp.base)} → ${esc(w)}.</div>` : ""}` };
+        return;
+      }
+      if (t === "am" && T[i + 1] && supSplit(T[i + 1].w)) { res[i] = { kind: "other", html: "<b>am</b> + …<b>sten</b> = <b>най-</b>: <i>am berühmtesten</i> = най-прочут. Така се казва превъзходната степен, когато не стои пред съществително (Das Museum ist am bedeutendsten). Тук am не значи „на“." }; return; }
       // прилагателно
       const aj = adjSplit(w);
       if (aj && w[0] === w[0].toLowerCase() && !VERBF.has(t)) {
