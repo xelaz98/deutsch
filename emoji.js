@@ -26,6 +26,10 @@ const EMOJI = {
   Baby: "👶", Großvater: "👴", Koch: "👨‍🍳", Polizist: "👮", Feuerwehrmann: "👨‍🚒", Roboter: "🤖",
   // държави (знамена)
   Bulgarien: "🇧🇬", Österreich: "🇦🇹", Schweiz: "🇨🇭", Türkei: "🇹🇷", Ukraine: "🇺🇦", USA: "🇺🇸", Niederlande: "🇳🇱",
+  "Polen – Polnisch": "🇵🇱", "Tschechien – Tschechisch": "🇨🇿", "Frankreich – Französisch": "🇫🇷", "Deutschland – Deutsch": "🇩🇪", "Italien – italienisch": "🇮🇹",
+  europäisch: "🇪🇺",
+  // смятане
+  plus: "➕", minus: "➖", "ist gleich": "🟰",
   // цветове
   rot: "🔴", gelb: "🟡", grün: "🟢", blau: "🔵", lila: "🟣", violett: "🟣", orange: "🟠", braun: "🟤", schwarz: "⚫", weiß: "⚪",
 };
