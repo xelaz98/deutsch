@@ -41,6 +41,7 @@ const SCHEMES = (() => {
   };
   ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"].forEach((m, i) => (S[m] = year([i])));
   Object.keys(DIRS).forEach((d) => (S[d] = compass(d)));
+  S["am Donnerstag (= an dem Donnerstag)"] = S.Donnerstag;
   return S;
 })();
 // семейство на схемата — в задачите „картинка ↔ дума“ грешните варианти са от същото семейство (ден ↔ ден, месец ↔ месец)
