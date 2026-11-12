@@ -170,3 +170,26 @@ const DIALOGS3 = [
     qs: [["Peters Hotel liegt im Zentrum.", true, 1], ["Das Hotelzimmer ist klein.", false, 1], ["Peter spielt heute Abend Gitarre.", false, 3], ["Peter möchte ein Museum besuchen.", true, 4], ["Peter trinkt drei Bier.", false, 5]] },
 ];
 DIALOGS.push(...DIALOGS3.map((d) => ({ title: `${d.ic} ${d.title}`, lines: d.lines, qs: d.qs })));
+const DIALOGS4 = [
+  { title: "Закуска на шведската маса", ic: "🥐", lines: [
+    ["Anna", "Hallo Tom! Wie geht es dir?", "Здравей, Том! Как си?"],
+    ["Tom", "Es geht mir gut, danke. Aber ich habe einen Bärenhunger!", "Добре съм, благодаря. Но умирам от глад!"],
+    ["Anna", "Das Büfett ist toll. Die Teller stehen dort und das Besteck liegt da.", "Шведската маса е страхотна. Чиниите са там, а приборите — ето там."],
+    ["Tom", "Ich trinke erst mal einen Kaffee. Und du?", "Първо ще пия едно кафе. А ти?"],
+    ["Anna", "Ich mag keinen Kaffee. Ich nehme einen Kräutertee.", "Не обичам кафе. Ще взема билков чай."],
+    ["Tom", "Also, ich nehme zwei Brötchen mit Butter und Honig und ein gekochtes Ei.", "Значи, аз ще взема две хлебчета с масло и мед и едно варено яйце."],
+    ["Anna", "Ich lebe gesund. Ich esse nur Joghurt mit Früchten und eine Scheibe Vollkornbrot.", "Аз живея здравословно. Ям само кисело мляко с плодове и една филия пълнозърнест хляб."],
+    ["Tom", "Wirklich? Es gibt auch Lachs und Rührei!", "Наистина ли? Има и сьомга, и бъркани яйца!"]],
+    qs: [["Tom hat großen Hunger.", true, 1], ["Das Besteck steht auf dem Tisch.", false, 2], ["Anna trinkt gern Kaffee.", false, 4], ["Tom nimmt ein gekochtes Ei.", true, 5], ["Anna isst Lachs und Rührei.", false, 6]] },
+  { title: "В кафенето: ich hätte gern", ic: "☕", lines: [
+    ["Kellner", "Guten Morgen! Was möchten Sie?", "Добро утро! Какво желаете?"],
+    ["Gast", "Ich hätte gern eine Tasse Kaffee und ein Glas Orangensaft.", "Бих искал чаша кафе и чаша портокалов сок."],
+    ["Kellner", "Gern. Und zum Essen?", "С удоволствие. А за ядене?"],
+    ["Gast", "Ein Brötchen mit Schinken, bitte. Haben Sie auch Frischkäse?", "Едно хлебче с шунка, моля. Имате ли и крема сирене?"],
+    ["Kellner", "Nein, leider nicht. Aber wir haben Käse und Marmelade.", "Не, за съжаление. Но имаме сирене и конфитюр."],
+    ["Gast", "Dann nehme ich noch eine Scheibe Käse.", "Тогава ще взема още един резен сирене."],
+    ["Kellner", "Wann frühstücken Sie morgen? Am Samstag öffnen wir um 8 Uhr.", "Кога ще закусвате утре? В събота отваряме в 8 часа."],
+    ["Gast", "Vielleicht um 9 Uhr. Danke!", "Може би в 9 часа. Благодаря!"]],
+    qs: [["Der Gast möchte Tee.", false, 1], ["Es gibt keinen Frischkäse.", true, 4], ["Der Gast nimmt eine Scheibe Käse.", true, 5], ["Am Samstag öffnet das Café um 9 Uhr.", false, 6]] },
+];
+DIALOGS.push(...DIALOGS4.map((d) => ({ title: `${d.ic} ${d.title}`, lines: d.lines, qs: d.qs })));

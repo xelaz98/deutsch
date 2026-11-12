@@ -632,6 +632,50 @@ const GRAMMAR = [
 <p>Въпрос: <i><b>Wo liegt</b> München?</i> — Отговор: <i>München <b>liegt im Süden</b> von Deutschland.</i> (liegen = намирам се — за градове, сгради, хотели)</p>`
   },
   {
+    id: "wann", title: "Кога? am, um, im (предлози за време)", icon: "⏰",
+    html: `
+<p>На въпроса <b>Wann?</b> (кога?) отговаряме с един от три предлога. Учебникът ги нарича <b>temporal</b> — „за време“.</p>
+<table class="g"><tr><th>предлог</th><th>за какво</th><th>пример</th></tr>
+<tr><td><b>um</b></td><td>точен час</td><td><i><b>um</b> 8 Uhr, <b>um</b> halb zehn</i></td></tr>
+<tr><td><b>am</b></td><td>ден, част от деня, дата</td><td><i><b>am</b> Donnerstag, <b>am</b> Morgen, <b>am</b> Wochenende, <b>am</b> 3. Mai</i></td></tr>
+<tr><td><b>im</b></td><td>месец, сезон</td><td><i><b>im</b> Mai, <b>im</b> Sommer, <b>im</b> Winter</i></td></tr></table>
+<p><b>am = an + dem</b> · <b>im = in + dem</b> — двете думи се сливат в една. Никой не казва „an dem Donnerstag“ в разговор.</p>
+<p class="tip">🔑 Трик за запомняне — от малко към голямо: <b>um</b> (час) → <b>am</b> (ден) → <b>im</b> (месец).<br>Изключение: <b>in der Nacht</b> (през нощта) — die Nacht е женски род.</p>
+<p><i>Wann frühstückst du? — <b>Am</b> Sonntag frühstücke ich <b>um</b> 10 Uhr.</i><br>
+<i>Wann hast du Urlaub? — <b>Im</b> August.</i></p>
+<p class="tip">💡 Ако времето е в началото, глаголът пак е <b>втори</b>: <i><b>Am Morgen</b> trinke ich Kaffee.</i> (не „Am Morgen ich trinke“)</p>`
+  },
+  {
+    id: "buefett", title: "На шведската маса: ich hätte gern, mögen, wollen", icon: "🥐",
+    html: `
+<h4>Три начина да кажеш „искам“</h4>
+<table class="g"><tr><th></th><th>значение</th><th>пример</th></tr>
+<tr><td><b>ich möchte</b></td><td>бих искал — учтиво, най-често</td><td><i>Ich möchte einen Kaffee.</i></td></tr>
+<tr><td><b>ich hätte gern</b></td><td>бих искал — също учтиво, в кафене/магазин</td><td><i>Ich hätte gern ein Brötchen.</i></td></tr>
+<tr><td><b>ich will</b></td><td>искам — твърдо, звучи грубо пред сервитьор</td><td><i>Ich will jetzt essen!</i></td></tr></table>
+<p class="tip">⚠️ <b>ich will</b> ≠ „ще“! На български „ще взема“ = <b>ich nehme</b>.</p>
+<h4>Една и съща схема: сега – тогава – учтиво</h4>
+<table class="g"><tr><th>сега</th><th>минало</th><th>учтиво желание</th></tr>
+<tr><td>ich <b>mag</b> (харесвам)</td><td>ich <b>mochte</b> (харесвах)</td><td>ich <b>möchte</b> (бих искал)</td></tr>
+<tr><td>ich <b>habe</b> (имам)</td><td>ich <b>hatte</b> (имах)</td><td>ich <b>hätte</b> (бих имал)</td></tr></table>
+<p>Учтивата форма = миналото + <b>умлаут</b>: mochte → m<b>ö</b>chte, hatte → h<b>ä</b>tte.</p>
+<h4>wollen и mögen: ich = er</h4>
+<table class="g"><tr><th></th><th>wollen</th><th>mögen</th><th>nehmen</th></tr>
+<tr><td>ich</td><td><b>will</b></td><td><b>mag</b></td><td>nehme</td></tr>
+<tr><td>du</td><td>willst</td><td>magst</td><td><b>nimmst</b></td></tr>
+<tr><td>er/sie/es</td><td><b>will</b></td><td><b>mag</b></td><td><b>nimmt</b></td></tr>
+<tr><td>wir</td><td>wollen</td><td>mögen</td><td>nehmen</td></tr>
+<tr><td>ihr</td><td>wollt</td><td>mögt</td><td>nehmt</td></tr>
+<tr><td>sie/Sie</td><td>wollen</td><td>mögen</td><td>nehmen</td></tr></table>
+<h4>Мерки: без „von“</h4>
+<p><i>eine Tasse Kaffee · ein Glas Saft · eine Scheibe Brot · zwei Scheiben Käse</i> — мярката и храната стоят една до друга, без предлог (на български: „чаша <b>с</b> кафе“, на немски — не).</p>
+<h4>stehen или liegen?</h4>
+<p><b>stehen</b> = изправено: <i>Die Gläser <b>stehen</b> auf dem Büfett.</i> · <b>liegen</b> = легнало: <i>Das Besteck <b>liegt</b> dort.</i></p>
+<h4>Гладен съм</h4>
+<p><i>Ich <b>habe</b> Hunger.</i> — с <b>haben</b>, не със sein! · <i>Ich habe einen Bärenhunger!</i> = Умирам от глад.</p>
+<p class="tip">💡 <b>erst</b> = първо / чак: <i>Erst Kaffee, dann Brötchen.</i> · <i>Er kommt erst um 10.</i> (= чак в 10) · <b>nur</b> = само.</p>`
+  },
+  {
     id: "komposita", title: "Сложни думи и имена (das Hotelzimmer)", icon: "🧩",
     html: `
 <p>Немският лепи думи една за друга. <b>Последната дума решава члена</b> (и множественото число):</p>

@@ -1185,6 +1185,38 @@ function genTage() {
   return { kind: "mc", task: "Кой ден?", prompt: `<div class="exs">Heute ist ${TAGE[d]}. ${w[0].toUpperCase() + w.slice(1)} ${off > 0 ? "ist" : "war"} ___ .</div>`, options: shuffle([ans, ...shuffle(TAGE.filter((t) => t !== ans)).slice(0, 3)]), answer: ans, say: full, full, bg, keys: true,
     explain: `${esc(w)} = ${{ morgen: "утре (+1)", übermorgen: "вдругиден (+2)", gestern: "вчера (−1)", vorgestern: "онзи ден (−2)" }[w]} → <b>${ans}</b> (съкратено ${ans.slice(0, 2)}.). За миналото: <b>war</b> (беше).` };
 }
+// урок 11: Wann? am / um / im
+const WANN = [["8 Uhr", "um", "в 8 часа"], ["halb zehn", "um", "в девет и половина"], ["10 Uhr", "um", "в 10 часа"], ["7 Uhr", "um", "в 7 часа"],
+  ["Donnerstag", "am", "в четвъртък"], ["Montag", "am", "в понеделник"], ["Sonntag", "am", "в неделя"], ["Wochenende", "am", "през уикенда"], ["Morgen", "am", "сутринта"], ["Abend", "am", "вечерта"], ["Mittag", "am", "на обед"],
+  ["Mai", "im", "през май"], ["Dezember", "im", "през декември"], ["Juli", "im", "през юли"], ["Januar", "im", "през януари"], ["Nacht", "in der", "през нощта"]];
+const WANN_ACT = [["Ich frühstücke", "Закусвам"], ["Wir trinken Kaffee", "Пием кафе"], ["Er kocht Eier", "Той вари яйца"], ["Sie lernt Deutsch", "Тя учи немски"], ["Wir haben Hunger", "Гладни сме"]];
+function genWann() {
+  const [t, p, tbg] = rnd(WANN), [a, abg] = rnd(WANN_ACT);
+  const full = `${a} ${p} ${t}.`, bg = `${abg} ${tbg}.`;
+  const why = { um: "точен час → <b>um</b>", am: "ден или част от деня → <b>am</b> (= an + dem)", im: "месец → <b>im</b> (= in + dem)", "in der": "die Nacht → изключение: <b>in der</b> Nacht" }[p];
+  return { kind: "mc", task: "Wann? am, um или im?", prompt: `<div class="exs">${esc(a)} ___ ${esc(t)}.</div>`, options: ["um", "am", "im", "in der"], answer: p, say: full, full, bg, keys: true,
+    explain: `${why}. Трик: <b>um</b> (час) → <b>am</b> (ден) → <b>im</b> (месец).` };
+}
+// урок 11: stehen или liegen на шведската маса
+const BUEF = [["Die Gläser", "stehen", "Чашите са"], ["Die Tasse", "steht", "Чашата е"], ["Die Teller", "stehen", "Чиниите са"], ["Die Kaffeemaschine", "steht", "Кафемашината е"],
+  ["Das Besteck", "liegt", "Приборите са"], ["Die Brötchen", "liegen", "Хлебчетата са"], ["Die Banane", "liegt", "Бананът е"], ["Die Äpfel", "liegen", "Ябълките са"], ["Der Lachs", "liegt", "Сьомгата е"]];
+function genStehLieg() {
+  const [s, v, sbg] = rnd(BUEF), [w, wbg] = rnd([["dort", "там"], ["da", "там"], ["auf dem Büfett", "на шведската маса"]]);
+  const full = `${s} ${v} ${w}.`, pl = /en$/.test(v), opts = pl ? ["stehen", "liegen", "steht", "liegt"] : ["steht", "liegt", "stehen", "liegen"];
+  return { kind: "mc", task: "stehen или liegen?", prompt: `<div class="exs">${esc(s)} ___ ${esc(w)}.</div>`, options: opts, answer: v, say: full, full, bg: `${sbg} ${wbg}.`, keys: true,
+    explain: `${v.startsWith("st") ? "изправено (чаша, чиния, уред) → <b>stehen</b>" : "легнало (прибори, хляб, плодове) → <b>liegen</b>"} · ${pl ? "мн.ч. → -en" : "ед.ч. → -t"}.` };
+}
+// урок 11: мерки без „von“: eine Tasse Kaffee, ein Glas Saft, eine Scheibe Brot
+const MASS = [["eine Tasse", "Kaffee", "чаша кафе"], ["eine Tasse", "Kräutertee", "чаша билков чай"], ["eine Tasse", "Tee", "чаша чай"],
+  ["ein Glas", "Saft", "чаша сок"], ["ein Glas", "Orangensaft", "чаша портокалов сок"], ["ein Glas", "Milch", "чаша мляко"],
+  ["eine Scheibe", "Brot", "филия хляб"], ["eine Scheibe", "Käse", "резен сирене"], ["eine Scheibe", "Schinken", "резен шунка"], ["eine Scheibe", "Vollkornbrot", "филия пълнозърнест хляб"]];
+function genMass() {
+  const [m, f, mbg] = rnd(MASS), art = m.split(" ")[0], noun = m.split(" ")[1];
+  const wrongArt = (art === "eine" ? "ein " : "eine ") + noun, other = noun === "Scheibe" ? rnd(["eine Tasse", "ein Glas"]) : "eine Scheibe";
+  const full = `Ich hätte gern ${m} ${f}.`;
+  return { kind: "mc", task: "Коя мярка? (Ich hätte gern …)", prompt: `<div class="exs">Ich hätte gern ___ ${esc(f)}.</div>`, options: shuffle([m, `${m} von`, wrongArt, other]), answer: m, say: full, full, bg: `Бих искал ${mbg}.`, keys: true,
+    explain: `Мярка + храна <b>без „von“</b>: ${esc(m)} ${esc(f)} · ${noun === "Glas" ? "das Glas → <b>ein</b>" : `die ${noun} → <b>eine</b>`}.` };
+}
 // B3: Wo liegt …?
 const STADT_LAGE = [["Berlin", "im Osten"], ["Hamburg", "im Norden"], ["München", "im Süden"], ["Köln", "im Westen"], ["Dresden", "im Osten"], ["Hannover", "im Norden"], ["Düsseldorf", "im Westen"],
   ["Kassel", "in der Mitte"], ["Rostock", "im Nordosten"], ["Bremen", "im Nordwesten"], ["Stuttgart", "im Südwesten"], ["Passau", "im Südosten"], ["Frankfurt an der Oder", "im Osten"], ["Leipzig", "im Osten"]];
@@ -1238,6 +1270,9 @@ EX_TYPES.push(
   { k: "lage", skill: "Четене и слушане", ic: "🧭", t: "Wo liegt …? Посоки", d: "Berlin liegt im Osten (B3)", gen: genLage },
   { k: "super", skill: "Граматика", ic: "🏆", t: "Най-…: am berühmtesten", d: "das berühmteste Wirtshaus (B4)", gen: genSuper },
   { k: "oeffnung", skill: "Четене и слушане", ic: "🏛️", t: "Работно време на музея", d: "Wann hat das Museum geöffnet? (A26)", gen: genOeffnung },
+  { k: "wann", skill: "Граматика", ic: "⏰", t: "Wann? am, um, im", d: "Ich frühstücke ___ 8 Uhr.", gen: genWann },
+  { k: "stehlieg", skill: "Граматика", ic: "🍽️", t: "stehen или liegen?", d: "Das Besteck ___ dort.", gen: genStehLieg },
+  { k: "mass", skill: "Думи", ic: "☕", t: "eine Tasse Kaffee, eine Scheibe Brot", d: "Ich hätte gern ___ Saft.", gen: genMass },
 );
 // ── сесия
 let exSess = null;

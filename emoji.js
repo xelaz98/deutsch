@@ -3,8 +3,8 @@
 // Без дни, месеци, абстрактни думи, глаголи и прилагателни (освен цветовете) — там картинката може да се разбере по няколко начина.
 const EMOJI = {
   // храна и напитки
-  Kaffee: "☕", Tee: "🍵", Milch: "🥛", Bier: "🍺", Wein: "🍷", Orangensaft: "🍊", Limonade: "🍋",
-  Tomate: "🍅", Gurke: "🥒", Apfel: "🍎", Banane: "🍌", Brot: "🍞", Ei: "🥚", Wurst: "🌭", Käse: "🧀", Salat: "🥗",
+  Kaffee: "☕", Tee: "🍵", Milch: "🥛", Bier: "🍺", Wein: "🍷", Limonade: "🍋",
+  Tomate: "🍅", Gurke: "🥒", Apfel: "🍎", Banane: "🍌", Orange: "🍊", Birne: "🍐", Weintrauben: "🍇", Butter: "🧈", Honig: "🍯", Schokolade: "🍫", Besteck: "🍴", Brot: "🍞", Ei: "🥚", Wurst: "🌭", Käse: "🧀", Salat: "🥗",
   Steak: "🥩", Suppe: "🍲", Kuchen: "🍰", Pizza: "🍕", Eis: "🍦", Kartoffel: "🥔", Zigarette: "🚬",
   // дрехи и лични вещи
   Hose: "👖", Jacke: "🧥", Schuh: "👟", Hut: "👒", Tasche: "👜", Schirm: "☂️", Brille: "👓", Kamera: "📷", Geschenk: "🎁",
