@@ -1038,9 +1038,15 @@ EX_TYPES.push(
 
 
 // ═════ Картинки и слух ═════
-const picPool = () => exPool((i) => !!emojiOf(i) && ["noun", "verb", "adj"].includes(i.type));
+const picPool = () => exPool((i) => !!emojiOf(i) && (["noun", "verb", "adj"].includes(i.type) || (typeof SCHEME_GROUP !== "undefined" && SCHEME_GROUP[i.de])));
+const schemeGroup = (it) => (typeof SCHEME_GROUP !== "undefined" && SCHEME_GROUP[it.de]) || null;
 const uniqEmo = (arr) => arr.filter((x, i, a) => a.findIndex((y) => emojiOf(y) === emojiOf(x)) === i && a.findIndex((y) => deFull(y) === deFull(x)) === i);
-function picOptions(it, n = 4) { return shuffle(uniqEmo([it, ...shuffle(picPool().filter((o) => o !== it && o.type === it.type))]).slice(0, n)); }
+function picOptions(it, n = 4) {
+  const g = schemeGroup(it);
+  // схема (ден, месец, посока…): вариантите са от същото семейство, иначе задачата е твърде лесна
+  const pool = g ? ITEMS.filter((o) => o !== it && schemeGroup(o) === g) : picPool().filter((o) => o !== it && o.type === it.type && !schemeGroup(o));
+  return shuffle(uniqEmo([it, ...shuffle(pool)]).slice(0, n));
+}
 function genPicDE(it0) {
   const it = it0 || rnd(picPool()), opts = picOptions(it);
   return { kind: "mc", task: "Какво е на картинката? (на немски)", prompt: `<div class="picq">${emojiOf(it)}</div>`, options: opts.map(deFull), answer: deFull(it), item: it, say: deFull(it), full: exampleFor(it)?.[0], bg: exampleFor(it)?.[1], keys: true,

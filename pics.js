@@ -187,4 +187,9 @@ const PICS = {
   "Liter": 7145,
   "LKW": 6956,
   "Lastkraftwagen": 6956,
+  // втори кръг (по-широко търсене)
+  "Buchstabe": 36785,
+  "Zimmer": 39552,
+  "Spaziergang": 8651,
+  "Firma": 36700,
 };

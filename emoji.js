@@ -29,9 +29,11 @@ const EMOJI = {
   // цветове
   rot: "🔴", gelb: "🟡", grün: "🟢", blau: "🔵", lila: "🟣", violett: "🟣", orange: "🟠", braun: "🟤", schwarz: "⚫", weiß: "⚪",
 };
-// Връща HTML за картинката на думата: емоджи или пиктограма (pics.js); null, ако няма ясна картинка.
+const SCHEME_IMG = {};
+// Връща HTML за картинката на думата: схема (schemes.js), емоджи или пиктограма (pics.js); null, ако няма ясна картинка.
 const emojiOf = (it) => {
   if (!it) return null;
+  if (typeof SCHEMES !== "undefined" && SCHEMES[it.de]) return (SCHEME_IMG[it.de] ||= `<img class="pic" src="data:image/svg+xml,${encodeURIComponent(SCHEMES[it.de])}" alt="" draggable="false">`);
   if (EMOJI[it.de]) return EMOJI[it.de];
   const id = typeof PICS !== "undefined" && PICS[it.de];
   return id ? `<img class="pic" src="pic/${id}.webp" alt="" loading="lazy" draggable="false">` : null;
