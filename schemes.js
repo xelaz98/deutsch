@@ -36,6 +36,7 @@ const SCHEMES = (() => {
     Morgen: sky("#fde68a", sun(22, 62, "#fb923c") + arrow(47, 50, true)), Vormittag: sky("#bae6fd", sun(30, 38)), Mittag: sky("#7dd3fc", sun(50, 24)),
     Nachmittag: sky("#93c5fd", sun(70, 38)), Abend: sky("#fdba74", sun(78, 62, "#ef4444") + arrow(53, 50, false)), Nacht: night,
     hellblau: wrap(`<circle cx="50" cy="50" r="38" fill="#93c5fd" stroke="${INK}" stroke-width="2.4"/>`), dunkelblau: wrap(`<circle cx="50" cy="50" r="38" fill="#1e3a8a" stroke="${INK}" stroke-width="2.4"/>`),
+    Komma: wrap(`<rect x="10" y="62" width="22" height="6" rx="3" fill="#9ca3af"/><rect x="68" y="62" width="22" height="6" rx="3" fill="#9ca3af"/><circle cx="50" cy="52" r="9" fill="${HL}" stroke="${INK}" stroke-width="2.4"/><path d="M57 54 Q58 70 44 80" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><path d="M57 54 Q58 70 44 80" fill="none" stroke="${HL}" stroke-width="2"/>`),
     vorgestern: rel(0), gestern: rel(1), heute: rel(2), morgen: rel(3), übermorgen: rel(4),
   };
   ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"].forEach((m, i) => (S[m] = year([i])));
