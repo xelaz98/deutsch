@@ -30,6 +30,7 @@ const PICS = {
   "Frage": 7217,
   "Frau": 4703,
   "Frühstück": 4626,
+  "zum Frühstück": 4626,
   "Garten": 30608,
   "Geld": 4630,
   "Geschirr": 11390,

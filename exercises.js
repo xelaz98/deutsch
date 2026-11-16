@@ -1217,6 +1217,52 @@ function genMass() {
   return { kind: "mc", task: "Коя мярка? (Ich hätte gern …)", prompt: `<div class="exs">Ich hätte gern ___ ${esc(f)}.</div>`, options: shuffle([m, `${m} von`, wrongArt, other]), answer: m, say: full, full, bg: `Бих искал ${mbg}.`, keys: true,
     explain: `Мярка + храна <b>без „von“</b>: ${esc(m)} ${esc(f)} · ${noun === "Glas" ? "das Glas → <b>ein</b>" : `die ${noun} → <b>eine</b>`}.` };
 }
+// урок 12: Imperativ — du / ihr / Sie
+const IMP = [ // инфинитив, du-форма сега, du!, ihr!, Sie!, допълнение, bg du!, bg ihr/Sie!, bg допълнение, правило
+  ["machen", "machst", "Mach", "Macht", "Machen Sie", "die Hausaufgabe", "Напиши", "Напишете", "домашното", ""],
+  ["trinken", "trinkst", "Trink", "Trinkt", "Trinken Sie", "viel Wasser", "Пий", "Пийте", "много вода", ""],
+  ["essen", "isst", "Iss", "Esst", "Essen Sie", "das Gemüse", "Яж", "Яжте", "зеленчуците", "e → i остава: du isst → Iss!"],
+  ["fahren", "fährst", "Fahr", "Fahrt", "Fahren Sie", "langsamer", "Карай", "Карайте", "по-бавно", "умлаутът изчезва: du fährst → Fahr!"],
+  ["backen", "bäckst", "Back", "Backt", "Backen Sie", "die Mischung 30 Minuten", "Печи", "Печете", "сместа 30 минути", "умлаутът изчезва: du bäckst → Back!"],
+  ["geben", "gibst", "Gib", "Gebt", "Geben Sie", "mir das Salz", "Подай", "Подайте", "ми солта", "e → i остава: du gibst → Gib!"],
+  ["nehmen", "nimmst", "Nimm", "Nehmt", "Nehmen Sie", "ein Stück Kuchen", "Вземи", "Вземете", "парче кекс", "e → i остава: du nimmst → Nimm!"],
+  ["lesen", "liest", "Lies", "Lest", "Lesen Sie", "das Rezept", "Прочети", "Прочетете", "рецептата", "e → ie остава: du liest → Lies!"],
+  ["schneiden", "schneidest", "Schneide", "Schneidet", "Schneiden Sie", "die Zwiebel", "Нарежи", "Нарежете", "лука", "основа на -d → +e: Schneide!"],
+  ["schälen", "schälst", "Schäl", "Schält", "Schälen Sie", "die Kartoffeln", "Обели", "Обелете", "картофите", ""],
+  ["braten", "brätst", "Brat", "Bratet", "Braten Sie", "das Fleisch", "Изпържи", "Изпържете", "месото", "умлаутът изчезва: du brätst → Brat!"],
+  ["sein", "bist", "Sei", "Seid", "Seien Sie", "bitte leise", "Бъди", "Бъдете", "тих, моля", "неправилен: Sei! · Seid! · Seien Sie!"],
+  ["schreiben", "schreibst", "Schreib", "Schreibt", "Schreiben Sie", "den Satz", "Напиши", "Напишете", "изречението", ""],
+  ["mischen", "mischst", "Misch", "Mischt", "Mischen Sie", "alles in einer Schüssel", "Смеси", "Смесете", "всичко в купа", ""]];
+const IMP_WHO = { du: ["на приятел (du)", 2], ihr: ["на двама приятели (ihr)", 3], Sie: ["учтиво (Sie)", 4] };
+function genImperativ() {
+  const v = rnd(IMP), who = rnd(Object.keys(IMP_WHO)), ans = v[IMP_WHO[who][1]];
+  const full = `${ans} ${v[5]}!`, bg = `${who === "du" ? v[6] : v[7]} ${v[8]}!`;
+  const opts = shuffle([...new Set([v[2], v[3], v[4], v[1][0].toUpperCase() + v[1].slice(1)])]);
+  const rule = { du: `du ${v[1]} → маха се du и -st → <b>${v[2]}!</b>`, ihr: `ihr-формата без ihr → <b>${v[3]}!</b>`, Sie: `инфинитив + Sie → <b>${v[4]}!</b>` }[who];
+  return { kind: "mc", task: `Кажи го ${IMP_WHO[who][0]}`, prompt: `<div class="exs">___ ${esc(v[5])}!</div><div class="exh">${esc(bg)}</div>`, options: opts, answer: ans, say: full, full, bg, keys: true,
+    explain: `${rule}${v[9] && who === "du" ? ` · ${v[9]}` : ""}` };
+}
+// урок 12: опаковки — eine Flasche Wasser, ein Becher Joghurt
+const PACK_BG = { "eine Flasche": "бутилка", "eine Dose": "консерва", "ein Becher": "кофичка", "eine Packung": "пакет", "eine Tüte": "торбичка", "eine Tafel": "блокче", "ein Stück": "парче", "ein Glas": "буркан" };
+const PACK = [["Wasser", "вода", ["eine Flasche"]], ["Wein", "вино", ["eine Flasche"]], ["Joghurt", "кисело мляко", ["ein Becher"]], ["Sahne", "сметана", ["ein Becher"]],
+  ["Schokolade", "шоколад", ["eine Tafel"]], ["Spaghetti", "спагети", ["eine Packung"]], ["Tomaten", "домати", ["eine Dose"]], ["Bohnen", "боб", ["eine Dose"]],
+  ["Kuchen", "кекс", ["ein Stück"]], ["Honig", "мед", ["ein Glas"]], ["Marmelade", "конфитюр", ["ein Glas"]], ["Äpfel", "ябълки", ["eine Tüte"]]];
+function genVerpack() {
+  const [f, fbg, ok] = rnd(PACK), ans = ok[0], full = `Ich kaufe ${ans} ${f}.`;
+  const wrong = shuffle(Object.keys(PACK_BG).filter((p) => !ok.includes(p) && !(["Wasser", "Wein"].includes(f) && p === "ein Glas") && !(["Kuchen", "Schokolade", "Sahne", "Joghurt", "Spaghetti"].includes(f) && p === "eine Packung"))).slice(0, 3);
+  return { kind: "mc", task: "Каква опаковка?", prompt: `<div class="exs">Ich kaufe ___ ${esc(f)}.</div>`, options: shuffle([ans, ...wrong]), answer: ans, say: full, full, bg: `Купувам ${PACK_BG[ans]} ${fbg}.`, keys: true,
+    explain: `${esc(ans)} ${esc(f)} = ${PACK_BG[ans]} ${fbg} — опаковка + храна <b>без „von“</b>.` };
+}
+// урок 12: Колко често? (лента от 7 дни)
+const OFT = [[0, "nie", "никога"], [1, "einmal pro Woche", "веднъж седмично"], [2, "zweimal pro Woche", "два пъти седмично"], [3, "dreimal pro Woche", "три пъти седмично"], [7, "täglich", "всеки ден"]];
+const OFT_ACT = [["Ich esse", "Fleisch", "ям месо"], ["Ich trinke", "Kaffee", "пия кафе"], ["Er kauft", "Obst", "той купува плодове"], ["Sie backt", "Kuchen", "тя пече кекс"], ["Wir essen", "Fisch", "ядем риба"]];
+function genWieOft() {
+  const [n, w, wbg] = rnd(OFT), [s, o, abg] = rnd(OFT_ACT), full = `${s} ${w} ${o}.`;
+  const bar = [...Array(7)].map((_, i) => (i < n ? "🟧" : "⬜")).join("");
+  const bg = n === 0 ? `${abg.startsWith("той") || abg.startsWith("тя") ? abg.replace(/^(той|тя) /, (m) => m[0].toUpperCase() + m.slice(1) + "никога не ") : "Никога не " + abg}.` : `${abg[0].toUpperCase() + abg.slice(1)} ${wbg}.`;
+  return { kind: "mc", task: "Колко често? (🟧 = ден, в който го прави)", prompt: `<div class="exs" style="letter-spacing:2px">${bar}</div><div class="exs">${esc(s)} ___ ${esc(o)}.</div>`, options: OFT.map((x) => x[1]).filter((x) => x !== w).sort(() => Math.random() - 0.5).slice(0, 3).concat(w).sort(() => Math.random() - 0.5), answer: w, say: full, full, bg, keys: true,
+    explain: `${n} ${n === 1 ? "ден" : "дни"} от 7 → <b>${esc(w)}</b> (${wbg}). Число + <b>-mal</b> = пъти: einmal, zweimal, dreimal.` };
+}
 // B3: Wo liegt …?
 const STADT_LAGE = [["Berlin", "im Osten"], ["Hamburg", "im Norden"], ["München", "im Süden"], ["Köln", "im Westen"], ["Dresden", "im Osten"], ["Hannover", "im Norden"], ["Düsseldorf", "im Westen"],
   ["Kassel", "in der Mitte"], ["Rostock", "im Nordosten"], ["Bremen", "im Nordwesten"], ["Stuttgart", "im Südwesten"], ["Passau", "im Südosten"], ["Frankfurt an der Oder", "im Osten"], ["Leipzig", "im Osten"]];
@@ -1273,6 +1319,9 @@ EX_TYPES.push(
   { k: "wann", skill: "Граматика", ic: "⏰", t: "Wann? am, um, im", d: "Ich frühstücke ___ 8 Uhr.", gen: genWann },
   { k: "stehlieg", skill: "Граматика", ic: "🍽️", t: "stehen или liegen?", d: "Das Besteck ___ dort.", gen: genStehLieg },
   { k: "mass", skill: "Думи", ic: "☕", t: "eine Tasse Kaffee, eine Scheibe Brot", d: "Ich hätte gern ___ Saft.", gen: genMass },
+  { k: "imperativ", skill: "Граматика", ic: "📣", t: "Imperativ: Iss! Esst! Essen Sie!", d: "___ das Gemüse! (du)", gen: genImperativ },
+  { k: "verpack", skill: "Думи", ic: "🛒", t: "eine Flasche, eine Dose, ein Becher", d: "Ich kaufe ___ Joghurt.", gen: genVerpack },
+  { k: "wieoft", skill: "Думи", ic: "🔁", t: "Колко често? nie, zweimal pro Woche", d: "Ich esse ___ Fleisch.", gen: genWieOft },
 );
 // ── сесия
 let exSess = null;

@@ -33,16 +33,27 @@ const XP = (() => {
     wer: "кой? (подлог — Nominativ)", wen: "кого? (пряко допълнение — Akkusativ)", wem: "на кого? (Dativ)", warum: "защо?", welche: "кои/коя? (welch- + окончание като на die)", welcher: "кой? (der-дума)", welches: "кое? (das-дума)" };
   const CONJ0 = { und: "и", oder: "или", aber: "но", denn: "защото", sondern: "а (след отрицание)" };
   const CONJ_END = { weil: "защото", dass: "че", wenn: "ако / когато", ob: "дали" };
-  const SEP_PREF = ["an", "ab", "mit", "ein", "aus", "vor", "nach", "fern", "weg", "teil", "auf", "zurück", "zu", "los", "her"];
+  const SEP_PREF = ["an", "ab", "mit", "ein", "aus", "vor", "nach", "fern", "weg", "teil", "auf", "zurück", "zu", "los", "her", "fort", "hin", "dazu"];
   const EXTRA_ADJ = ["neu", "alt", "groß", "klein", "gut", "schön", "teuer", "billig", "modern", "praktisch", "bequem", "unbequem", "hell", "dunkel", "kalt", "warm", "weich", "hart", "schnell",
     "langsam", "interessant", "langweilig", "deutsch", "italienisch", "französisch", "englisch", "berühmt", "bedeutend", "naturwissenschaftlich", "technisch", "kühl", "schmal", "leer", "voll", "lang",
     "frei", "heiß", "jung", "wichtig", "unwichtig", "spannend", "historisch", "klassisch", "nett", "sauber", "schmutzig", "gesund", "schwer", "leicht", "schlecht", "preiswert", "hässlich", "beliebt",
     "perfekt", "nächst", "erst", "zweit", "dritt", "letzt", "lieb", "weiß", "schwarz", "rot", "blau", "grün", "gelb", "grau", "braun", "rund", "bulgarisch", "stabil", "fertig", "bereit", "einfach",
     "unbekannt", "riesig", "zwanzigst", "neunzehnt", "einundzwanzigst", "kalt", "spät", "früh", "ganz", "viel", "wenig", "eigen", "toll", "super", "ruhig", "laut", "leise", "zufrieden", "unzufrieden", "dick", "dünn", "schlank", "schwierig", "müde", "frisch", "krank", "süß", "sauer", "fleißig", "falsch", "violett", "lila", "hellblau", "dunkelblau", "orange", "trennbar", "lecker", "kurz", "streng", "schlimm"];
-  let NOUNS, ADJS, VERBF, SEPV;
+  let NOUNS, ADJS, VERBF, SEPV, IMPF;
+  // du-императив от глагола: Mach! Iss! Gib! Fahr! (без умлаут) · Schneide! (-d/-t → +e) · Sei! Hab!
+  function impDu(it) {
+    const f1 = it.forms[1].split(" "), pre = f1.length > 1 ? f1[f1.length - 1] : "";
+    const inf = it.de.replace(/^sich /, "").slice(pre.length), st = inf.replace(/e?n$/, ""), du = lc(f1[0]);
+    if (inf === "sein") return "sei";
+    if (inf === "haben") return "hab";
+    if (inf === "werden") return "werd";
+    if (du.includes("ä") && !st.includes("ä")) return st;
+    if (![st + "st", st + "t", st + "est"].includes(du)) return /[sßzx]$/.test(st) ? du.replace(/t$/, "") : du.replace(/st$/, "");
+    return /[dt]$/.test(st) ? st + "e" : st;
+  }
   function build() {
     if (NOUNS) return;
-    NOUNS = new Map(); ADJS = new Set(EXTRA_ADJ); VERBF = new Map(); SEPV = new Map();
+    NOUNS = new Map(); ADJS = new Set(EXTRA_ADJ); VERBF = new Map(); SEPV = new Map(); IMPF = new Map();
     const addN = (k, v) => { k = lc(k); if (!NOUNS.has(k)) NOUNS.set(k, []); NOUNS.get(k).push(v); };
     for (const it of ITEMS) {
       if (it.type === "noun" && it.art && !/\s/.test(it.de)) {
@@ -59,6 +70,7 @@ const XP = (() => {
           const pre = parts[parts.length - 1];
           if (parts.length > 1 && SEP_PREF.includes(pre) && !["mich", "dich", "sich", "uns", "euch"].includes(pre)) SEPV.set(it.de, pre);
         });
+        if (!/\s/.test(it.forms[1]) || SEP_PREF.includes(it.forms[1].split(" ").pop())) { const im = impDu(it); if (im) { if (!IMPF.has(im)) IMPF.set(im, []); IMPF.get(im).push(it); } }
         if (!VERBF.has(lc(inf))) VERBF.set(lc(inf), []);
         const exI = VERBF.get(lc(inf)).find((x) => x.it === it);
         if (exI) exI.inf = true; else VERBF.get(lc(inf)).push({ it, idx: [], inf: true });
@@ -265,6 +277,18 @@ const XP = (() => {
       if (["mich", "dich", "sich", "uns", "euch"].includes(t)) {
         const rv = ITEMS.find((it) => it.type === "verb" && it.de.startsWith("sich ") && vIdx >= 0 && it.forms.some((f) => lc(f.split(" ")[0]) === lc(T[vIdx].w)));
         if (rv) { res[i] = { kind: "pron", item: rv, html: `<b>${esc(w)}</b> — <b>възвратно</b> местоимение („се“) към <b>${esc(rv.de)}</b> (${esc(rv.bg)}).<br>Сменя се по лицето: ich → <b>mich</b>, du → <b>dich</b>, er/sie/es → <b>sich</b>, wir → <b>uns</b>, ihr → <b>euch</b>, sie/Sie → <b>sich</b>.` }; return; }
+      }
+      // императив: първата дума в изречение с „!“ (Iss! · Esst! · Essen Sie!)
+      if (i === 0 && /!\s*$/.test(sentence)) {
+        const nx = T[1] ? T[1].w : "", sep = (v) => SEPV.get(v.de);
+        const lastW = lc(T[T.length - 1].w), ivs = IMPF.get(t) || [], iv = ivs.find((v) => sep(v) && sep(v) === lastW && T.length > 1) || ivs.find((v) => !sep(v)), ihr = (VERBF.get(t) || []).find((x) => x.idx.includes(4) && nx !== "ihr");
+        const sie = nx === "Sie" && ((VERBF.get(t) || []).find((x) => x.idx.includes(5) && sep(x.it) === lastW && T.length > 2) || (VERBF.get(t) || []).find((x) => x.inf && !sep(x.it)) || (VERBF.get(t) || []).find((x) => x.inf));
+        const hit = sie ? ["Sie", sie.it] : iv ? ["du", iv] : ihr ? ["ihr", ihr.it] : null;
+        if (hit) {
+          const [who, v] = hit, sp = sep(v);
+          res[i] = { kind: "verb", item: v, html: `<b>${esc(w)}</b> — <b>Imperativ</b> (повелително) от <b>${esc(v.de)}</b> (${esc(v.bg)}) за <b>${who}</b>.<br>${who === "du" ? `du-формата без du и без -st: du ${esc(v.forms[1].split(" ")[0])} → <b>${esc(w)}!</b>` : who === "ihr" ? `ihr-формата без ihr: ihr ${esc(v.forms[4].split(" ")[0])} → <b>${esc(w)}!</b>` : `учтиво: инфинитив + Sie → <b>${esc(w)} Sie!</b>`}<br>Глаголът е <b>първи</b>, без подлог.${sp ? ` Представката <b>${sp}</b> отива в края.` : ""}` };
+          return;
+        }
       }
       // глаголи
       const vc = VERBF.get(t);

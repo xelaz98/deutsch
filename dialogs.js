@@ -193,3 +193,24 @@ const DIALOGS4 = [
     qs: [["Der Gast möchte Tee.", false, 1], ["Es gibt keinen Frischkäse.", true, 4], ["Der Gast nimmt eine Scheibe Käse.", true, 5], ["Am Samstag öffnet das Café um 9 Uhr.", false, 6]] },
 ];
 DIALOGS.push(...DIALOGS4.map((d) => ({ title: `${d.ic} ${d.title}`, lines: d.lines, qs: d.qs })));
+const DIALOGS5 = [
+  { title: "При зарзаватчията", ic: "🥕", lines: [
+    ["Händler", "Guten Tag! Sie wünschen?", "Добър ден! Какво желаете?"],
+    ["Kundin", "Ich hätte gern ein Kilo Tomaten und drei Zwiebeln.", "Бих искала килограм домати и три глави лук."],
+    ["Händler", "Gern. Die Erdbeeren sind heute im Angebot. Sie sind sehr aromatisch.", "С удоволствие. Ягодите днес са в промоция. Много са ароматни."],
+    ["Kundin", "Nein, danke. Ich bevorzuge Kirschen. Haben Sie Kirschen?", "Не, благодаря. Предпочитам череши. Имате ли череши?"],
+    ["Händler", "Leider nicht. Aber wir haben saftige Melonen und Ananas.", "За съжаление не. Но имаме сочни пъпеши и ананас."],
+    ["Kundin", "Dann nehme ich eine Melone statt Kirschen.", "Тогава ще взема един пъпеш вместо череши."],
+    ["Händler", "Sonst noch etwas?", "Нещо друго?"],
+    ["Kundin", "Ja, eine Tüte Äpfel, bitte. Das ist alles.", "Да, торбичка ябълки, моля. Това е всичко."]],
+    qs: [["Die Kundin möchte ein Kilo Tomaten.", true, 1], ["Die Erdbeeren sind heute teuer.", false, 2], ["Der Händler hat keine Kirschen.", true, 4], ["Die Kundin nimmt eine Ananas.", false, 5]] },
+  { title: "Рецепта: плодова салата", ic: "🥗", lines: [
+    ["Rezept", "Zutaten: zwei Äpfel, eine Banane, zwei Kiwis, eine Orange, 100 Gramm Haselnüsse, ein Becher Sahne, zwei Esslöffel Zucker und eine Zitrone.", "Съставки: две ябълки, един банан, две кивита, един портокал, 100 грама лешници, една кофичка сметана, две супени лъжици захар и един лимон."],
+    ["Rezept", "Zubereitung: Schäl die Kiwis, die Banane und die Orange.", "Приготвяне: Обели кивитата, банана и портокала."],
+    ["Rezept", "Schneide das Obst in kleine Stücke.", "Нарежи плодовете на малки парчета."],
+    ["Rezept", "Misch alles in einer Schüssel und gib den Saft von der Zitrone dazu.", "Смеси всичко в купа и добави сока от лимона."],
+    ["Rezept", "Schlag die Sahne mit dem Zucker.", "Разбий сметаната със захарта."],
+    ["Rezept", "Gib die Schlagsahne und die Haselnüsse auf das Obst. Guten Appetit!", "Сложи разбитата сметана и лешниците върху плодовете. Добър апетит!"]],
+    qs: [["Im Obstsalat sind Kiwis.", true, 0], ["Man schält die Äpfel nicht.", true, 1], ["Man schneidet das Obst in große Stücke.", false, 2], ["Die Sahne schlägt man mit Salz.", false, 4]] },
+];
+DIALOGS.push(...DIALOGS5.map((d) => ({ title: `${d.ic} ${d.title}`, lines: d.lines, qs: d.qs })));

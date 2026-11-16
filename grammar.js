@@ -676,6 +676,67 @@ const GRAMMAR = [
 <p class="tip">💡 <b>erst</b> = първо / чак: <i>Erst Kaffee, dann Brötchen.</i> · <i>Er kommt erst um 10.</i> (= чак в 10) · <b>nur</b> = само.</p>`
   },
   {
+    id: "imperativ", title: "Imperativ: Mach! Macht! Machen Sie!", icon: "📣",
+    html: `
+<p>Императивът е формата за <b>заповед, молба, съвет, рецепта</b>: <i>Iss! Trink viel Wasser! Schneiden Sie die Zwiebel!</i> Има три форми — според това на кого говориш.</p>
+<table class="g"><tr><th></th><th>как се прави</th><th>machen</th><th>essen</th><th>fahren</th></tr>
+<tr><td><b>du</b></td><td>du-формата <b>без du и без -st</b></td><td>du machst → <b>Mach!</b></td><td>du isst → <b>Iss!</b></td><td>du fährst → <b>Fahr!</b></td></tr>
+<tr><td><b>ihr</b></td><td>ihr-формата <b>без ihr</b></td><td>ihr macht → <b>Macht!</b></td><td>ihr esst → <b>Esst!</b></td><td>ihr fahrt → <b>Fahrt!</b></td></tr>
+<tr><td><b>Sie</b></td><td>инфинитив + <b>Sie</b></td><td><b>Machen Sie!</b></td><td><b>Essen Sie!</b></td><td><b>Fahren Sie!</b></td></tr></table>
+<h4>Трите капана</h4>
+<ul>
+<li><b>e → i остава</b>: du isst → <b>Iss!</b> · du gibst → <b>Gib!</b> · du nimmst → <b>Nimm!</b> · du liest → <b>Lies!</b></li>
+<li><b>a → ä НЕ остава</b> (умлаутът изчезва): du fährst → <b>Fahr!</b> · du bäckst → <b>Back!</b> · du schläfst → <b>Schlaf!</b> · du brätst → <b>Brat!</b></li>
+<li><b>основа на -d / -t</b> → добавя се -e: <b>Schneide!</b> · <b>Warte!</b> · <b>Arbeite!</b></li>
+</ul>
+<h4>sein и haben — неправилни</h4>
+<table class="g"><tr><th></th><th>du</th><th>ihr</th><th>Sie</th></tr>
+<tr><td>sein</td><td><b>Sei!</b></td><td><b>Seid!</b></td><td><b>Seien Sie!</b></td></tr>
+<tr><td>haben</td><td><b>Hab!</b></td><td><b>Habt!</b></td><td><b>Haben Sie!</b></td></tr></table>
+<p><i>Sei brav!</i> = Бъди послушен! · <i>Seid leise!</i> = Пазете тишина! · <i>Hab keine Angst!</i> = Не се страхувай!</p>
+<p class="tip">🔑 Глаголът е <b>винаги първи</b>. Разделимата представка отива накрая: <i><b>Bereite</b> das Essen <b>zu</b>! · <b>Bieten</b> Sie Obst <b>an</b>!</i><br>
+💡 <b>bitte</b> прави заповедта учтива: <i>Gib mir <b>bitte</b> das Salz!</i></p>
+<h4>В рецептата</h4>
+<p><i>Schäl die Äpfel. Schneide sie in kleine Stücke. Misch alles in einer Schüssel. Gib zwei Esslöffel Zucker dazu. Back die Mischung 30 Minuten.</i></p>`
+  },
+  {
+    id: "wieoft", title: "Колко често? nie, einmal, dreimal pro Woche", icon: "🔁",
+    html: `
+<table class="g"><tr><th>колко често</th><th>значение</th></tr>
+<tr><td><b>nie</b></td><td>никога (0)</td></tr>
+<tr><td><b>einmal</b> pro Woche</td><td>веднъж седмично</td></tr>
+<tr><td><b>zweimal</b> pro Woche</td><td>два пъти седмично</td></tr>
+<tr><td><b>dreimal</b> am Tag</td><td>три пъти на ден</td></tr>
+<tr><td><b>oft</b></td><td>често</td></tr>
+<tr><td><b>normalerweise</b></td><td>обикновено</td></tr>
+<tr><td><b>wöchentlich</b> · <b>täglich</b></td><td>всяка седмица · всеки ден</td></tr>
+<tr><td><b>immer</b></td><td>винаги</td></tr></table>
+<p>Число + <b>-mal</b> = пъти: ein<b>mal</b>, zwei<b>mal</b>, drei<b>mal</b>, zehn<b>mal</b>. После: <b>pro Woche</b> / <b>am Tag</b> / <b>im Monat</b>.</p>
+<p><i>Ich esse <b>zweimal pro Woche</b> Fleisch.</i> · <i><b>Normalerweise</b> frühstücke ich um 7.</i> (времето отпред → глаголът пак е втори!)</p>
+<p class="tip">💡 <b>nie</b> стои там, където би стоял <b>nicht</b>: <i>Ich esse <b>nie</b> Fleisch.</i> · <b>zum Frühstück</b> = за закуска (zu + dem = zum).</p>`
+  },
+  {
+    id: "einkauf", title: "На пазара: eine Flasche, eine Dose, ein Becher", icon: "🛒",
+    html: `
+<p>Опаковка + храна, <b>без „von“</b> (както при eine Tasse Kaffee):</p>
+<table class="g"><tr><th>опаковка</th><th>пример</th><th>превод</th></tr>
+<tr><td><span class="art die">die</span> Flasche</td><td>eine Flasche Wasser / Wein</td><td>бутилка</td></tr>
+<tr><td><span class="art die">die</span> Dose</td><td>eine Dose Tomaten / Ananas</td><td>консерва</td></tr>
+<tr><td><span class="art der">der</span> Becher</td><td>ein Becher Joghurt / Sahne</td><td>кофичка</td></tr>
+<tr><td><span class="art die">die</span> Packung</td><td>eine Packung Spaghetti / Kaffee</td><td>пакет</td></tr>
+<tr><td><span class="art die">die</span> Tüte</td><td>eine Tüte Äpfel</td><td>торбичка</td></tr>
+<tr><td><span class="art die">die</span> Tafel</td><td>eine Tafel Schokolade</td><td>блокче</td></tr>
+<tr><td><span class="art das">das</span> Glas</td><td>ein Glas Honig / Marmelade</td><td>буркан</td></tr>
+<tr><td><span class="art das">das</span> Stück</td><td>ein Stück Kuchen / Melone</td><td>парче</td></tr>
+<tr><td><span class="art der">der</span> Liter · <span class="art das">das</span> Kilo</td><td>ein Liter Milch · ein Kilo Kirschen</td><td>литър · килограм</td></tr></table>
+<h4>При зарзаватчията</h4>
+<p><b>Sie wünschen?</b> (Какво желаете?) — <i>Ich hätte gern ein Kilo Tomaten.</i> — <b>Sonst noch etwas?</b> (Нещо друго?) — <i>Nein, danke. Das ist alles.</i></p>
+<p class="tip">⚠️ <b>der Kunde → den Kunden</b>: някои мъжки думи получават -n в Akkusativ (като der Student → den Studenten). <i>Der Händler fragt den Kunden.</i></p>
+<h4>sauer → saure</h4>
+<p>Прилагателни на <b>-er</b> / <b>-el</b> губят <b>e</b> пред окончание: <i>sauer → <b>saure</b> Äpfel · teuer → ein <b>teures</b> Steak · dunkel → eine <b>dunkle</b> Küche</i>.</p>
+<p class="tip">💡 <b>statt</b> = вместо: <i>Statt Kaffee trinke ich Tee.</i> · <b>bevorzugen</b> = предпочитам.</p>`
+  },
+  {
     id: "komposita", title: "Сложни думи и имена (das Hotelzimmer)", icon: "🧩",
     html: `
 <p>Немският лепи думи една за друга. <b>Последната дума решава члена</b> (и множественото число):</p>

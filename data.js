@@ -16,6 +16,7 @@ const LESSONS = [
   { id: 9, date: "07.11.2026", title: "Силни глаголи, Akkusativ, местоимения, прилагателни и цветове" },
   { id: 10, date: "10.11.2026", title: "Музей и писмо: части на деня, посоки, най-известният, kein + Akkusativ" },
   { id: 11, date: "12.11.2026", title: "Закуска на шведска маса: храни, mögen/wollen, ich hätte gern, am/um/im" },
+  { id: 12, date: "14.11.2026", title: "Кухня и пазар: съдове, храни, опаковки, колко често, рецепта, Imperativ" },
 ];
 
 const ITEMS = [];
@@ -1702,6 +1703,165 @@ W("phrase", "Ich nehme …", "Ще взема …", "при поръчка: Ich 
 W("word", "alle", "всички", "Alle frühstücken. = Всички закусват.");
 W("word", "viele", "много (броими)", "viele Brötchen, viele Leute · ≠ viel (неброимо): viel Kaffee");
 W("word", "niemand", "никой", "Niemand isst Lachs. = Никой не яде сьомга. · ≠ alle");
+
+L(12); T("Вкус: sauer, salzig, scharf");
+N("die", "Lücke", "Lücken", "празно място (за попълване)", "Ergänzen Sie die Lücken. = Попълнете празните места.");
+W("adj", "sauer", "кисел", "без окончание: sauer · с окончание e-то пада: saure Äpfel, eine saure Zitrone");
+W("phrase", "sauer – saure Äpfel", "кисел – кисели ябълки", "-er накрая: e-то пада пред окончанието: sauer → saure, teuer → teure, dunkel → dunkle");
+N("das", "Fleisch", null, "месо", "o. Pl. = без мн.ч. · Ich esse kein Fleisch. = Не ям месо.");
+W("adj", "salzig", "солен", "das Salz (сол) + -ig → salzig");
+W("adj", "scharf", "лют; остър (нож)", "Die Suppe ist scharf. = Супата е люта. · ein scharfes Messer = остър нож");
+W("adj", "roh", "суров (неварен)", "≠ gekocht: rohe Karotten = сурови моркови");
+W("adj", "mild", "мек (на вкус), не лют", "≠ scharf: ein milder Käse");
+N("das", "Aroma", "Aromen", "аромат, вкус", "мн.ч. Aromen · Der Kaffee hat ein tolles Aroma.");
+W("adj", "aromatisch", "ароматен", "das Aroma → aromatisch");
+W("adj", "saftig", "сочен", "der Saft (сок) + -ig → saftig: eine saftige Birne");
+W("adj", "fett", "мазен; тлъст", "Pommes frites sind fett. · ≈ fettig");
+
+T("В кухнята: съдове и прибори");
+N("die", "Küche", "Küchen", "кухня", "и кухнята (стаята), и кухнята (храната): die deutsche Küche");
+N("das", "Geschirr", null, "съдове (чинии, чаши)", "само ед.ч. за всички съдове заедно");
+N("das", "Besteck", "Bestecke", "прибори (нож, вилица, лъжица)");
+N("die", "Tasse", "Tassen", "чаша (за кафе/чай)");
+N("die", "Serviette", "Servietten", "салфетка");
+N("die", "Gabel", "Gabeln", "вилица");
+N("der", "Löffel", "Löffel", "лъжица", "мн.ч. същото · der Esslöffel = супена лъжица");
+N("das", "Messer", "Messer", "нож", "мн.ч. същото");
+N("das", "Küchenmesser", "Küchenmesser", "кухненски нож", "die Küche + das Messer → das");
+N("der", "Teller", "Teller", "чиния");
+N("das", "Glas", "Gläser", "стъкло; чаша; буркан", "ein Glas Wasser = чаша вода · ein Glas Honig = буркан мед");
+N("das", "Wasserglas", "Wassergläser", "чаша за вода", "das Wasser + das Glas → das (в бележките: Wasseglas → Wasserglas)");
+N("der", "Topf", "Töpfe", "тенджера", "мн.ч. с умлаут: die Töpfe");
+N("der", "Blumentopf", "Blumentöpfe", "саксия", "die Blume (цвете) + der Topf → der");
+N("die", "Pfanne", "Pfannen", "тиган");
+N("die", "Schüssel", "Schüsseln", "купа");
+N("das", "Kochbuch", "Kochbücher", "готварска книга");
+N("das", "Tuch", "Tücher", "кърпа", "мн.ч. с умлаут и -er: die Tücher");
+V("wischen", "бърша, почиствам", ["wische", "wischst", "wischt", "wischen", "wischt", "wischen"], "Ich wische den Tisch. = Бърша масата.");
+N("das", "Wischtuch", "Wischtücher", "кърпа за бърсане", "wischen + das Tuch → das");
+
+T("Храни в магазина");
+N("das", "Salz", null, "сол", "обикн. без мн.ч. · Salz und Pfeffer");
+N("der", "Pfeffer", null, "черен пипер");
+N("der", "Zucker", null, "захар", "o. Pl. = без мн.ч.");
+N("die", "Suppe", "Suppen", "супа");
+N("das", "Wasser", null, "вода", "ein Glas Wasser, eine Flasche Wasser");
+N("der", "Wein", "Weine", "вино");
+N("der", "Weißwein", "Weißweine", "бяло вино");
+N("der", "Champagner", null, "шампанско");
+N("die", "Süßigkeit", "Süßigkeiten", "сладкиш, бонбон", "обикн. мн.ч.: Süßigkeiten = сладки неща");
+N("pl", "Milchprodukte", null, "млечни продукти", "das Milchprodukt → мн.ч. die Milchprodukte: Milch, Käse, Joghurt, Quark");
+N("das", "Getränk", "Getränke", "напитка");
+N("die", "Ware", "Waren", "стока");
+N("pl", "Fleischwaren", null, "месни продукти", "das Fleisch + die Waren · само мн.ч.");
+V("backen", "пека", ["backe", "bäckst", "bäckt", "backen", "backt", "backen"], "a → ä при du и er: du bäckst, er bäckt (може и backst, backt)");
+N("pl", "Backwaren", null, "хлебни изделия (хляб, хлебчета, сладкиши)", "backen + die Waren · само мн.ч.");
+N("das", "Obst", null, "плодове", "само ед.ч. — една обща дума за всички плодове");
+N("das", "Gemüse", null, "зеленчуци", "само ед.ч. — като das Obst");
+N("das", "Angebot", "Angebote", "оферта; избор", "im Angebot = в промоция");
+V("anbieten", "предлагам", ["biete an", "bietest an", "bietet an", "bieten an", "bietet an", "bieten an"], "разделим: an|bieten · Der Händler bietet Obst an. → das Angebot");
+N("die", "Sahne", null, "сметана", "o. Pl. = без мн.ч.");
+V("schlagen", "бия; разбивам (сметана)", ["schlage", "schlägst", "schlägt", "schlagen", "schlagt", "schlagen"], "a → ä: du schlägst, er schlägt · Sahne schlagen = разбивам сметана");
+N("die", "Schlagsahne", null, "разбита сметана", "schlagen + die Sahne → die");
+N("die", "Erbse", "Erbsen", "грах (зрънце)", "обикн. мн.ч.: die Erbsen");
+N("die", "Zwiebel", "Zwiebeln", "лук (глава лук)");
+N("die", "Bohne", "Bohnen", "боб, зелен фасул", "grüne Bohnen = зелен фасул");
+W("adj", "grün", "зелен; неузрял", "grüne Bohnen = зелен фасул");
+N("die", "Ananas", "Ananas", "ананас", "мн.ч. същото (или Ananasse)");
+N("die", "Dose", "Dosen", "консерва, кутия (метална)", "eine Dose Tomaten = консерва домати");
+N("der", "Quark", null, "извара", "типичен немски млечен продукт, подобен на извара");
+N("das", "Rind", "Rinder", "говедо, крава", "das Rind → das Rindfleisch");
+N("das", "Rindfleisch", null, "говеждо месо", "das Rind + das Fleisch → das");
+N("das", "Hühnerfilet", "Hühnerfilets", "пилешко филе", "das Huhn (кокошка) → Hühner- + das Filet");
+N("die", "Schweinelende", "Schweinelenden", "свинско филе", "das Schwein (прасе) + die Lende · (в бележките: Scheinslende → Schweinelende)");
+N("die", "Kartoffel", "Kartoffeln", "картоф");
+N("die", "Tomate", "Tomaten", "домат");
+N("die", "Karotte", "Karotten", "морков", "≈ die Möhre");
+N("das", "Steak", "Steaks", "пържола (стек)");
+N("pl", "Spaghetti", null, "спагети", "мн.ч.: die Spaghetti");
+N("pl", "Pommes frites", null, "пържени картофи", "мн.ч. · разговорно: Pommes");
+
+T("Плодове");
+N("die", "Kiwi", "Kiwis", "киви");
+N("die", "Melone", "Melonen", "пъпеш; диня", "die Wassermelone = диня");
+N("die", "Erdbeere", "Erdbeeren", "ягода", "die Erde (земя) + die Beere (зрънце)");
+N("die", "Kirsche", "Kirschen", "череша; вишна");
+N("die", "Mango", "Mangos", "манго");
+N("die", "Zitrone", "Zitronen", "лимон", "Zitronen sind sauer.");
+N("pl", "Haselnüsse", null, "лешници", "die Haselnuss → мн.ч. die Haselnüsse");
+N("das", "Stück", "Stücke", "парче", "ein Stück Kuchen = парче торта (без „von“)");
+
+T("Опаковки: eine Flasche, eine Dose …");
+N("die", "Flasche", "Flaschen", "бутилка", "eine Flasche Wasser / Wein");
+N("der", "Becher", "Becher", "чашка, кофичка", "ein Becher Joghurt = кофичка кисело мляко · мн.ч. същото");
+W("phrase", "eine Tafel Schokolade", "блокче шоколад", "die Tafel = и черната дъска, и блокчето шоколад");
+N("die", "Packung", "Packungen", "пакет, опаковка", "eine Packung Spaghetti / Kaffee");
+N("die", "Tüte", "Tüten", "торбичка, плик", "eine Tüte Äpfel · die Plastiktüte = найлонова торбичка");
+N("der", "Liter", "Liter", "литър", "ein Liter Milch · разговорно и das Liter — и двете са верни");
+
+T("Колко често?");
+W("adv", "nie", "никога", "≠ immer (винаги) · Ich esse nie Fleisch.");
+W("adv", "einmal", "веднъж", "ein + -mal · einmal pro Woche = веднъж седмично");
+W("adv", "zweimal", "два пъти", "zwei + -mal");
+W("adv", "dreimal", "три пъти", "drei + -mal · dreimal am Tag = три пъти на ден");
+W("adj", "wöchentlich", "седмичен; всяка седмица", "die Woche → wöchentlich (= jede Woche)");
+W("phrase", "pro Woche", "на седмица", "zweimal pro Woche = два пъти седмично");
+W("adv", "normalerweise", "обикновено", "Normalerweise frühstücke ich um 7 Uhr.");
+W("phrase", "zum Frühstück", "за закуска", "zu + dem = zum: Was isst du zum Frühstück?");
+N("die", "Hauptmahlzeit", "Hauptmahlzeiten", "основно хранене", "Haupt- (главен) + die Mahlzeit (хранене) · (в бележките: Haupmahlzeit → Hauptmahlzeit)");
+N("die", "Esskultur", "Esskulturen", "култура на хранене", "essen + die Kultur → die");
+
+T("На пазара: Sie wünschen?");
+N("der", "Händler", "Händler", "търговец", "мн.ч. същото");
+N("der", "Gemüsehändler", "Gemüsehändler", "зарзаватчия", "das Gemüse + der Händler → der");
+N("der", "Kunde", "Kunden", "клиент", "внимание: den Kunden (Akk.) — получава -n");
+N("die", "Kundin", "Kundinnen", "клиентка");
+N("der", "Chef", "Chefs", "шеф, началник", "der Chef = началникът · главният готвач = der Küchenchef");
+W("q", "Sie wünschen?", "Какво желаете?", "продавачът към клиента · = Was möchten Sie?");
+W("adv", "sonst", "иначе; освен това", "Sonst noch etwas? = Нещо друго?");
+V("bevorzugen", "предпочитам", ["bevorzuge", "bevorzugst", "bevorzugt", "bevorzugen", "bevorzugt", "bevorzugen"], "be- не се отделя · Ich bevorzuge Tee. ≈ Ich trinke lieber Tee.");
+W("word", "statt", "вместо", "Statt Kaffee trinke ich Tee. = Вместо кафе пия чай.");
+V("belegen", "слагам (на сандвич)", ["belege", "belegst", "belegt", "belegen", "belegt", "belegen"], "ein belegtes Brötchen = хлебче с плънка (със сирене, шунка…)");
+V("fortgehen", "тръгвам си, отивам си", ["gehe fort", "gehst fort", "geht fort", "gehen fort", "geht fort", "gehen fort"], "разделим: fort|gehen = weggehen");
+N("der", "Appetit", null, "апетит", "Guten Appetit! = Добър апетит!");
+
+T("Рецепта: Zutaten und Zubereitung");
+N("das", "Rezept", "Rezepte", "рецепта");
+N("pl", "Zutaten", null, "съставки, продукти (за рецепта)", "die Zutat → мн.ч. die Zutaten");
+N("die", "Zubereitung", "Zubereitungen", "приготвяне", "zubereiten + -ung → die");
+V("zubereiten", "приготвям", ["bereite zu", "bereitest zu", "bereitet zu", "bereiten zu", "bereitet zu", "bereiten zu"], "разделим: zu|bereiten · Ich bereite das Essen zu.");
+N("der", "Esslöffel", "Esslöffel", "супена лъжица", "essen + der Löffel → der · мн.ч. същото (без -n!): zwei Esslöffel Zucker");
+V("mischen", "смесвам", ["mische", "mischst", "mischt", "mischen", "mischt", "mischen"], "Misch alles in einer Schüssel!");
+W("adj", "gemischt", "смесен", "ein gemischter Salat = смесена салата");
+V("vermengen", "смесвам, разбърквам", ["vermenge", "vermengst", "vermengt", "vermengen", "vermengt", "vermengen"], "= mischen (в рецепти) · ver- не се отделя");
+V("schälen", "беля", ["schäle", "schälst", "schält", "schälen", "schält", "schälen"], "Schäl die Kartoffeln! = Обели картофите!");
+N("die", "Schale", "Schalen", "кора, обелка; купичка", "die Schale von der Banane = обелката на банана");
+V("schneiden", "режа", ["schneide", "schneidest", "schneidet", "schneiden", "schneidet", "schneiden"], "основа на -d → du schneidest, er schneidet");
+W("phrase", "in kleine Stücke schneiden", "нарязвам на малки парчета", "in + Akkusativ (накъде?): in kleine Stücke");
+W("phrase", "in Würfel schneiden", "нарязвам на кубчета", "der Würfel = кубче, зар · in + Akkusativ (в бележките: in Würfeln → in Würfel)");
+V("braten", "пържа, пека (в тиган)", ["brate", "brätst", "brät", "braten", "bratet", "braten"], "a → ä: du brätst, er brät");
+
+T("Imperativ: Mach! Macht! Machen Sie!");
+N("der", "Imperativ", "Imperative", "повелително наклонение", "заповед, молба, съвет: Iss! Esst! Essen Sie!");
+V("machen", "правя", ["mache", "machst", "macht", "machen", "macht", "machen"], "Imperativ: Mach! · Macht! · Machen Sie!");
+V("trinken", "пия", ["trinke", "trinkst", "trinkt", "trinken", "trinkt", "trinken"], "Imperativ: Trink! · Trinkt! · Trinken Sie!");
+V("essen", "ям", ["esse", "isst", "isst", "essen", "esst", "essen"], "Imperativ: Iss! (e → i остава) · Esst! · Essen Sie!");
+V("fahren", "пътувам (с превозно средство); карам", ["fahre", "fährst", "fährt", "fahren", "fahrt", "fahren"], "Imperativ: Fahr! (без умлаут!) · Fahrt! · Fahren Sie!");
+V("sein", "съм", ["bin", "bist", "ist", "sind", "seid", "sind"], "Imperativ: Sei! · Seid! · Seien Sie! (неправилен)");
+V("haben", "имам", ["habe", "hast", "hat", "haben", "habt", "haben"], "Imperativ: Hab! · Habt! · Haben Sie! · Hab keine Angst! = Не се страхувай!");
+V("geben", "давам", ["gebe", "gibst", "gibt", "geben", "gebt", "geben"], "Imperativ: Gib! (e → i остава) · Gebt! · Geben Sie!");
+W("phrase", "Mach! · Macht! · Machen Sie!", "Направи! · Направете! · Направете! (учтиво)", "du-форма без -st: du machst → Mach! · ihr-форма = Macht! · Sie-форма: глаголът първи + Sie");
+W("phrase", "Iss! · Esst! · Essen Sie!", "Яж! · Яжте! · Яжте! (учтиво)", "e → i остава в du-формата: du isst → Iss! · Gib! · Nimm! · Lies!");
+W("phrase", "Fahr langsamer!", "Карай по-бавно!", "a → ä НЕ остава: du fährst → Fahr! · langsamer = по-бавно");
+W("phrase", "Back die Mischung 30 Minuten!", "Печи сместа 30 минути!", "du bäckst → Back! (без умлаут) · die Mischung = сместа");
+W("phrase", "Sei brav!", "Бъди послушен!", "sein → Sei! · Seid! · Seien Sie!");
+W("adj", "brav", "послушен, добър (за дете)", "Sei brav! = Бъди послушен!");
+W("phrase", "Schneide! · Schneidet! · Schneiden Sie!", "Режи! · Режете! · Режете! (учтиво)", "основа на -d/-t → в du-формата остава -e: Schneide! Warte! Arbeite!");
+W("phrase", "Schreiben Sie! · Lesen Sie! · Wiederholen Sie!", "Пишете! · Четете! · Повторете!", "учтиво (Sie): инфинитив + Sie — най-лесната форма");
+W("phrase", "Gib! · Gebt! · Geben Sie!", "Дай! · Дайте! · Дайте! (учтиво)", "du gibst → Gib!");
+V("formulieren", "формулирам", ["formuliere", "formulierst", "formuliert", "formulieren", "formuliert", "formulieren"], "Formulieren Sie Anweisungen! = Формулирайте указания!");
+N("die", "Anweisung", "Anweisungen", "указание, инструкция");
+N("der", "Ratschlag", "Ratschläge", "съвет", "мн.ч. Ratschläge (в бележките: Ratschäge → Ratschläge) · Imperativ често дава съвет: Trink viel Wasser!");
 
 ITEMS.forEach((it) => {
   it.id = (it.art ? it.art + " " : "") + it.de + "#" + it.type + (it.lesson === 0 ? "@0" : "");

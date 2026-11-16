@@ -37,6 +37,8 @@ const SCHEMES = (() => {
     Nachmittag: sky("#93c5fd", sun(70, 38)), Abend: sky("#fdba74", sun(78, 62, "#ef4444") + arrow(53, 50, false)), Nacht: night,
     hellblau: wrap(`<circle cx="50" cy="50" r="38" fill="#93c5fd" stroke="${INK}" stroke-width="2.4"/>`), dunkelblau: wrap(`<circle cx="50" cy="50" r="38" fill="#1e3a8a" stroke="${INK}" stroke-width="2.4"/>`),
     Komma: wrap(`<rect x="10" y="62" width="22" height="6" rx="3" fill="#9ca3af"/><rect x="68" y="62" width="22" height="6" rx="3" fill="#9ca3af"/><circle cx="50" cy="52" r="9" fill="${HL}" stroke="${INK}" stroke-width="2.4"/><path d="M57 54 Q58 70 44 80" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><path d="M57 54 Q58 70 44 80" fill="none" stroke="${HL}" stroke-width="2"/>`),
+    einmal: week([2]), zweimal: week([1, 4]), dreimal: week([0, 2, 4]), "pro Woche": week([0, 1, 2, 3, 4, 5, 6]),
+    nie: week([]).replace("</svg>", `<path d="M22 30 L78 76 M78 30 L22 76" stroke="#dc2626" stroke-width="7" stroke-linecap="round"/></svg>`),
     vorgestern: rel(0), gestern: rel(1), heute: rel(2), morgen: rel(3), übermorgen: rel(4),
   };
   ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"].forEach((m, i) => (S[m] = year([i])));
@@ -50,4 +52,5 @@ const SCHEME_GROUP = {};
 ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember", "Jahr"].forEach((k) => (SCHEME_GROUP[k] = "year"));
 ["Morgen", "Vormittag", "Mittag", "Nachmittag", "Abend", "Nacht"].forEach((k) => (SCHEME_GROUP[k] = "sky"));
 ["vorgestern", "gestern", "heute", "morgen", "übermorgen"].forEach((k) => (SCHEME_GROUP[k] = "rel"));
+["nie", "einmal", "zweimal", "dreimal"].forEach((k) => (SCHEME_GROUP[k] = "oft"));
 ["Norden", "Nordosten", "Osten", "Südosten", "Süden", "Südwesten", "Westen", "Nordwesten", "Mitte"].forEach((k) => (SCHEME_GROUP[k] = "dir"));
