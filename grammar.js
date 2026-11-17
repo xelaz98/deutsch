@@ -737,6 +737,74 @@ const GRAMMAR = [
 <p class="tip">💡 <b>statt</b> = вместо: <i>Statt Kaffee trinke ich Tee.</i> · <b>bevorzugen</b> = предпочитам.</p>`
   },
   {
+    id: "dativ", title: "Dativ: wem? (на кого?)", icon: "🎁",
+    html: `
+<p>Третият падеж. Отговаря на въпроса <b>Wem?</b> = <b>на кого?</b> На български често казваме „ми, ти, му“: <i>харесва <b>ми</b>, помагам <b>ти</b></i> — това е точно Dativ.</p>
+<table class="g"><tr><th></th><th>въпрос</th><th>пример</th></tr>
+<tr><td>Nominativ</td><td><b>Wer?</b> кой</td><td><b>Der Mann</b> isst.</td></tr>
+<tr><td>Akkusativ</td><td><b>Wen? Was?</b> кого, какво</td><td>Ich sehe <b>den Mann</b>.</td></tr>
+<tr><td><b>Dativ</b></td><td><b>Wem?</b> на кого</td><td>Der Käse schmeckt <b>dem Mann</b>.</td></tr></table>
+<h4>Членовете в Dativ</h4>
+<table class="g"><tr><th></th><th><span class="art der">der</span></th><th><span class="art die">die</span></th><th><span class="art das">das</span></th><th><span class="art pl">мн.ч.</span></th></tr>
+<tr><td>Nominativ</td><td>der · ein · mein</td><td>die · eine · meine</td><td>das · ein · mein</td><td>die · meine</td></tr>
+<tr><td><b>Dativ</b></td><td><b>dem · einem · meinem · keinem</b></td><td><b>der · einer · meiner · keiner</b></td><td><b>dem · einem · deinem · keinem</b></td><td><b>den</b> · meinen · keinen + <b>-n</b></td></tr></table>
+<p class="tip">🔑 Трик: Dativ = окончания <b>-m</b> (мъжки и среден), <b>-r</b> (женски), <b>-n</b> (мн.ч.). В мн.ч. и съществителното получава <b>-n</b>: die Kinder → den Kinder<b>n</b>.</p>
+<p><i><b>Dem</b> Mann schmeckt der Käse nicht. · Der Käse schmeckt <b>meiner</b> Frau nicht. · Die Forelle schmeckt <b>meinem</b> Sohn nicht. · Die Suppe schmeckt <b>den</b> Kinder<b>n</b> sehr gut.</i></p>
+<h4>Местоименията в Dativ</h4>
+<table class="g"><tr><th>Nominativ</th><th>Akkusativ</th><th><b>Dativ</b></th><th>превод</th></tr>
+<tr><td>ich</td><td>mich</td><td><b>mir</b></td><td>на мен, ми</td></tr>
+<tr><td>du</td><td>dich</td><td><b>dir</b></td><td>на теб, ти</td></tr>
+<tr><td>er</td><td>ihn</td><td><b>ihm</b></td><td>на него, му</td></tr>
+<tr><td>sie</td><td>sie</td><td><b>ihr</b></td><td>на нея, ѝ</td></tr>
+<tr><td>es</td><td>es</td><td><b>ihm</b></td><td>на него (das), му</td></tr>
+<tr><td>wir</td><td>uns</td><td><b>uns</b></td><td>на нас, ни</td></tr>
+<tr><td>ihr</td><td>euch</td><td><b>euch</b></td><td>на вас, ви</td></tr>
+<tr><td>sie / Sie</td><td>sie / Sie</td><td><b>ihnen / Ihnen</b></td><td>на тях / на Вас</td></tr></table>
+<p class="tip">⚠️ <b>ihn</b> (Akk.) ≠ <b>ihm</b> (Dat.): <i>Ich sehe <b>ihn</b>.</i> (виждам го) · <i>Ich helfe <b>ihm</b>.</i> (помагам му)</p>
+<h4>Глаголи, които искат Dativ</h4>
+<p><b>schmecken, gefallen, gehören, helfen, danken, folgen, empfehlen</b> (+ какво в Akk.), <b>Es geht mir gut</b>, <b>Es tut mir leid</b>.</p>
+<p><i>Das Buch <b>gehört mir</b>. · Ich <b>helfe dir</b>. · Ich <b>danke Ihnen</b>. · <b>Folgen</b> Sie <b>mir</b>! · Ich <b>empfehle Ihnen</b> den Fisch.</i></p>
+<h4>schmecken и gefallen: обратно на българския ред</h4>
+<p>Нещото, което харесваш, е <b>подлогът</b> (Nominativ). Ти си „на кого“ (Dativ) — точно като в „харесва <b>ми</b>“:</p>
+<p><i><b>Der Film</b> gefällt <b>mir</b>.</i> = Филмът <b>ми</b> харесва. · <i><b>Die Erdbeeren</b> schmecken <b>dem Kind</b> nicht.</i> (мн.ч. → schmeck<b>en</b>)<br>
+<i>Gefällt <b>Ihnen</b> der Film? — Ja, <b>er</b> gefällt <b>mir</b> sehr gut.</i> (er = der Film)</p>
+<p class="tip">💡 <b>schmecken</b> = за храна · <b>gefallen</b> = за всичко друго (филм, град, рокля).</p>
+<h4>Внимавай</h4>
+<p><b>antworten auf</b> + Akk. = <b>beantworten</b> + Akk. (без auf): <i>Ich antworte <b>auf die Frage</b>. = Ich beantworte <b>die Frage</b>.</i><br>
+<b>wohnen bei</b> + Dativ: <i>Ich wohne <b>bei meinen Eltern</b>.</i> = Живея при родителите си.</p>`
+  },
+  {
+    id: "warhatte", title: "Минало: war и hatte", icon: "⏪",
+    html: `
+<p>За <b>sein</b> и <b>haben</b> германците казват миналото с една дума — <b>war</b> и <b>hatte</b>:</p>
+<table class="g"><tr><th></th><th>sein → war (бях)</th><th>haben → hatte (имах)</th></tr>
+<tr><td>ich</td><td><b>war</b></td><td><b>hatte</b></td></tr>
+<tr><td>du</td><td>warst</td><td>hattest</td></tr>
+<tr><td>er/sie/es</td><td><b>war</b></td><td><b>hatte</b></td></tr>
+<tr><td>wir</td><td>waren</td><td>hatten</td></tr>
+<tr><td>ihr</td><td>wart</td><td>hattet</td></tr>
+<tr><td>sie/Sie</td><td>waren</td><td>hatten</td></tr></table>
+<p class="tip">🔑 Пак <b>ich = er</b>, без окончание: ich war, er war · ich hatte, er hatte.</p>
+<p><i>Wir <b>waren</b> in Rom. Das Essen <b>war</b> köstlich. Wir <b>hatten</b> Glück.</i></p>
+<p>Другите глаголи имат три форми: <b>trinken – trank – hat getrunken</b> (пия – пих – пил съм). Засега само да ги разпознаваш.</p>
+<h4>Сравнение: teuer – teurer – am teuersten</h4>
+<p>При <b>-er</b> накрая e-то пада: teuer → <b>teurer</b> (не „teuerer“) → am teuersten.</p>`
+  },
+  {
+    id: "kapani", title: "Капани: der See / die See, Bank – Bänke", icon: "🪤",
+    html: `
+<table class="g"><tr><th>дума</th><th>значение</th><th>трик</th></tr>
+<tr><td><span class="art der">der</span> See · die Seen</td><td>езеро</td><td rowspan="2">членът сменя значението!</td></tr>
+<tr><td><span class="art die">die</span> See</td><td>море (= das Meer)</td></tr>
+<tr><td>die Bank → die <b>Banken</b></td><td>банки (за пари)</td><td rowspan="2">една дума, различно мн.ч.</td></tr>
+<tr><td>die Bank → die <b>Bänke</b></td><td>пейки</td></tr>
+<tr><td>die <b>Stadt</b> · die Städte</td><td>град</td><td rowspan="2">звучат почти еднакво</td></tr>
+<tr><td>der <b>Staat</b> · die Staaten</td><td>държава</td></tr>
+<tr><td>das <b>Bett</b> (кратко e)</td><td>легло</td><td rowspan="2">двойна съгласна = кратка гласна · двойна гласна = дълга</td></tr>
+<tr><td>das <b>Beet</b> (дълго ee)</td><td>леха</td></tr></table>
+<p class="tip">💡 Град + <b>-er</b> = прилагателно с главна буква и без окончание: <i>Wien → das <b>Wiener</b> Schnitzel · Berlin → der <b>Berliner</b> Dom</i>.</p>`
+  },
+  {
     id: "komposita", title: "Сложни думи и имена (das Hotelzimmer)", icon: "🧩",
     html: `
 <p>Немският лепи думи една за друга. <b>Последната дума решава члена</b> (и множественото число):</p>

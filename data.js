@@ -17,6 +17,7 @@ const LESSONS = [
   { id: 10, date: "10.11.2026", title: "Музей и писмо: части на деня, посоки, най-известният, kein + Akkusativ" },
   { id: 11, date: "12.11.2026", title: "Закуска на шведска маса: храни, mögen/wollen, ich hätte gern, am/um/im" },
   { id: 12, date: "14.11.2026", title: "Кухня и пазар: съдове, храни, опаковки, колко често, рецепта, Imperativ" },
+  { id: 13, date: "17.11.2026", title: "В ресторанта: меню, вкус, Dativ (wem? mir, dir, ihm), war/hatte" },
 ];
 
 const ITEMS = [];
@@ -1862,6 +1863,142 @@ W("phrase", "Gib! · Gebt! · Geben Sie!", "Дай! · Дайте! · Дайте
 V("formulieren", "формулирам", ["formuliere", "formulierst", "formuliert", "formulieren", "formuliert", "formulieren"], "Formulieren Sie Anweisungen! = Формулирайте указания!");
 N("die", "Anweisung", "Anweisungen", "указание, инструкция");
 N("der", "Ratschlag", "Ratschläge", "съвет", "мн.ч. Ratschläge (в бележките: Ratschäge → Ratschläge) · Imperativ често дава съвет: Trink viel Wasser!");
+
+L(13); T("Внимавай: Bett или Beet?");
+N("das", "Bett", "Betten", "легло", "с кратко e и двойно t · ≠ das Beet (леха)");
+N("das", "Beet", "Beete", "леха (в градина)", "с дълго ee · ≠ das Bett (легло): das Blumenbeet = леха с цветя");
+W("adj", "deutschsprachig", "немскоезичен", "deutsch + die Sprache + -ig · die deutschsprachigen Länder = Германия, Австрия, Швейцария");
+N("die", "Stadt", "Städte", "град", "мн.ч. с умлаут: die Städte");
+N("der", "Staat", "Staaten", "държава", "≠ die Stadt (град) — звучат почти еднакво!");
+N("der", "See", "Seen", "езеро", "der See = езеро · die See = море (= das Meer)");
+N("die", "See", "Seen", "море", "die See = морето (= das Meer) · der See = езеро — членът сменя значението!");
+N("die", "Bank", "Banken", "банка", "мн.ч. Banken = банки (за пари)");
+W("phrase", "die Bank – die Bänke", "пейка – пейки", "същата дума, друго значение: die Bank = пейка → мн.ч. die Bänke · банка → die Banken");
+N("die", "Gans", "Gänse", "гъска", "мн.ч. с умлаут: die Gänse · die Weihnachtsgans = коледна гъска");
+
+T("В ресторанта: Speisekarte");
+N("die", "Speisekarte", "Speisekarten", "меню (картата с ястия)", "die Speise (ястие) + die Karte → die");
+V("wählen", "избирам", ["wähle", "wählst", "wählt", "wählen", "wählt", "wählen"], "Was wählst du? = Какво избираш? · die Auswahl = изборът");
+N("die", "Auswahl", null, "избор (от много неща)", "Die Auswahl ist groß. = Изборът е голям.");
+N("die", "Vorspeise", "Vorspeisen", "предястие", "vor (преди) + die Speise → die");
+N("das", "Hauptgericht", "Hauptgerichte", "основно ястие", "Haupt- (главно) + das Gericht (ястие) → das");
+N("die", "Nachspeise", "Nachspeisen", "десерт", "nach (след) + die Speise → die · ≈ das Dessert");
+N("das", "Getränk", "Getränke", "напитка");
+W("phrase", "trinken – trank – hat getrunken", "пия – пих – пил съм", "три форми: сега – минало (Präteritum) – перфект");
+N("die", "Tomate", "Tomaten", "домат");
+N("die", "Suppe", "Suppen", "супа", "die Tomatensuppe = доматена супа");
+N("das", "Gemüse", null, "зеленчуци", "o. Pl. = без мн.ч.");
+V("mischen", "смесвам", ["mische", "mischst", "mischt", "mischen", "mischt", "mischen"], "mischen → gemischt: ein gemischter Salat");
+W("adj", "gemischt", "смесен", "ein gemischter Salat = смесена салата");
+N("der", "Salat", "Salate", "салата", "der gemischte Salat = смесена салата");
+W("adj", "roh", "суров (неварен)", "roher Schinken = суров пушен бут (прошуто)");
+W("phrase", "roher Schinken", "суров бут (прошуто)", "der → без член: roh + -er · roher Schinken mit Melone = прошуто с пъпеш");
+N("die", "Melone", "Melonen", "пъпеш; диня");
+N("das", "Salz", null, "сол");
+N("das", "Fleisch", null, "месо", "o. Pl. = без мн.ч.");
+N("der", "Braten", "Braten", "печено месо (печеня)", "от braten (пържа, пека) · der Schweinebraten = свинско печено");
+N("das", "Schwein", "Schweine", "прасе", "das Schweinefleisch = свинско месо");
+W("adj", "sauer", "кисел", "sauer + das Kraut → das Sauerkraut = кисело зеле");
+N("das", "Kraut", "Kräuter", "зеле; билка", "в бележките е „der Kraut“ — правилно е das Kraut · das Sauerkraut = кисело зеле · мн.ч. Kräuter = билки");
+W("phrase", "Wien – Wiener", "Виена – виенски", "град + -er = прилагателно, винаги с главна буква и без окончание: das Wiener Schnitzel, der Berliner Bär");
+N("das", "Schnitzel", "Schnitzel", "шницел", "das Wiener Schnitzel = виенски шницел (панирана телешка пържола)");
+N("der", "Blumenkohl", null, "карфиол", "die Blume (цвете) + der Kohl (зеле) → der");
+N("das", "Rind", "Rinder", "говедо", "das Rindfleisch = говеждо месо");
+N("der", "Fisch", "Fische", "риба");
+N("die", "Forelle", "Forellen", "пъстърва");
+N("der", "Steinbutt", "Steinbutte", "калкан (риба)", "der Stein + der Butt → der");
+N("der", "Knoblauch", null, "чесън", "o. Pl. · eine Knoblauchzehe = скилидка чесън");
+N("der", "Lauch", "Lauche", "праз");
+N("der", "Obstsalat", "Obstsalate", "плодова салата", "das Obst + der Salat → der");
+N("die", "Erdbeere", "Erdbeeren", "ягода");
+N("die", "Sahne", null, "сметана", "Erdbeeren mit Sahne");
+N("der", "Apfelkuchen", "Apfelkuchen", "ябълков сладкиш", "der Apfel + der Kuchen → der · мн.ч. същото");
+N("der", "Cappuccino", "Cappuccinos", "капучино");
+N("die", "Limonade", "Limonaden", "лимонада");
+V("folgen", "следвам", ["folge", "folgst", "folgt", "folgen", "folgt", "folgen"], "+ Dativ: Folgen Sie mir! = Последвайте ме!");
+
+T("Поръчка: Was würden Sie mir empfehlen?");
+W("phrase", "Entschuldigung, ich bin Vegetarierin.", "Извинете, аз съм вегетарианка.", "die Vegetarierin (жена) · der Vegetarier (мъж) — без член след „ich bin“");
+N("die", "Vegetarierin", "Vegetarierinnen", "вегетарианка", "der Vegetarier = вегетарианец");
+W("q", "Was würden Sie mir empfehlen?", "Какво бихте ми препоръчали?", "würden + инфинитив накрая = учтиво „бихте“ · mir = на мен (Dativ)");
+V("empfehlen", "препоръчвам", ["empfehle", "empfiehlst", "empfiehlt", "empfehlen", "empfehlt", "empfehlen"], "e → ie: du empfiehlst, er empfiehlt · + Dativ (на кого): Ich empfehle dir den Fisch.");
+V("bestellen", "поръчвам", ["bestelle", "bestellst", "bestellt", "bestellen", "bestellt", "bestellen"], "Ich bestelle die Forelle.");
+W("adv", "sofort", "веднага", "Kommt sofort! = Идва веднага! (сервитьорът)");
+W("adj", "schwer", "тежък; труден", "Die Auswahl ist schwer. = Трудно е да се избере.");
+W("phrase", "ich denke · ich glaube", "мисля · смятам", "за мнение: Ich denke, ich nehme den Fisch. · Ich glaube, das ist lecker.");
+W("phrase", "Das macht zusammen 30 Euro.", "Общо прави 30 евро.", "при плащане: zusammen = общо · Zusammen oder getrennt? = Заедно или поотделно?");
+W("adv", "zusammen", "заедно; общо", "Wir zahlen zusammen. = Плащаме заедно.");
+W("adv", "gleichfalls", "и на вас (същото)", "Guten Appetit! – Danke, gleichfalls! = Добър апетит! – Благодаря, и на вас!");
+
+T("Вкус: lecker, köstlich, schrecklich");
+W("adj", "lecker", "вкусен", "Das ist lecker! = Вкусно е!");
+W("adj", "köstlich", "превъзходен, много вкусен", "по-силно от lecker");
+W("adj", "schrecklich", "ужасен", "Das Essen ist schrecklich! = Храната е ужасна!");
+V("genießen", "наслаждавам се на", ["genieße", "genießt", "genießt", "genießen", "genießt", "genießen"], "+ Akkusativ: Ich genieße das Essen.");
+W("adj", "ungenießbar", "негоден за ядене", "un- (не) + genießen + -bar (може) → не може да се яде");
+V("schmecken", "имам вкус; харесва ми (на вкус)", ["schmecke", "schmeckst", "schmeckt", "schmecken", "schmeckt", "schmecken"], "+ Dativ: Der Käse schmeckt mir. = Сиренето ми харесва. · Schmeckt's? = Вкусно ли е?");
+V("gefallen", "харесва ми", ["gefalle", "gefällst", "gefällt", "gefallen", "gefallt", "gefallen"], "+ Dativ: Der Film gefällt mir. = Филмът ми харесва. · a → ä: es gefällt");
+
+T("Dativ: wem?");
+N("der", "Dativ", "Dative", "дателен падеж (на кого?)", "въпрос: Wem? = На кого? · Wem schmeckt der Käse?");
+W("q", "Wem?", "На кого?", "въпрос за Dativ · Wer? (кой) → Wen? (кого) → Wem? (на кого)");
+W("q", "Wem schmeckt der Käse?", "На кого му харесва сиренето?", "schmecken + Dativ");
+W("phrase", "Dem Mann schmeckt der Käse nicht.", "На мъжа не му харесва сиренето.", "der → dem (мъжки род, Dativ)");
+W("phrase", "Der Käse schmeckt meiner Frau nicht.", "Сиренето не харесва на жена ми.", "die → der, meine → meiner (женски род, Dativ)");
+W("phrase", "Die Forelle schmeckt meinem Sohn nicht.", "Пъстървата не харесва на сина ми.", "mein → meinem (мъжки род, Dativ)");
+W("phrase", "Die Erdbeeren schmecken dem Kind nicht.", "Ягодите не харесват на детето.", "das → dem (среден род, Dativ)");
+W("phrase", "Die Suppe schmeckt den Kindern sehr gut.", "Супата много харесва на децата.", "мн.ч. die → den + съществителното получава -n: die Kinder → den Kindern");
+V("gehören", "принадлежа", ["gehöre", "gehörst", "gehört", "gehören", "gehört", "gehören"], "+ Dativ: Das Buch gehört mir. = Книгата е моя.");
+V("helfen", "помагам", ["helfe", "hilfst", "hilft", "helfen", "helft", "helfen"], "+ Dativ: Ich helfe dir. = Помагам ти. · e → i: du hilfst");
+V("danken", "благодаря", ["danke", "dankst", "dankt", "danken", "dankt", "danken"], "+ Dativ: Ich danke Ihnen. = Благодаря Ви.");
+W("phrase", "Es geht mir ganz gut.", "Доста добре съм.", "mir = Dativ на ich · ganz gut = доста добре");
+W("phrase", "mir · dir · ihm · ihr · ihm", "на мен · на теб · на него · на нея · на него (das)", "лични местоимения в Dativ, ед.ч.");
+W("phrase", "uns · euch · ihnen · Ihnen", "на нас · на вас · на тях · на Вас", "лични местоимения в Dativ, мн.ч.");
+W("q", "Gefällt Ihnen der Film?", "Харесва ли Ви филмът?", "Ihnen = на Вас (учтиво, Dativ)");
+W("phrase", "Ja, er gefällt mir sehr gut.", "Да, много ми харесва.", "er = der Film · mir = на мен");
+W("phrase", "den Salat – ihn", "салатата – нея (Akk.)", "Akkusativ: der Salat → den Salat → ihn · der → er, die → sie, das → es, мн.ч. → sie");
+V("antworten", "отговарям", ["antworte", "antwortest", "antwortet", "antworten", "antwortet", "antworten"], "antworten auf + Akkusativ: Ich antworte auf die Frage.");
+V("beantworten", "отговарям на", ["beantworte", "beantwortest", "beantwortet", "beantworten", "beantwortet", "beantworten"], "+ Akkusativ, БЕЗ auf: Ich beantworte die Frage. = Ich antworte auf die Frage.");
+V("wohnen", "живея (някъде)", ["wohne", "wohnst", "wohnt", "wohnen", "wohnt", "wohnen"], "wohnen bei + Dativ: Ich wohne bei meinen Eltern. = Живея при родителите си.");
+
+T("Минало: war, hatte");
+W("phrase", "sein – war", "съм – бях", "ich war, du warst, er war, wir waren, ihr wart, sie waren");
+W("phrase", "haben – hatte", "имам – имах", "ich hatte, du hattest, er hatte, wir hatten, ihr hattet, sie hatten");
+W("phrase", "Wir hatten Glück.", "Имахме късмет.", "hatten = имахме (минало на haben)");
+N("", "Rom", null, "Рим", "Wir waren in Rom. = Бяхме в Рим.");
+N("das", "Herz", "Herzen", "сърце", "herzlich = сърдечен · Herzlichen Dank! = Сърдечно благодаря!");
+W("adj", "herzlich", "сърдечен", "Herzlichen Dank! · Herzlich willkommen!");
+N("der", "Dank", null, "благодарност", "Vielen Dank! · Herzlichen Dank!");
+
+T("Хранене по света");
+N("die", "Essgewohnheit", "Essgewohnheiten", "хранителен навик", "обикн. мн.ч.: die Essgewohnheiten");
+W("phrase", "ins Ausland gehen", "отивам в чужбина", "das Ausland = чужбина · in + das = ins (Akk., накъде?) · im Ausland = в чужбина (къде?)");
+N("das", "Ausland", null, "чужбина", "im Ausland leben = живея в чужбина");
+V("bevorzugen", "предпочитам", ["bevorzuge", "bevorzugst", "bevorzugt", "bevorzugen", "bevorzugt", "bevorzugen"]);
+N("", "Weihnachten", null, "Коледа", "обикновено без член: zu Weihnachten = за Коледа · Frohe Weihnachten! = Весела Коледа!");
+V("schlachten", "коля (животно)", ["schlachte", "schlachtest", "schlachtet", "schlachten", "schlachtet", "schlachten"], "Zu Weihnachten schlachtet man eine Gans.");
+N("das", "Gewürz", "Gewürze", "подправка", "Salz und Pfeffer sind Gewürze.");
+W("phrase", "teuer – teurer – am teuersten", "скъп – по-скъп – най-скъп", "e-то пада: teuer → teurer (не „teuerer“)");
+N("die", "Welt", "Welten", "свят", "auf der Welt = на света");
+V("wissen", "знам (факт)", ["weiß", "weißt", "weiß", "wissen", "wisst", "wissen"], "ich weiß = er weiß (без окончание!) · Ich weiß es nicht.");
+W("phrase", "Ich habe keine Ahnung.", "Нямам представа.", "die Ahnung = представа");
+N("die", "Ahnung", "Ahnungen", "представа", "Keine Ahnung! = Нямам представа!");
+W("phrase", "Tut mir leid!", "Съжалявам!", "в бележките: „Tut mit leid“ → правилно Tut mir leid · mir = Dativ");
+V("leidtun", "съжалявам (тъжно ми е)", ["tue leid", "tust leid", "tut leid", "tun leid", "tut leid", "tun leid"], "+ Dativ: Es tut mir leid. = Съжалявам. · разделим: leid отива накрая");
+V("tun", "правя", ["tue", "tust", "tut", "tun", "tut", "tun"], "≈ machen · Was kann ich für Sie tun? = С какво мога да Ви помогна?");
+
+T("Imperativ: Koch! Kocht! Kochen Sie!");
+V("kochen", "готвя; варя", ["koche", "kochst", "kocht", "kochen", "kocht", "kochen"], "Imperativ: Koch! · Kocht! · Kochen Sie!");
+V("kaufen", "купувам", ["kaufe", "kaufst", "kauft", "kaufen", "kauft", "kaufen"], "Imperativ: Kauf! · Kauft! · Kaufen Sie!");
+V("trinken", "пия", ["trinke", "trinkst", "trinkt", "trinken", "trinkt", "trinken"], "Imperativ: Trink! · Trinkt! · Trinken Sie!");
+V("essen", "ям", ["esse", "isst", "isst", "essen", "esst", "essen"], "Imperativ: Iss! · Esst! · Essen Sie!");
+V("nehmen", "вземам", ["nehme", "nimmst", "nimmt", "nehmen", "nehmt", "nehmen"], "Imperativ: Nimm! · Nehmt! · Nehmen Sie!");
+V("braten", "пържа, пека (в тиган)", ["brate", "brätst", "brät", "braten", "bratet", "braten"], "Imperativ: Brat(e)! · Bratet! · Braten Sie!");
+W("phrase", "Koch! · Kocht! · Kochen Sie!", "Готви! · Гответе! · Гответе! (учтиво)", "du kochst → Koch! · ihr kocht → Kocht! · Kochen Sie!");
+W("phrase", "Kauf! · Kauft! · Kaufen Sie!", "Купи! · Купете! · Купете! (учтиво)", "du kaufst → Kauf!");
+W("phrase", "Trink! · Trinkt! · Trinken Sie!", "Пий! · Пийте! · Пийте! (учтиво)", "du trinkst → Trink!");
+W("phrase", "Nimm! · Nehmt! · Nehmen Sie!", "Вземи! · Вземете! · Вземете! (учтиво)", "e → i остава: du nimmst → Nimm! (двойно m)");
+W("phrase", "Brate! · Bratet! · Braten Sie!", "Изпържи! · Изпържете! · Изпържете! (учтиво)", "умлаутът изчезва: du brätst → Brat! / Brate!");
 
 ITEMS.forEach((it) => {
   it.id = (it.art ? it.art + " " : "") + it.de + "#" + it.type + (it.lesson === 0 ? "@0" : "");

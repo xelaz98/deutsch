@@ -214,3 +214,25 @@ const DIALOGS5 = [
     qs: [["Im Obstsalat sind Kiwis.", true, 0], ["Man schält die Äpfel nicht.", true, 1], ["Man schneidet das Obst in große Stücke.", false, 2], ["Die Sahne schlägt man mit Salz.", false, 4]] },
 ];
 DIALOGS.push(...DIALOGS5.map((d) => ({ title: `${d.ic} ${d.title}`, lines: d.lines, qs: d.qs })));
+const DIALOGS6 = [
+  { title: "В ресторанта: Was würden Sie mir empfehlen?", ic: "🍽️", lines: [
+    ["Kellner", "Guten Abend! Hier ist die Speisekarte. Was möchten Sie trinken?", "Добър вечер! Ето менюто. Какво ще пиете?"],
+    ["Gast", "Einen Cappuccino, bitte. Entschuldigung, ich bin Vegetarierin. Was würden Sie mir empfehlen?", "Едно капучино, моля. Извинете, аз съм вегетарианка. Какво бихте ми препоръчали?"],
+    ["Kellner", "Als Vorspeise empfehle ich Ihnen die Tomatensuppe. Sie ist köstlich.", "За предястие Ви препоръчвам доматената супа. Превъзходна е."],
+    ["Gast", "Gut. Und als Hauptgericht? Die Auswahl ist schwer.", "Добре. А за основно? Трудно е да се избере."],
+    ["Kellner", "Der Blumenkohl mit Käse schmeckt allen Gästen sehr gut.", "Карфиолът със сирене много харесва на всички гости."],
+    ["Gast", "Dann nehme ich den Blumenkohl. Und als Nachspeise einen Obstsalat.", "Тогава ще взема карфиола. А за десерт — плодова салата."],
+    ["Kellner", "Kommt sofort. Guten Appetit!", "Идва веднага. Добър апетит!"],
+    ["Gast", "Danke, gleichfalls! … Das Essen war lecker. Die Rechnung, bitte.", "Благодаря, и на вас! … Храната беше вкусна. Сметката, моля."],
+    ["Kellner", "Das macht zusammen 24 Euro.", "Общо прави 24 евро."]],
+    qs: [["Der Gast ist Vegetarierin.", true, 1], ["Der Kellner empfiehlt den Fisch.", false, 2], ["Als Nachspeise nimmt der Gast Apfelkuchen.", false, 5], ["Das Essen war lecker.", true, 7], ["Das Essen kostet 24 Euro.", true, 8]] },
+  { title: "Schmeckt's? Обяд в семейството", ic: "🍲", lines: [
+    ["Mutter", "Wie schmeckt euch die Suppe?", "Как ви харесва супата?"],
+    ["Sohn", "Die Suppe schmeckt mir sehr gut! Aber die Forelle schmeckt mir nicht.", "Супата много ми харесва! Но пъстървата не ми харесва."],
+    ["Tochter", "Mir schmecken die Kartoffeln. Sie sind lecker.", "На мен ми харесват картофите. Вкусни са."],
+    ["Vater", "Und der Braten? Gefällt er dir?", "А печеното? Харесва ли ти?"],
+    ["Tochter", "Nein, Papa. Ich esse kein Fleisch. Es tut mir leid!", "Не, тате. Не ям месо. Съжалявам!"],
+    ["Vater", "Kein Problem. Gib mir bitte das Salz!", "Няма проблем. Подай ми солта, моля!"]],
+    qs: [["Dem Sohn schmeckt die Suppe.", true, 1], ["Die Forelle schmeckt dem Sohn gut.", false, 1], ["Die Tochter isst gern Fleisch.", false, 4], ["Der Vater möchte das Salz.", true, 5]] },
+];
+DIALOGS.push(...DIALOGS6.map((d) => ({ title: `${d.ic} ${d.title}`, lines: d.lines, qs: d.qs })));

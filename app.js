@@ -67,7 +67,9 @@ function itemForms(it) { // всички форми на думата (за по
 }
 function examplesFor(it) { // всички примери: [[de, bg], …]
   const own = it.type === "phrase" || it.type === "q" ? [[it.de, it.bg]] : [];
-  const e = EXAMPLES[it.de], more = (typeof EXAMPLES_MORE !== "undefined" && EXAMPLES_MORE[it.de]) || [];
+  // „der See“ / „die See“: примери с член в ключа имат предимство (думи с еднакво изписване, различно значение)
+  const ak = it.art ? it.art + " " + it.de : null, M = typeof EXAMPLES_MORE !== "undefined" ? EXAMPLES_MORE : {};
+  const e = ak && M[ak] ? null : EXAMPLES[it.de], more = (ak && M[ak]) || M[it.de] || [];
   const list = e ? (Array.isArray(e[0]) ? e : [e]) : [];
   const out = [...own, ...list, ...more];
   return out.filter((x, i) => out.findIndex((y) => y[0] === x[0]) === i).slice(0, 4);

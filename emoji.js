@@ -4,7 +4,7 @@
 const EMOJI = {
   // храна и напитки
   Kaffee: "☕", Tee: "🍵", Milch: "🥛", Bier: "🍺", Wein: "🍷",
-  Tomate: "🍅", Gurke: "🥒", Apfel: "🍎", Banane: "🍌", Orange: "🍊", Zitrone: "🍋", Salz: "🧂", Champagner: "🍾", Zwiebel: "🧅", Ananas: "🍍", Karotte: "🥕", Spaghetti: "🍝", "Pommes frites": "🍟", Kiwi: "🥝", Melone: "🍈", Erdbeere: "🍓", Kirsche: "🍒", Mango: "🥭", Löffel: "🥄", Messer: "🔪", Schüssel: "🥣", Süßigkeit: "🍬", Dose: "🥫", Rind: "🐄", Tüte: "🛍️", Birne: "🍐", Weintrauben: "🍇", Butter: "🧈", Honig: "🍯", Schokolade: "🍫", Besteck: "🍴", Brot: "🍞", Ei: "🥚", Wurst: "🌭", Käse: "🧀", Salat: "🥗",
+  Tomate: "🍅", Gurke: "🥒", Apfel: "🍎", Banane: "🍌", Orange: "🍊", Fisch: "🐟", Schwein: "🐖", Knoblauch: "🧄", Zitrone: "🍋", Salz: "🧂", Champagner: "🍾", Zwiebel: "🧅", Ananas: "🍍", Karotte: "🥕", Spaghetti: "🍝", "Pommes frites": "🍟", Kiwi: "🥝", Melone: "🍈", Erdbeere: "🍓", Kirsche: "🍒", Mango: "🥭", Löffel: "🥄", Messer: "🔪", Schüssel: "🥣", Süßigkeit: "🍬", Dose: "🥫", Rind: "🐄", Tüte: "🛍️", Birne: "🍐", Weintrauben: "🍇", Butter: "🧈", Honig: "🍯", Schokolade: "🍫", Besteck: "🍴", Brot: "🍞", Ei: "🥚", Wurst: "🌭", Käse: "🧀", Salat: "🥗",
   Steak: "🥩", Suppe: "🍲", Kuchen: "🍰", Pizza: "🍕", Eis: "🍦", Kartoffel: "🥔", Zigarette: "🚬",
   // дрехи и лични вещи
   Hose: "👖", Jacke: "🧥", Schuh: "👟", Hut: "👒", Tasche: "👜", Schirm: "☂️", Brille: "👓", Kamera: "📷", Geschenk: "🎁",
@@ -39,6 +39,6 @@ const emojiOf = (it) => {
   if (!it) return null;
   if (typeof SCHEMES !== "undefined" && SCHEMES[it.de]) return (SCHEME_IMG[it.de] ||= `<img class="pic" src="data:image/svg+xml,${encodeURIComponent(SCHEMES[it.de])}" alt="" draggable="false">`);
   if (EMOJI[it.de]) return EMOJI[it.de];
-  const id = typeof PICS !== "undefined" && PICS[it.de];
+  const id = typeof PICS !== "undefined" && ((it.art && PICS[it.art + " " + it.de]) || PICS[it.de]); // „der See“ / „die See“: ключ с член има предимство
   return id ? `<img class="pic" src="pic/${id}.webp" alt="" loading="lazy" draggable="false">` : null;
 };

@@ -1263,6 +1263,51 @@ function genWieOft() {
   return { kind: "mc", task: "Колко често? (🟧 = ден, в който го прави)", prompt: `<div class="exs" style="letter-spacing:2px">${bar}</div><div class="exs">${esc(s)} ___ ${esc(o)}.</div>`, options: OFT.map((x) => x[1]).filter((x) => x !== w).sort(() => Math.random() - 0.5).slice(0, 3).concat(w).sort(() => Math.random() - 0.5), answer: w, say: full, full, bg, keys: true,
     explain: `${n} ${n === 1 ? "ден" : "дни"} от 7 → <b>${esc(w)}</b> (${wbg}). Число + <b>-mal</b> = пъти: einmal, zweimal, dreimal.` };
 }
+// урок 13: Dativ на члена — Die Suppe schmeckt dem Mann / meiner Frau / den Kindern
+const DAT_P = [["Mann", "m", "мъжа", "мъжа ми"], ["Frau", "f", "жената", "жена ми"], ["Kind", "n", "детето", "детето ми"], ["Kinder", "pl", "децата", "децата ми"],
+  ["Sohn", "m", "сина", "сина ми"], ["Tochter", "f", "дъщерята", "дъщеря ми"], ["Vater", "m", "бащата", "баща ми"], ["Mutter", "f", "майката", "майка ми"],
+  ["Eltern", "pl", "родителите", "родителите ми"], ["Freund", "m", "приятеля", "приятеля ми"], ["Freundin", "f", "приятелката", "приятелката ми"], ["Baby", "n", "бебето", "бебето ми"]];
+const DAT_F = [["Die Suppe schmeckt {X}.", "Супата харесва на {B}."], ["Der Film gefällt {X} nicht.", "Филмът не харесва на {B}."], ["Das Buch gehört {X}.", "Книгата е на {B}."],
+  ["Ich helfe {X}.", "Помагам на {B}."], ["Der Kellner empfiehlt {X} den Fisch.", "Сервитьорът препоръчва рибата на {B}."], ["Wir danken {X}.", "Благодарим на {B}."]];
+const DAT_ART = { def: { m: "dem", f: "der", n: "dem", pl: "den" }, pos: { m: "meinem", f: "meiner", n: "meinem", pl: "meinen" } };
+function genDativArt() {
+  const [n, g, bgD, bgP] = rnd(DAT_P), [f, fbg] = rnd(DAT_F), kind = rnd(["def", "pos"]), art = DAT_ART[kind][g];
+  const noun = g === "pl" && !/n$/.test(n) ? n + "n" : n, full = f.replace("{X}", `${art} ${noun}`), bg = fbg.replace("{B}", kind === "def" ? bgD : bgP);
+  const opts = kind === "def" ? ["dem", "der", "den", "die"] : ["meinem", "meiner", "meinen", "meine"];
+  const nom = { m: "der", f: "die", n: "das", pl: "die" }[g];
+  return { kind: "mc", task: "Dativ: на кого?", prompt: `<div class="exs">${esc(f.replace("{X}", `___ ${noun}`))}</div>`, options: opts, answer: art, say: full, full, bg, keys: true,
+    explain: `${nom} ${esc(n)} → Dativ <b>${art}</b> ${esc(noun)}${g === "pl" && noun !== n ? " (мн.ч. → и съществителното получава -n)" : ""}. Трик: -m (der/das), -r (die), -n (мн.ч.).` };
+}
+// урок 13: Dativ на местоимението — Der Film gefällt mir.
+const DPRON = [["ich", "mir", "mich", "ми"], ["du", "dir", "dich", "ти"], ["er", "ihm", "ihn", "му"], ["sie (тя)", "ihr", "sie", "ѝ"], ["wir", "uns", "uns", "ни"], ["ihr", "euch", "euch", "ви"], ["sie (те)", "ihnen", "sie", "им"], ["Sie", "Ihnen", "Sie", "Ви"]];
+const DPRON_F = [["Der Film gefällt {X}.", "Филмът {C} харесва."], ["Der Kuchen schmeckt {X}.", "Кексът {C} харесва."], ["Ich helfe {X}.", "Помагам {C}."], ["Das Essen schmeckt {X} nicht.", "Храната не {C} харесва."], ["Der Kellner empfiehlt {X} die Forelle.", "Сервитьорът {C} препоръчва пъстървата."]];
+function genDativPron() {
+  const [p, d, a, c] = rnd(DPRON), [f, fbg] = rnd(DPRON_F), full = f.replace("{X}", d), bg = fbg.replace("{C}", c);
+  const others = shuffle(DPRON.map((x) => x[1]).filter((x) => x !== d && x !== a)).slice(0, a === d ? 3 : 2);
+  return { kind: "mc", task: `Dativ на „${p}“`, prompt: `<div class="exs">${esc(f.replace("{X}", "___"))}</div><div class="exh">(${esc(p)})</div>`, options: shuffle([d, ...(a !== d ? [a] : []), ...others]), answer: d, say: full, full, bg, keys: true,
+    explain: `${esc(p.split(" ")[0])} → Dativ <b>${d}</b>${a !== d ? ` (не „${a}“ — това е Akkusativ)` : ""}. ${f.includes("schmeckt") || f.includes("gefällt") ? "schmecken / gefallen искат Dativ: харесва <b>на кого</b>." : f.includes("helfe") ? "helfen иска Dativ: помагам <b>на кого</b>." : "empfehlen: на кого (Dativ) + какво (Akkusativ)."}` };
+}
+// урок 13: schmeckt или schmecken? (подлогът е храната)
+const SCHM = [["Die Suppe", "Супата", 0], ["Der Fisch", "Рибата", 0], ["Das Schnitzel", "Шницелът", 0], ["Der Apfelkuchen", "Ябълковият сладкиш", 0], ["Die Erdbeeren", "Ягодите", 1], ["Die Kartoffeln", "Картофите", 1], ["Die Pommes frites", "Пържените картофи", 1], ["Der Salat", "Салатата", 0], ["Die Forellen", "Пъстървите", 1]];
+function genSchmeckt() {
+  const [s, sbg, pl] = rnd(SCHM), [who, wbg] = rnd([["mir", "ми"], ["dem Kind", "на детето"], ["meiner Frau", "на жена ми"], ["den Kindern", "на децата"], ["uns", "ни"]]);
+  const v = pl ? "schmecken" : "schmeckt", full = `${s} ${v} ${who} gut.`;
+  const bg = wbg.startsWith("на") ? `${sbg} ${pl ? "харесват" : "харесва"} ${wbg}.` : `${sbg} ${wbg} ${pl ? "харесват" : "харесва"}.`;
+  return { kind: "mc", task: "schmeckt или schmecken?", prompt: `<div class="exs">${esc(s)} ___ ${esc(who)} gut.</div>`, options: ["schmeckt", "schmecken", "schmecke", "schmeckst"], answer: v, say: full, full, bg, keys: true,
+    explain: `Подлогът е <b>храната</b>: ${esc(s)} = ${pl ? "мн.ч. → <b>schmecken</b>" : "ед.ч. → <b>schmeckt</b>"}. „${esc(who)}“ е Dativ (на кого), не подлог.` };
+}
+// урок 13: war / hatte
+const WH = [["Ich", 0, "Аз"], ["Du", 1, "Ти"], ["Er", 2, "Той"], ["Wir", 3, "Ние"], ["Ihr", 4, "Вие"], ["Sie", 5, "Те"]];
+const WAR = ["war", "warst", "war", "waren", "wart", "waren"], HATTE = ["hatte", "hattest", "hatte", "hatten", "hattet", "hatten"];
+const WH_BG = { war: ["бях", "беше", "беше", "бяхме", "бяхте", "бяха"], hatte: ["имах", "имаше", "имаше", "имахме", "имахте", "имаха"] };
+function genWarHatte() {
+  const [s, k, sbg] = rnd(WH), sein = Math.random() < 0.5, forms = sein ? WAR : HATTE, ans = forms[k];
+  const [rest, rbg] = sein ? rnd([["in Rom", "в Рим"], ["im Restaurant", "в ресторанта"], ["gestern in Wien", "вчера във Виена"]]) : rnd([["Glück", "късмет"], ["Hunger", "глад"], ["keine Zeit", ""]]);
+  const full = `${s} ${ans} ${rest}.`;
+  const bg = rest === "keine Zeit" ? `${sbg} ${["нямах", "нямаше", "нямаше", "нямахме", "нямахте", "нямаха"][k]} време.` : rest === "Hunger" ? `${sbg} ${["бях гладен", "беше гладен", "беше гладен", "бяхме гладни", "бяхте гладни", "бяха гладни"][k]}.` : `${sbg} ${WH_BG[sein ? "war" : "hatte"][k]} ${rbg}.`;
+  return { kind: "mc", task: sein ? "sein в минало: war" : "haben в минало: hatte", prompt: `<div class="exs">${esc(s)} ___ ${esc(rest)}.</div>`, options: shuffle([...new Set(forms)]), answer: ans, say: full, full, bg, keys: true,
+    explain: `${sein ? "sein → war" : "haben → hatte"}: ich ${forms[0]}, du ${forms[1]}, er ${forms[2]}, wir ${forms[3]}, ihr ${forms[4]}, sie ${forms[5]} · ich = er (без окончание).` };
+}
 // B3: Wo liegt …?
 const STADT_LAGE = [["Berlin", "im Osten"], ["Hamburg", "im Norden"], ["München", "im Süden"], ["Köln", "im Westen"], ["Dresden", "im Osten"], ["Hannover", "im Norden"], ["Düsseldorf", "im Westen"],
   ["Kassel", "in der Mitte"], ["Rostock", "im Nordosten"], ["Bremen", "im Nordwesten"], ["Stuttgart", "im Südwesten"], ["Passau", "im Südosten"], ["Frankfurt an der Oder", "im Osten"], ["Leipzig", "im Osten"]];
@@ -1322,6 +1367,10 @@ EX_TYPES.push(
   { k: "imperativ", skill: "Граматика", ic: "📣", t: "Imperativ: Iss! Esst! Essen Sie!", d: "___ das Gemüse! (du)", gen: genImperativ },
   { k: "verpack", skill: "Думи", ic: "🛒", t: "eine Flasche, eine Dose, ein Becher", d: "Ich kaufe ___ Joghurt.", gen: genVerpack },
   { k: "wieoft", skill: "Думи", ic: "🔁", t: "Колко често? nie, zweimal pro Woche", d: "Ich esse ___ Fleisch.", gen: genWieOft },
+  { k: "dativart", skill: "Граматика", ic: "🎁", t: "Dativ: dem, der, den, meinem", d: "Die Suppe schmeckt ___ Mann.", gen: genDativArt },
+  { k: "dativpron", skill: "Граматика", ic: "🙋", t: "Dativ: mir, dir, ihm, ihr", d: "Der Film gefällt ___. (ich)", gen: genDativPron },
+  { k: "schmeckt", skill: "Граматика", ic: "😋", t: "schmeckt или schmecken?", d: "Die Erdbeeren ___ dem Kind.", gen: genSchmeckt },
+  { k: "warhatte", skill: "Граматика", ic: "⏪", t: "Минало: war, hatte", d: "Wir ___ in Rom.", gen: genWarHatte },
 );
 // ── сесия
 let exSess = null;
