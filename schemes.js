@@ -44,6 +44,17 @@ const SCHEMES = (() => {
   ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"].forEach((m, i) => (S[m] = year([i])));
   Object.keys(DIRS).forEach((d) => (S[d] = compass(d)));
   S["am Donnerstag (= an dem Donnerstag)"] = S.Donnerstag;
+  // часовник: часовата стрелка черна, минутната оранжева; продължителност: оцветени „пити“ (1 пита = 1 час)
+  const hand = (deg, len, w, c) => { const r = ((deg - 90) * Math.PI) / 180; return `<line x1="50" y1="50" x2="${(50 + len * Math.cos(r)).toFixed(1)}" y2="${(50 + len * Math.sin(r)).toFixed(1)}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`; };
+  const clock = (h, m, extra = "") => wrap(`<circle cx="50" cy="50" r="42" fill="#fff" stroke="${INK}" stroke-width="4"/>`
+    + [...Array(12)].map((_, i) => { const r = ((i * 30 - 90) * Math.PI) / 180, k = i % 3 ? 3 : 7; return `<line x1="${(50 + 38 * Math.cos(r)).toFixed(1)}" y1="${(50 + 38 * Math.sin(r)).toFixed(1)}" x2="${(50 + (38 - k) * Math.cos(r)).toFixed(1)}" y2="${(50 + (38 - k) * Math.sin(r)).toFixed(1)}" stroke="${INK}" stroke-width="${i % 3 ? 1.6 : 3}"/>`; }).join("")
+    + hand((h % 12) * 30 + m * 0.5, 21, 6, INK) + hand(m * 6, 32, 3.5, HL) + `<circle cx="50" cy="50" r="4" fill="${INK}"/>` + extra);
+  const pie = (f, cx, cy, r) => f >= 1 ? `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${HL}" stroke="${INK}" stroke-width="2.4"/>`
+    : `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${OFF}" stroke="${INK}" stroke-width="2.4"/><path d="M${cx} ${cy} L${cx} ${cy - r} A${r} ${r} 0 0 1 ${cx} ${cy + r} Z" fill="${HL}" stroke="${INK}" stroke-width="2.4"/>`;
+  const dur = (n) => { const k = Math.ceil(n), r = k > 2 ? 14 : 18, gap = r * 2 + 6, x0 = 50 - ((k - 1) * gap) / 2; return wrap([...Array(k)].map((_, i) => pie(Math.min(1, n - i), x0 + i * gap, 50, r)).join("")); };
+  Object.assign(S, { "Es ist halb drei.": clock(2, 30), halb: clock(2, 30), "Viertel vor sieben": clock(6, 45), "Viertel nach fünf": clock(5, 15), "fünf vor neun": clock(8, 55), "fünf nach neun": clock(9, 5),
+    "Wie spät ist es?": clock(10, 10, `<text x="78" y="30" font-size="30" font-weight="900" fill="${HL}" stroke="${INK}" stroke-width="1.5" font-family="sans-serif">?</text>`),
+    "eine halbe Stunde": dur(0.5), "anderthalb Stunden": dur(1.5), "zweieinhalb Stunden": dur(2.5) });
   return S;
 })();
 // семейство на схемата — в задачите „картинка ↔ дума“ грешните варианти са от същото семейство (ден ↔ ден, месец ↔ месец)
@@ -54,3 +65,5 @@ const SCHEME_GROUP = {};
 ["vorgestern", "gestern", "heute", "morgen", "übermorgen"].forEach((k) => (SCHEME_GROUP[k] = "rel"));
 ["nie", "einmal", "zweimal", "dreimal"].forEach((k) => (SCHEME_GROUP[k] = "oft"));
 ["Norden", "Nordosten", "Osten", "Südosten", "Süden", "Südwesten", "Westen", "Nordwesten", "Mitte"].forEach((k) => (SCHEME_GROUP[k] = "dir"));
+["Es ist halb drei.", "halb", "Viertel vor sieben", "Viertel nach fünf", "fünf vor neun", "fünf nach neun", "Wie spät ist es?"].forEach((k) => (SCHEME_GROUP[k] = "uhr"));
+["eine halbe Stunde", "anderthalb Stunden", "zweieinhalb Stunden"].forEach((k) => (SCHEME_GROUP[k] = "dauer"));
