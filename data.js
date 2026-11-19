@@ -19,6 +19,14 @@ const LESSONS = [
   { id: 12, date: "14.11.2026", title: "Кухня и пазар: съдове, храни, опаковки, колко често, рецепта, Imperativ" },
   { id: 13, date: "17.11.2026", title: "В ресторанта: меню, вкус, Dativ (wem? mir, dir, ihm), war/hatte" },
 ];
+// Домашни: due = ДД.ММ.ГГГГ; черновата и „готово“ се пазят в localStorage (dl:hw:<id>)
+const HOMEWORK = [
+  { id: "2026-11-23-rezept", due: "23.11.2026", lesson: 12, grammar: "imperativ",
+    de: "Schreiben Sie bitte Ihr Lieblingskochrezept!", bg: "Моля, напишете любимата си рецепта!",
+    plan: ["Заглавие: <b>Mein Lieblingsrezept: …</b>", "<b>Zutaten:</b> продуктите с количество — 2 Eier, 200 Gramm Mehl, ein Becher Sahne, zwei Esslöffel Zucker", "<b>Zubereitung:</b> стъпките в <b>Imperativ</b> (du или Sie) — глаголът е първи: Schäl …, Schneide …, Misch …, Brat …", "Край: <b>Guten Appetit!</b>"],
+    words: ["schälen → Schäl!", "schneiden → Schneide!", "in kleine Stücke / in Würfel schneiden", "mischen → Misch!", "braten → Brat!", "kochen → Koch!", "backen → Back!", "geben → Gib … dazu!", "nehmen → Nimm!", "zuerst · dann · danach · zum Schluss"],
+    sample: [["Mein Lieblingsrezept: Rührei mit Tomaten", "Любимата ми рецепта: бъркани яйца с домати"], ["Zutaten: drei Eier, zwei Tomaten, eine Zwiebel, Salz und Pfeffer.", "Съставки: три яйца, два домата, една глава лук, сол и пипер."], ["Schneide die Zwiebel und die Tomaten in kleine Stücke.", "Нарежи лука и доматите на малки парчета."], ["Brat die Zwiebel in der Pfanne.", "Изпържи лука в тигана."], ["Dann gib die Tomaten dazu.", "После добави доматите."], ["Misch die Eier in einer Schüssel und gib sie in die Pfanne.", "Разбъркай яйцата в купа и ги сложи в тигана."], ["Gib Salz und Pfeffer dazu. Guten Appetit!", "Добави сол и пипер. Добър апетит!"]] },
+];
 
 const ITEMS = [];
 let _lesson = 1, _tag = "";

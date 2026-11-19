@@ -208,6 +208,7 @@ function audioTexts() {
   ITEMS.forEach((it) => examplesFor(it).forEach(([de]) => texts.add(de)));
   ALPHABET.forEach((a) => { texts.add(a.say); texts.add(a.ex); texts.add(a.ch + " wie " + a.spell); });
   if (typeof DIALOGS !== "undefined") DIALOGS.forEach((d) => d.lines.forEach((l) => texts.add(l[1])));
+  if (typeof HOMEWORK !== "undefined") HOMEWORK.forEach((h) => { texts.add(h.de); h.sample.forEach(([de]) => texts.add(de)); });
   SOUNDS.forEach(([, list]) => list.forEach(([, , , ex]) => ex.forEach((w) => texts.add(w))));
   [...Array(21).keys(), 30, 40, 50, 60, 70, 80, 90, 100, 1000].forEach((n) => texts.add(num2de(n)));
   return texts;
@@ -578,6 +579,7 @@ function render() {
 }
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.target.closest && e.target.closest("textarea")) return; // пише се в домашното
   if (keyHandler) keyHandler(e);
 });
 
@@ -1070,6 +1072,39 @@ function renderGrammar() {
 
 
 // ───────── ДНЕС (начален екран) ─────────
+// домашни на началния екран (HOMEWORK в data.js)
+const hwDate = (d) => { const [dd, mm, yy] = d.split(".").map(Number); return new Date(yy, mm - 1, dd); };
+function hwHTML() {
+  if (typeof HOMEWORK === "undefined") return "";
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  return HOMEWORK.map((h) => {
+    const st = store.get("hw:" + h.id, { text: "", done: false }), days = Math.round((hwDate(h.due) - now) / DAY);
+    if (days < -2 || (st.done && days < 0)) return "";
+    const wd = ["неделя", "понеделник", "вторник", "сряда", "четвъртък", "петък", "събота"][hwDate(h.due).getDay()];
+    const when = days > 1 ? `остават <b>${days}</b> дни` : days === 1 ? "<b>утре</b>" : days === 0 ? "<b>днес</b>" : "<b>просрочено</b>";
+    const n = (st.text.match(/[A-Za-zÄÖÜäöüß]+/g) || []).length;
+    return `<section class="hw${st.done ? " done" : ""}" data-hw="${h.id}">
+      <div class="hw-h"><b>📝 Домашно за ${wd}, ${esc(h.due)}</b><span class="muted">${st.done ? "✅ готово" : when}</span></div>
+      <p class="hw-t">${sayBtn(h.de)} <b>${esc(h.de)}</b><br><span class="muted">${esc(h.bg)}</span></p>
+      <details><summary>🧭 Как да го напиша</summary><ol>${h.plan.map((x) => `<li>${x}</li>`).join("")}</ol>
+        <p class="muted">Полезни думи: ${h.words.map(esc).join(" · ")}</p></details>
+      <details><summary>📖 Пример (не го преписвай — направи своя)</summary>${h.sample.map(([de, bg]) => `<p>${sayBtn(de)} ${esc(de)}<br><small class="muted">${esc(bg)}</small></p>`).join("")}</details>
+      <textarea class="hw-text" rows="6" placeholder="Mein Lieblingsrezept: …" spellcheck="false">${esc(st.text)}</textarea>
+      <div class="hw-b"><small class="muted hw-n">${n} думи · пази се автоматично</small>
+        ${h.grammar ? `<button class="btn" data-hwg="${h.grammar}">📐 Imperativ</button>` : ""}
+        <button class="btn${st.done ? "" : " primary"}" data-hwdone>${st.done ? "↩ Не е готово" : "✓ Готово"}</button></div>
+    </section>`;
+  }).join("");
+}
+function bindHW() {
+  view.querySelectorAll("[data-hw]").forEach((el) => {
+    const id = el.dataset.hw, get = () => store.get("hw:" + id, { text: "", done: false }), ta = el.querySelector(".hw-text");
+    ta.addEventListener("input", () => { store.set("hw:" + id, { ...get(), text: ta.value }); el.querySelector(".hw-n").textContent = `${(ta.value.match(/[A-Za-zÄÖÜäöüß]+/g) || []).length} думи · пази се автоматично`; });
+    el.querySelector("[data-hwdone]").addEventListener("click", () => { const s = get(); store.set("hw:" + id, { ...s, done: !s.done }); toast(s.done ? "Върнато като неготово" : "Браво! Домашното е готово ✅"); renderHome(); });
+    const g = el.querySelector("[data-hwg]");
+    if (g) g.addEventListener("click", () => { gTopic = g.dataset.hwg; store.set("gTopic", gTopic); go("grammar"); });
+  });
+}
 function renderHome() {
   const all = ITEMS;
   const due = all.filter((i) => S.srs[i.id] && isDue(i)).length;
@@ -1102,6 +1137,7 @@ function renderHome() {
     return `<section class="latest"><div class="lt-l"><span class="muted">Последен урок · ${esc(L.date)}</span><b>${esc(lessonName(L))}: ${esc(L.title)}</b>
       <div class="bar"><i class="k" style="width:${(k / li.length) * 100}%"></i></div><small class="muted">${k} от ${li.length} думи научени</small></div>
       <div class="lt-b"><button class="btn primary" data-lesson="${L.id}">🃏 Учи думите</button><button class="btn" data-lex="${L.id}">🏋️ Упражнения</button><button class="btn" data-ldict="${L.id}">📖 Думите</button></div></section>`; })()}
+  ${hwHTML()}
   ${store.get("howtoHidden", true) ? `<p class="keys" style="text-align:left;margin-top:14px"><button class="link" id="howto-show">❓ Как да уча с това приложение</button></p>` : `
   <section class="howto">
     <div class="howto-h"><b>❓ Как да учиш тук — 4 стъпки</b><button class="link" id="howto-hide">скрий</button></div>
@@ -1170,6 +1206,7 @@ function renderHome() {
     else if (t.dataset.act) { S.tab = "quiz"; renderNav(); renderSub(); render(); startQuiz(t.dataset.act); }
   };
   keyHandler = (e) => { if (e.key === "Enter") learnAll(); };
+  bindHW();
 }
 
 
