@@ -138,7 +138,7 @@ table.cj .irr{color:var(--accent);font-weight:700}
 
 /* граматика */
 .gwrap{display:grid;grid-template-columns:220px 1fr;gap:20px;margin-top:18px;align-items:start}
-.gnav{display:flex;flex-direction:column;gap:2px;position:sticky;top:120px}
+.gnav{display:flex;flex-direction:column;gap:2px;position:sticky;top:76px;max-height:calc(100vh - 96px);overflow-y:auto}
 .gnav button{border:0;background:transparent;text-align:left;padding:8px 12px;border-radius:10px;color:var(--muted);font-weight:600}
 .gnav button.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
 .gbody{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px 24px 20px;box-shadow:var(--shadow)}
@@ -492,6 +492,7 @@ header#top.hide{transform:translateY(-100%)}
   .gwrap{gap:12px}
   .gnav{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;position:sticky;top:52px;background:var(--bg);z-index:5;padding:6px 0}
   .gnav button{white-space:nowrap}
+  .gnav .gh{white-space:nowrap;align-self:center;padding:0 4px 0 12px}
 }
 /* изречения: посочване и „Защо?“ */
 .w::after{display:none}
@@ -695,6 +696,71 @@ img.pic{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-al
 @media (max-width:520px){.opt.emopt img.pic{width:84px;height:84px}.opt.emopt span{font-size:54px}}
 
 .credit{margin:18px 2px 4px;font-size:12px;color:var(--muted);line-height:1.5}.credit a{color:inherit}
+
+/* ── Път (урок по урок) ── */
+.pnext{display:flex;align-items:center;gap:14px;text-align:left;max-width:520px;width:100%;padding:16px 20px;font-size:16px}
+.pnext .pi{font-size:26px;opacity:1}
+.pnext b{display:block;font-size:17px} .pnext small{display:block;font-size:13px;font-weight:500;opacity:.75;margin-top:2px}
+.pnext kbd{margin-left:auto;font:11px ui-monospace,monospace;border:1px solid currentColor;border-radius:4px;padding:0 5px;opacity:.6}
+.ptest,.plast{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding:14px 18px;border-radius:16px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);flex-wrap:wrap}
+.ptest{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
+.ptest b{display:block;font-size:16px} .ptest span{color:var(--muted);font-size:13px}
+.path{display:flex;flex-direction:column;gap:8px;position:relative}
+.unit{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.unit.cur{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.uhead{width:100%;display:flex;align-items:center;gap:12px;border:0;background:transparent;padding:12px 14px;text-align:left;color:inherit}
+.unode{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--soft);font-size:15px}
+.unit.cur .unode{background:var(--accent);color:#fff}
+.unit.passed .unode{background:var(--ok);color:#fff}
+.ut{flex:1;min-width:0} .ut b{display:block} .ut b i{font-style:normal;font-weight:500;color:var(--muted);font-size:12px;margin-left:4px}
+.ut small{display:block;color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unit.open .ut small{white-space:normal}
+.up{flex:none;font-size:12px;color:var(--muted);font-weight:700}
+.usteps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;padding:0 14px 12px}
+.ustep{position:relative;display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 12px 14px;color:inherit}
+.ustep:hover{border-color:var(--ink)}
+.ustep .si{flex:none;width:30px;height:30px;border-radius:50%;background:var(--soft);display:grid;place-items:center}
+.ustep b{display:block;font-size:14px} .ustep small{display:block;color:var(--muted);font-size:12px;line-height:1.3}
+.ustep.done .si{background:var(--ok);color:#fff;font-weight:800}
+.ustep.next{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent)}
+.ustep .sp{position:absolute;left:12px;right:12px;bottom:6px;height:3px;background:var(--soft);border-radius:3px;overflow:hidden}
+.ustep .sp i{display:block;height:100%;background:var(--ok)}
+.ugr{grid-column:1/-1;padding:0 14px 10px;font-size:13px;color:var(--muted);line-height:1.8}
+.howto2{margin-top:20px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 16px}
+.howto2 summary{cursor:pointer;font-weight:700}
+/* ── големи бутони (Преговор, Игри) ── */
+.bigmodes{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:14px}
+.bm{position:relative;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:20px;box-shadow:var(--shadow);color:inherit;display:flex;flex-direction:column;gap:4px}
+.bm:hover{border-color:var(--ink)}
+.bm .ic{font-size:30px} .bm b{font-size:18px} .bm span{color:var(--muted);font-size:13px}
+.bm.main{background:var(--ink);color:var(--bg);border-color:var(--ink)} .bm.main span{color:inherit;opacity:.75}
+.boxes{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.boxes div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center}
+.boxes b{display:block;font-size:20px} .boxes small{color:var(--muted);font-size:11px}
+/* ── игри ── */
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.mem .mc{aspect-ratio:4/3;border:1px solid var(--line);border-radius:14px;background:var(--ink);color:transparent;font-weight:700;padding:6px;font-size:14px;transition:transform .2s,background .2s}
+.mem .mc span{visibility:hidden}
+.mem .mc.up,.mem .mc.ok{background:var(--panel);color:var(--ink)} .mem .mc.up span,.mem .mc.ok span{visibility:visible}
+.mem .mc.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--panel))}
+.flok{animation:flok .35s} .flbad{animation:flbad .35s}
+@keyframes flok{0%{box-shadow:0 0 0 0 var(--ok)}100%{box-shadow:0 0 0 14px transparent}}
+@keyframes flbad{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.opt.art3{justify-content:center;font-size:18px;font-weight:800}
+.hangw{font:700 28px/1.3 ui-monospace,monospace;letter-spacing:.08em;margin-top:12px;word-break:break-all}
+.lives{margin-top:8px;font-size:18px}
+.hkeys{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px;margin-top:12px}
+.hk{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 0;font-weight:700}
+.hk.ok{background:var(--ok);color:#fff;border-color:var(--ok)} .hk.bad{opacity:.35}
+/* ── граматика по уроци ── */
+.gnav .gh{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:12px 12px 2px;font-weight:700}
+.gnav .gh:first-child{padding-top:0}
+.gnew{font-style:normal;font-size:10px;font-weight:800;color:var(--accent);text-transform:uppercase;margin-left:4px}
+.gpractice{margin-top:22px;padding:14px;border-radius:14px;background:var(--soft)}
+.gpx{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px} .gpx .btn{padding:9px 12px;font-size:14px}
+.exgrp{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.exgrp summary{cursor:pointer}
+@media (max-width:640px){.pnext{max-width:none;flex-direction:row!important;align-items:center!important;text-align:left!important;justify-content:flex-start!important}.pnext kbd{display:none}.mem{grid-template-columns:repeat(3,1fr)}.boxes{grid-template-columns:repeat(3,1fr)}.usteps{grid-template-columns:1fr 1fr}.ptest .btn,.plast .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -720,6 +786,7 @@ img.pic{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-al
 <script src="explain.js"></script>
 <script src="exercises.js"></script>
 <script src="dialogs.js"></script>
+<script src="path.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

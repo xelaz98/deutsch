@@ -18,6 +18,7 @@ const LESSONS = [
   { id: 11, date: "12.11.2026", title: "Закуска на шведска маса: храни, mögen/wollen, ich hätte gern, am/um/im" },
   { id: 12, date: "14.11.2026", title: "Кухня и пазар: съдове, храни, опаковки, колко често, рецепта, Imperativ" },
   { id: 13, date: "17.11.2026", title: "В ресторанта: меню, вкус, Dativ (wem? mir, dir, ihm), war/hatte" },
+  { id: 14, date: "19.11.2026", title: "Денят ми: часът, разделими глаголи, Perfekt (hat gemacht / ist gefahren), mich/mir" },
 ];
 // Домашни: due = ДД.ММ.ГГГГ; черновата и „готово“ се пазят в localStorage (dl:hw:<id>)
 const HOMEWORK = [
@@ -2007,6 +2008,108 @@ W("phrase", "Kauf! · Kauft! · Kaufen Sie!", "Купи! · Купете! · К�
 W("phrase", "Trink! · Trinkt! · Trinken Sie!", "Пий! · Пийте! · Пийте! (учтиво)", "du trinkst → Trink!");
 W("phrase", "Nimm! · Nehmt! · Nehmen Sie!", "Вземи! · Вземете! · Вземете! (учтиво)", "e → i остава: du nimmst → Nimm! (двойно m)");
 W("phrase", "Brate! · Bratet! · Braten Sie!", "Изпържи! · Изпържете! · Изпържете! (учтиво)", "умлаутът изчезва: du brätst → Brat! / Brate!");
+
+
+L(14); T("Денят на Мартин (Tagesablauf)");
+N("der", "Tagesablauf", "Tagesabläufe", "дневен режим, как минава денят", "der Tag + der Ablauf → der");
+V("aufstehen", "ставам (от сън)", ["stehe auf", "stehst auf", "steht auf", "stehen auf", "steht auf", "stehen auf"], "разделим · Perfekt: ist aufgestanden (промяна: лежа → стоя)");
+V("frühstücken", "закусвам", ["frühstücke", "frühstückst", "frühstückt", "frühstücken", "frühstückt", "frühstücken"], "das Frühstück → frühstücken · Perfekt: hat gefrühstückt");
+W("phrase", "mit dem Auto", "с колата", "mit + Dativ: das Auto → mit dem Auto · mit dem Bus, mit dem Zug");
+W("word", "zur", "до, към (= zu + der)", "zu der → zur (die Arbeit → zur Arbeit) · zu dem → zum (der Arzt → zum Arzt)");
+W("phrase", "zur Arbeit fahren", "отивам на работа (с превозно средство)", "die Arbeit → zu der → zur Arbeit · пеша: zur Arbeit gehen");
+V("anfangen", "започвам", ["fange an", "fängst an", "fängt an", "fangen an", "fangt an", "fangen an"], "a → ä: er fängt an · mit der Arbeit anfangen · Perfekt: hat angefangen");
+V("anrufen", "обаждам се (по телефона)", ["rufe an", "rufst an", "ruft an", "rufen an", "ruft an", "rufen an"], "+ Akkusativ: Ich rufe dich an (не „dir“!) · Perfekt: hat angerufen");
+W("phrase", "Ich rufe dich in 5 Minuten an.", "Ще ти се обадя след 5 минути.", "anrufen + Akk → dich · in 5 Minuten = след 5 минути · „an“ отива в края");
+V("zurückrufen", "връщам обаждане, обаждам се пак", ["rufe zurück", "rufst zurück", "ruft zurück", "rufen zurück", "ruft zurück", "rufen zurück"], "zurück = обратно · Perfekt: hat zurückgerufen");
+W("phrase", "Ich rufe dich in 5 Minuten zurück.", "Ще ти върна обаждането след 5 минути.", "zurückrufen + Akk → dich · „zurück“ в края");
+V("vereinbaren", "уговарям, договарям", ["vereinbare", "vereinbarst", "vereinbart", "vereinbaren", "vereinbart", "vereinbaren"], "ver- НЕ се отделя · einen Termin vereinbaren · Perfekt: hat vereinbart (без ge-)");
+W("phrase", "einen Termin vereinbaren", "уговарям си час (среща)", "der Termin → Akkusativ: einen Termin");
+N("die", "Mittagspause", "Mittagspausen", "обедна почивка", "Mittag + die Pause → die · Mittagspause machen");
+W("phrase", "Mittagspause machen", "правя обедна почивка", "Perfekt: Ich habe Mittagspause gemacht.");
+W("adv", "wieder", "пак, отново", "Er arbeitet wieder. = Той пак работи. · ≠ wider (против)");
+N("die", "Besprechung", "Besprechungen", "работна среща, съвещание", "-ung → винаги die · eine Besprechung mit Frau Müller");
+V("übersetzen", "превеждам", ["übersetze", "übersetzt", "übersetzt", "übersetzen", "übersetzt", "übersetzen"], "тук über- НЕ се отделя (ударение на -setzen) · Perfekt: hat übersetzt (без ge-)");
+N("der", "Feierabend", "Feierabende", "край на работния ден", "Feierabend haben = свършил съм работа · Schönen Feierabend! = Приятна почивка след работа!");
+V("einkaufen", "пазарувам", ["kaufe ein", "kaufst ein", "kauft ein", "kaufen ein", "kauft ein", "kaufen ein"], "разделим · im Supermarkt einkaufen · Perfekt: hat eingekauft");
+W("phrase", "zu Hause", "вкъщи (къде?)", "къде? zu Hause · накъде? nach Hause");
+V("fernsehen", "гледам телевизия", ["sehe fern", "siehst fern", "sieht fern", "sehen fern", "seht fern", "sehen fern"], "e → ie: er sieht fern · Perfekt: hat ferngesehen");
+W("word", "ab", "от (нататък)", "ab + Dativ: ab 19 Uhr = от 19 ч. нататък · ab Montag = от понеделник");
+N("die", "Nachricht", "Nachrichten", "новина; съобщение", "die Nachrichten (мн.ч.) = новините по телевизията · eine Nachricht schreiben = пиша съобщение");
+N("der", "Spielfilm", "Spielfilme", "игрален филм", "das Spiel + der Film → der");
+W("phrase", "ins Bett gehen", "лягам си", "ins = in + das (das Bett) · накъде? → Akkusativ · Perfekt: ist ins Bett gegangen");
+W("phrase", "Er hat Feierabend.", "Работният му ден свърши.", "буквално „Той има край на работата“");
+
+T("Колко е часът? (die Uhrzeit)");
+W("q", "Wie spät ist es?", "Колко е часът?", "= Wie viel Uhr ist es?");
+W("adj", "halb", "половин; „и половина“ (за часа)", "⚠️ Es ist halb drei = 2:30 — половината ДО три, не след три!");
+W("phrase", "Es ist halb drei.", "Два и половина е.", "2.30 / 14.30 Uhr · halb + СЛЕДВАЩИЯ час: halb drei = половин час до три");
+W("phrase", "Viertel vor sieben", "седем без петнайсет (6:45)", "das Viertel = четвърт (15 мин.) · vor = преди");
+W("phrase", "Viertel nach fünf", "пет и петнайсет (5:15)", "nach = след");
+W("phrase", "fünf vor neun", "девет без пет (8:55)", "Минутите + vor/nach + часа");
+W("phrase", "fünf nach neun", "девет и пет (9:05)");
+W("word", "vor", "преди; „без“ (за часа)", "zehn vor acht = осем без десет · vor dem Essen = преди ядене");
+W("word", "nach", "след; „и“ (за часа)", "zehn nach acht = осем и десет · nach dem Essen = след ядене · nach Berlin = до Берлин");
+W("phrase", "eine halbe Stunde", "половин час", "30 минути");
+W("phrase", "anderthalb Stunden", "час и половина", "= eineinhalb Stunden · 90 минути · (в бележките: „eine anderthalb Stunde“ — правилно е anderthalb Stunden, мн.ч.)");
+W("phrase", "zweieinhalb Stunden", "два часа и половина", "zwei + einhalb · 150 минути");
+V("dauern", "трая, продължавам", ["dauere", "dauerst", "dauert", "dauern", "dauert", "dauern"], "Wie lange dauert der Film? – Er dauert zwei Stunden.");
+W("q", "Wie lange dauert das?", "Колко време трае това?", "wie lange? = колко време (продължителност) · wann? = кога (момент)");
+W("adv", "ungefähr", "приблизително, около", "ungefähr drei Stunden = около три часа");
+W("adj", "pünktlich", "точен, навреме", "Der Zug ist pünktlich. · ≠ unpünktlich");
+
+T("Минало: Perfekt");
+W("phrase", "schlafen – schlief – hat geschlafen", "спя – спах – спал съм", "силен глагол: ge- … -en");
+W("phrase", "anrufen – rief an – hat angerufen", "обаждам се – обадих се – обадил съм се", "разделим: ge- влиза в средата: an-ge-rufen");
+W("phrase", "beginnen – begann – hat begonnen", "започвам – започнах – започнал съм", "be- НЕ се отделя → без ge-: begonnen");
+W("phrase", "aufstehen – stand auf – ist aufgestanden", "ставам – станах – станал съм", "промяна (лежа → стоя) → sein · ge- в средата");
+W("phrase", "gehen – ging – ist gegangen", "отивам – отидох – отишъл съм", "движение → sein");
+W("phrase", "kommen – kam – ist gekommen", "идвам – дойдох – дошъл съм", "движение → sein");
+W("phrase", "fahren – fuhr – ist gefahren", "карам, пътувам – пътувах – пътувал съм", "движение → sein");
+W("phrase", "sterben – starb – ist gestorben", "умирам – умря – умрял е", "промяна на състоянието → sein");
+W("phrase", "ertrinken – ertrank – ist ertrunken", "удавям се – удави се – удавил се е", "er- НЕ се отделя → без ge- · промяна → sein");
+W("phrase", "einschlafen – schlief ein – ist eingeschlafen", "заспивам – заспах – заспал съм", "буден → спя = промяна → sein · ge- в средата");
+V("sterben", "умирам", ["sterbe", "stirbst", "stirbt", "sterben", "sterbt", "sterben"], "e → i: er stirbt · Perfekt: ist gestorben");
+V("ertrinken", "удавям се", ["ertrinke", "ertrinkst", "ertrinkt", "ertrinken", "ertrinkt", "ertrinken"], "er- не се отделя · Perfekt: ist ertrunken");
+V("einschlafen", "заспивам", ["schlafe ein", "schläfst ein", "schläft ein", "schlafen ein", "schlaft ein", "schlafen ein"], "a → ä: er schläft ein · Perfekt: ist eingeschlafen");
+V("schlafen", "спя", ["schlafe", "schläfst", "schläft", "schlafen", "schlaft", "schlafen"], "a → ä · Perfekt: hat geschlafen");
+V("beginnen", "започвам", ["beginne", "beginnst", "beginnt", "beginnen", "beginnt", "beginnen"], "= anfangen, но не се отделя · Perfekt: hat begonnen");
+W("phrase", "Perfekt mit sein", "Perfekt със sein", "движение от А до Б (gehen, kommen, fahren) или промяна (aufstehen, einschlafen, sterben, ertrinken) → ist …; всичко останало → hat …");
+
+T("От учебника: Kapitel 5 (до A19)");
+N("der", "Unterricht", null, "занятия, учебен час", "Der Unterricht beginnt um 18.30 Uhr.");
+N("der", "Flughafen", "Flughäfen", "летище", "der Flug + der Hafen (пристанище) → der");
+V("landen", "кацам", ["lande", "landest", "landet", "landen", "landet", "landen"], "Das Flugzeug landet um 19.30 Uhr. · Perfekt: ist gelandet");
+N("der", "Bus", "Busse", "автобус", "mit dem Bus fahren");
+N("die", "Tankstelle", "Tankstellen", "бензиностанция", "tanken (зареждам) + die Stelle → die");
+N("das", "Benzin", null, "бензин", "Ich hatte kein Benzin mehr. = Нямах вече бензин.");
+V("absagen", "отменям (среща)", ["sage ab", "sagst ab", "sagt ab", "sagen ab", "sagt ab", "sagen ab"], "разделим · einen Termin absagen · Perfekt: hat abgesagt");
+V("reservieren", "резервирам", ["reserviere", "reservierst", "reserviert", "reservieren", "reserviert", "reservieren"], "-ieren → Perfekt без ge-: hat reserviert");
+V("reparieren", "поправям", ["repariere", "reparierst", "repariert", "reparieren", "repariert", "reparieren"], "-ieren → Perfekt без ge-: hat repariert");
+W("phrase", "ein Gespräch führen", "водя разговор", "das Gespräch → Akkusativ: ein Gespräch");
+W("adv", "zuerst", "първо, най-напред", "zuerst – dann – danach – zum Schluss");
+W("adv", "dann", "после, след това", "След dann глаголът е веднага: Dann fährt er …");
+W("phrase", "zum Schluss", "накрая", "zu + dem Schluss → zum Schluss");
+W("word", "jemand", "някой", "Es ist jemand da. ≠ Es ist niemand da. (никой)");
+W("word", "nichts", "нищо", "etwas essen ≠ nichts essen");
+W("phrase", "Alles ist schief gegangen.", "Всичко се обърка.", "schiefgehen = провалям се · Perfekt със sein");
+W("q", "Wie war dein Tag?", "Как мина денят ти?", "war = минало на sein");
+W("adj", "furchtbar", "ужасен", "Das ist ja furchtbar! = Това е ужасно!");
+V("müssen", "трябва (необходимо е)", ["muss", "musst", "muss", "müssen", "müsst", "müssen"], "ich muss = er muss (без -t) · 2-ри глагол в края: Ich muss E-Mails beantworten.");
+V("sollen", "трябва (някой ми казва)", ["soll", "sollst", "soll", "sollen", "sollt", "sollen"], "Soll ich …? = Да … ли? · Der Chef sagt: Du sollst …");
+W("phrase", "Soll ich Spaghetti kochen?", "Да сготвя ли спагети?", "предложение: Soll ich …? – Ja, bitte! / Nein, das brauchst du nicht.");
+
+T("Местоимения: mich или mir?");
+W("word", "mich", "мен, ме (Akkusativ — кого?)", "Er besucht mich. · Ich freue mich. · Akkusativ на ich");
+W("word", "dich", "теб, те (Akkusativ — кого?)", "Ich rufe dich an. · Ich liebe dich.");
+W("word", "ihn", "него, го (Akkusativ)", "der Mann → ihn · Ich kenne ihn.");
+W("word", "uns", "нас, ни (Akkusativ и Dativ)", "Er besucht uns. · Das gefällt uns. — една и съща форма!");
+W("word", "euch", "вас, ви (Akkusativ и Dativ)", "Ich sehe euch. · Ich helfe euch. — една и съща форма!");
+W("word", "mir", "на мен, ми (Dativ — на кого?)", "Das gefällt mir. · Hilf mir! · mit mir");
+W("word", "dir", "на теб, ти (Dativ)", "Wie geht es dir? · Ich danke dir.");
+W("word", "ihm", "на него, му (Dativ)", "der Mann / das Kind → ihm · Ich helfe ihm.");
+W("word", "ihr", "на нея, ѝ (Dativ) · вие", "Das Kleid gefällt ihr. · ⚠️ ihr = и „вие“ (подлог): Ihr seid nett.");
+W("word", "ihnen", "на тях, им (Dativ)", "Ich danke ihnen. · Ihnen (с главна) = на Вас");
+W("phrase", "Wie geht es Ihnen?", "Как сте? (учтиво)", "буквално „Как върви на Вас?“ → Dativ · Wie geht es dir? (на ти)");
 
 ITEMS.forEach((it) => {
   it.id = (it.art ? it.art + " " : "") + it.de + "#" + it.type + (it.lesson === 0 ? "@0" : "");

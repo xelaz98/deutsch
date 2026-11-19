@@ -361,6 +361,19 @@ const XP = (() => {
       }
       if (/chen$|lein$/.test(t) && w[0] === w[0].toUpperCase()) { res[i] = { kind: "noun", html: `<b>${esc(w)}</b> — <b>умалително</b> (-chen/-lein = малко). Умалителните са <b>винаги das</b>, често с умлаут: die Hand → das H<b>ä</b>ndchen.` }; return; }
     });
+    // Perfekt: haben/sein + Partizip II в края (таблицата PERF е в exercises.js)
+    if (typeof PERF !== "undefined" && T.length > 2) {
+      const li = T.length - 1, part = T[li].w, P = PERF[part];
+      const AUXW = { habe: "ich", hast: "du", hat: "er/sie/es", haben: "wir/sie/Sie", habt: "ihr", bin: "ich", bist: "du", ist: "er/sie/es", sind: "wir/sie/Sie", seid: "ihr" };
+      const ai = T.findIndex((x, k) => k < li && AUXW[lc(x.w)]);
+      if (P && ai >= 0) {
+        const aux = lc(T[ai].w), isSein = /^(bin|bist|ist|sind|seid)$/.test(aux);
+        res[ai] = { kind: "verb", html: `<b>${esc(T[ai].w)}</b> — <b>помощен глагол</b> за минало време (Perfekt): ${isSein ? "sein" : "haben"} за <b>${AUXW[aux]}</b>. Тук <b>не значи</b> „${isSein ? "съм" : "имам"}“ — само показва, че действието е минало.<br>Стои на <b>${ai === 0 ? "1-во място (въпрос)" : "2-ро място"}</b>, а Partizip II (<b>${esc(part)}</b>) — в края.<br><b>Защо ${isSein ? "sein" : "haben"}?</b> ${isSein ? "движение от А до Б или промяна на състоянието (gehen, fahren, kommen, aufstehen, einschlafen…)" : "няма движение/промяна → haben (така са ≈ 90% от глаголите)"}.` };
+        const RULE = { w: "ge- + корен + -t (слаб глагол)", wt: "ge- + корен + -et (корен на -t/-d)", s: "ge- + корен + -en (силен глагол — учи го наизуст)", sep: "разделим: представка + <b>ge</b> + глагол", ins: "неразделима представка (be-, ver-, er-, über-) → <b>без ge-</b>", ier: "на -ieren → <b>без ge-</b>" };
+        const v = ITEMS.find((x) => x.type === "verb" && x.de === P[0]);
+        res[li] = { kind: "verb", item: v, html: `<b>${esc(part)}</b> — <b>Partizip II</b> (минало причастие) на <b>${esc(P[0])}</b>${v ? ` (${esc(v.bg)})` : ""}.<br>Образуване: ${RULE[P[2]]}.<br>Отива <b>в самия край</b> на изречението. Заедно с <b>${esc(T[ai].w)}</b> = минало време → на български с обикновено минало: „Ich habe gekauft“ = „Купих“.` };
+      }
+    }
     // роли за „Разбор“: subj · v · obj · dat · pp (предложна група) · end (глагол накрая) · neg · conj · q · other
     const roles = T.map(() => "other");
     const NOMP = ["ich", "du", "er", "sie", "es", "wir", "ihr", "man"];
@@ -385,7 +398,17 @@ const XP = (() => {
     T.forEach((tk, i) => {
       const t = lc(tk.w);
       if (roles[i] !== "other") return;
-      if (res[i].kind === "noun") { const prev = i > 0 ? lc(T[i - 1].w) : ""; roles[i] = PREPS.has(prev) ? "pp" : vIdx >= 0 && i < vIdx ? "subj" : "obj"; return; }
+      if (res[i].kind === "noun") {
+        // „Um acht Uhr“, „in 5 Minuten“: предлог + числа/думи за час + съществително = една предложна група
+        let k = i - 1; while (k >= 0 && k >= i - 3 && /^(\d+([.,]\d+)?|eins|ein|eine|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|halb|viertel|ganzen)$/.test(lc(T[k].w))) k--;
+        if (k >= 0 && k < i - 1 && PREPS.has(lc(T[k].w))) { for (let m = k; m <= i; m++) roles[m] = "pp"; return; }
+        const prev = i > 0 ? lc(T[i - 1].w) : ""; roles[i] = PREPS.has(prev) ? "pp" : vIdx >= 0 && i < vIdx ? "subj" : "obj"; return;
+      }
+      // имена (Martin, Körner): преди глагола или веднага след него без друг подлог → подлог
+      if (!res[i].kind && /^[A-ZÄÖÜ][a-zäöüß]+$/.test(tk.w) && vIdx >= 0 && !NOMP.includes(t)) {
+        const prevNoun = i > 0 && roles[i - 1] !== "other" && res[i - 1].kind === "noun" && /^(Frau|Herr|Herrn)$/.test(T[i - 1].w);
+        roles[i] = prevNoun ? roles[i - 1] : i < vIdx || (i === vIdx + 1 && !roles.includes("subj")) ? "subj" : "obj"; return;
+      }
       if (NOMP.includes(t) && !(t === "es" && T.some((x) => lc(x.w) === "gibt"))) { roles[i] = t === "sie" && i > vIdx && T.slice(vIdx + 1, i).some((x) => NOMP.includes(lc(x.w))) ? "obj" : "subj"; return; }
       if (["mich", "dich", "ihn", "uns", "euch", "sich"].includes(t)) { roles[i] = "obj"; return; }
       if (["mir", "dir", "ihm", "ihnen"].includes(t)) { roles[i] = "dat"; return; }

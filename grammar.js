@@ -824,4 +824,172 @@ const GRAMMAR = [
 Повечето глаголи искат Akkusativ (Wen? Was?): <i>Ich brauche <b>ein</b> Auto. Das Zimmer hat <b>einen</b> Fernseher. Sie besucht <b>ihren</b> Freund.</i></p>
 <p class="tip">📋 Глаголи с Akkusativ: besuchen, bezahlen, brauchen, es gibt, essen, finden, haben, hören, kennen, kosten, lesen, machen, möchten, öffnen, parken, sehen, studieren, trinken, bewundern, umfassen.</p>`
   },
+  {
+    id: "faelle", title: "Падежите: карта (кой? кого? на кого?)", icon: "🗺️",
+    html: `
+<p>В немския всяко съществително „носи табела“ — <b>членът</b> показва каква роля има в изречението. На български ролята личи главно от реда на думите; на немски — от <b>der / den / dem</b>. Затова редът може да се мести, а смисълът остава.</p>
+<h4>1. Задай въпроса — той казва падежа</h4>
+<table class="g"><tr><th>роля</th><th>въпрос</th><th>падеж</th><th>пример</th></tr>
+<tr><td>кой върши действието</td><td><b>Wer?</b> кой?</td><td><b>Nominativ</b></td><td><b>Der Mann</b> kocht.</td></tr>
+<tr><td>върху кого/какво пада действието</td><td><b>Wen? Was?</b> кого? какво?</td><td><b>Akkusativ</b></td><td>Ich sehe <b>den Mann</b>.</td></tr>
+<tr><td>получателят, „на кого“</td><td><b>Wem?</b> на кого?</td><td><b>Dativ</b></td><td>Ich helfe <b>dem Mann</b>.</td></tr></table>
+<p class="tip">🔑 Бърз тест на български: ако можеш да кажеш „<b>го / я / ги</b>“ → Akkusativ. Ако казваш „<b>му / ѝ / им</b>“ (= на него) → Dativ. <i>Виждам <b>го</b> → ihn · Помагам <b>му</b> → ihm.</i></p>
+<h4>2. Всички форми на едно място</h4>
+<table class="g"><tr><th></th><th><span class="art der">der</span></th><th><span class="art die">die</span></th><th><span class="art das">das</span></th><th><span class="art pl">мн.ч.</span></th></tr>
+<tr><td>Nominativ</td><td>der · ein</td><td>die · eine</td><td>das · ein</td><td>die · –</td></tr>
+<tr><td>Akkusativ</td><td><b>den · einen</b></td><td>die · eine</td><td>das · ein</td><td>die · –</td></tr>
+<tr><td>Dativ</td><td><b>dem · einem</b></td><td><b>der · einer</b></td><td><b>dem · einem</b></td><td><b>den</b> + -n</td></tr></table>
+<p class="tip">💡 В Akkusativ се сменя <b>само мъжкият род</b> (der → den). Ако думата е die, das или мн.ч. — Akkusativ изглежда като Nominativ.</p>
+<h4>3. Кой решава падежа?</h4>
+<p><b>а) Глаголът.</b> Повечето глаголи искат Akkusativ: <i>haben, brauchen, sehen, kaufen, essen, trinken, besuchen, anrufen, lieben, kennen, finden, suchen…</i><br>
+Малка група иска <b>Dativ</b> — научи ги като група: <b>helfen, danken, gefallen, schmecken, gehören, antworten, gratulieren</b> + <i>Wie geht es dir? Es tut mir leid.</i><br>
+Някои искат и двете — <b>на кого</b> (Dat.) + <b>какво</b> (Akk.): <i>Ich gebe <b>dir</b> <b>das Buch</b>. Er empfiehlt <b>mir</b> <b>den Fisch</b>.</i></p>
+<p><b>б) Предлогът</b> — той „командва“ и е по-силен от глагола:<br>
+<b>+ Akkusativ:</b> für, ohne, gegen, durch, um, bis — <i>für <b>dich</b>, ohne <b>den</b> Kaffee</i><br>
+<b>+ Dativ:</b> mit, bei, nach, aus, zu, von, seit, ab — <i>mit <b>dem</b> Auto, zu<b>r</b> Arbeit, bei <b>mir</b></i><br>
+<b>in, an, auf:</b> къде? → Dativ (<i>im Büro</i>) · накъде? → Akkusativ (<i>ins Büro</i>)</p>
+<p><b>в) sein / werden / heißen</b> — няма „обект“, двете страни са Nominativ: <i>Das ist <b>der</b> Chef. Er ist <b>ein</b> guter Lehrer.</i></p>
+<h4>4. Строим изречение стъпка по стъпка</h4>
+<table class="g"><tr><th>I.</th><th>II. глагол</th><th>…средата…</th><th>КРАЙ</th></tr>
+<tr><td>Ich</td><td>gebe</td><td><b>dem Kind</b> (Dat.) <b>einen Apfel</b> (Akk.)</td><td>.</td></tr>
+<tr><td>Morgen</td><td>rufe</td><td>ich <b>dich</b> (Akk.)</td><td><b>an</b>.</td></tr>
+<tr><td>Ich</td><td>habe</td><td><b>meinem Bruder</b> (Dat.) <b>das Buch</b> (Akk.)</td><td><b>gegeben</b>.</td></tr>
+<tr><td>Der Kuchen</td><td>schmeckt</td><td><b>mir</b> (Dat.)</td><td>.</td></tr></table>
+<p class="tip">📏 Ред в средата: обикновено <b>Dativ преди Akkusativ</b> (<i>dem Kind einen Apfel</i>). Но ако Akkusativ е местоимение, то отива първо: <i>Ich gebe <b>ihn</b> dem Kind.</i></p>
+<h4>5. Защо преводът не е „дума по дума“</h4>
+<p><i>Der Film gefällt mir.</i> — буквално „Филмът харесва на мен“, на хубав български: „<b>Харесва ми</b> филмът“. <i>Wie geht es dir?</i> — буквално „Как върви на теб?“ → „<b>Как си?</b>“. <i>Ich habe Hunger.</i> — „Имам глад“ → „<b>Гладен съм</b>“. Учи изреченията като цели фрази, не като сбор от думи.</p>`
+  },
+  {
+    id: "michmir", title: "mich или mir? dich или dir?", icon: "🎯",
+    html: `
+<p>Най-честата грешка на A1. Правилото е едно: <b>кого?</b> → <b>mich / dich</b> (Akkusativ) · <b>на кого?</b> → <b>mir / dir</b> (Dativ).</p>
+<table class="g"><tr><th>Nominativ (кой?)</th><th>Akkusativ (кого?)</th><th>Dativ (на кого?)</th></tr>
+<tr><td>ich</td><td><b>mich</b> — мен, ме</td><td><b>mir</b> — на мен, ми</td></tr>
+<tr><td>du</td><td><b>dich</b> — теб, те</td><td><b>dir</b> — на теб, ти</td></tr>
+<tr><td>er</td><td><b>ihn</b> — него, го</td><td><b>ihm</b> — на него, му</td></tr>
+<tr><td>sie</td><td><b>sie</b> — нея, я</td><td><b>ihr</b> — на нея, ѝ</td></tr>
+<tr><td>es</td><td><b>es</b> — него (das), го</td><td><b>ihm</b> — му</td></tr>
+<tr><td>wir</td><td><b>uns</b></td><td><b>uns</b> (същото!)</td></tr>
+<tr><td>ihr</td><td><b>euch</b></td><td><b>euch</b> (същото!)</td></tr>
+<tr><td>sie / Sie</td><td><b>sie / Sie</b></td><td><b>ihnen / Ihnen</b></td></tr></table>
+<p class="tip">🔑 Българският ти помага: <b>ме / те / го / я</b> = Akkusativ · <b>ми / ти / му / ѝ</b> = Dativ. <i>Обичам <b>те</b> → Ich liebe <b>dich</b>. · Благодаря <b>ти</b> → Ich danke <b>dir</b>.</i></p>
+<h4>Кога е mich / dich (Akkusativ)?</h4>
+<p>1. След повечето глаголи: <i>Er besucht <b>mich</b>. Ich rufe <b>dich</b> an. Kennst du <b>mich</b>? Ich sehe <b>dich</b>. Die Musik stört <b>mich</b>.</i><br>
+2. След <b>für, ohne, gegen, um</b>: <i>Das Geschenk ist für <b>dich</b>. Ohne <b>mich</b>!</i><br>
+3. При възвратни глаголи: <i>Ich freue <b>mich</b>. Setz <b>dich</b>!</i></p>
+<h4>Кога е mir / dir (Dativ)?</h4>
+<p>1. След <b>helfen, danken, gefallen, schmecken, gehören, antworten</b>: <i>Hilf <b>mir</b>! Das gefällt <b>dir</b>. Das Buch gehört <b>mir</b>.</i><br>
+2. „Даваш нещо НА някого“ (geben, zeigen, schicken, empfehlen, erklären): <i>Gib <b>mir</b> das Salz! Ich zeige <b>dir</b> die Stadt.</i><br>
+3. След <b>mit, bei, zu, von, nach, aus</b>: <i>Kommst du mit <b>mir</b>? Er wohnt bei <b>mir</b>. Das ist von <b>dir</b>.</i><br>
+4. Изрази: <i>Wie geht es <b>dir</b>? Es tut <b>mir</b> leid. Mir ist kalt.</i></p>
+<h4>Капани</h4>
+<p>⚠️ <b>anrufen</b> = Akkusativ (на български „обаждам <b>ти</b> се“, но): <i>Ich rufe <b>dich</b> an.</i> ✔ — <s>Ich rufe dir an</s> ✘<br>
+⚠️ <b>helfen</b> = Dativ (на български „помагам <b>ти</b>“ ✔ съвпада): <i>Ich helfe <b>dir</b>.</i><br>
+⚠️ <b>fragen</b> = Akkusativ: <i>Ich frage <b>dich</b>.</i> (питам те) · <b>antworten</b> = Dativ: <i>Ich antworte <b>dir</b>.</i> (отговарям ти)<br>
+⚠️ <b>ihr</b> е две неща: Dativ на „sie“ (<i>Ich helfe <b>ihr</b></i> = помагам ѝ) и подлог „вие“ (<i><b>Ihr</b> seid da</i>).</p>
+<h4>Двете в едно изречение</h4>
+<p><i>Kannst du <b>mir</b> (на кого) <b>das Buch</b> (какво) geben?</i> · <i>Ich schenke <b>dir</b> <b>einen Hund</b>.</i> · <i>Er zeigt <b>uns</b> <b>die Stadt</b>.</i></p>`
+  },
+  {
+    id: "perfekt", title: "Perfekt: Ich habe gemacht / Ich bin gefahren", icon: "⏮️",
+    html: `
+<p>Когато германците <b>разказват устно какво е станало</b>, използват почти винаги <b>Perfekt</b>. (Изключение: <b>war</b> и <b>hatte</b> — за sein и haben се казва Präteritum, виж „war и hatte“.)</p>
+<p><b>Формула:</b> <b>haben</b> или <b>sein</b> (спрегнато, на 2-ро място) + <b>Partizip II</b> (в самия край).</p>
+<table class="g"><tr><th>I.</th><th>II. haben/sein</th><th>…</th><th>КРАЙ: Partizip II</th></tr>
+<tr><td>Ich</td><td><b>habe</b></td><td>ein Eis</td><td><b>gekauft</b>.</td></tr>
+<tr><td>Gestern</td><td><b>bin</b></td><td>ich nach Berlin</td><td><b>gefahren</b>.</td></tr>
+<tr><td>Um 10.30 Uhr</td><td><b>hat</b></td><td>er Frau Körner</td><td><b>angerufen</b>.</td></tr>
+<tr><td><b>Hast</b></td><td>du</td><td>schon</td><td><b>gefrühstückt</b>?</td></tr></table>
+<p class="tip">🧱 Същата „скоба“ като при модалните глаголи: <i>Ich <b>muss</b> … <b>lesen</b>. → Ich <b>habe</b> … <b>gelesen</b>.</i> На 2-ро място е само помощният глагол.</p>
+<h4>1. haben или sein?</h4>
+<table class="g"><tr><th>sein</th><th>haben</th></tr>
+<tr><td><b>движение от А до Б</b>: gehen, kommen, fahren, fliegen, laufen, reisen, ankommen<br><b>промяна на състоянието</b>: aufstehen, einschlafen, sterben, ertrinken, werden<br>+ <b>sein</b> и <b>bleiben</b></td><td><b>всички останали</b> (≈ 90%): machen, kaufen, essen, lesen, schlafen, arbeiten, anrufen, sehen, frühstücken…<br>и всички с Akkusativ-обект</td></tr></table>
+<p class="tip">💡 Тест: „Тръгнах ли от едно място/състояние към друго?“ → sein. <i>Ich <b>bin</b> eingeschlafen</i> (буден → спя), но <i>Ich <b>habe</b> geschlafen</i> (просто съм спал — няма промяна).</p>
+<h4>2. Как се прави Partizip II?</h4>
+<table class="g"><tr><th>вид</th><th>правило</th><th>примери</th></tr>
+<tr><td><b>слаби (правилни)</b></td><td>ge- + корен + <b>-t</b></td><td>kaufen → <b>ge</b>kauf<b>t</b> · machen → <b>ge</b>mach<b>t</b> · arbeiten → <b>ge</b>arbeit<b>et</b> (корен на -t/-d → -et)</td></tr>
+<tr><td><b>силни (неправилни)</b></td><td>ge- + корен (често друга гласна) + <b>-en</b></td><td>schlafen → <b>ge</b>schlaf<b>en</b> · fahren → <b>ge</b>fahr<b>en</b> · gehen → <b>ge</b>g<b>a</b>ng<b>en</b> · schreiben → <b>ge</b>schr<b>ie</b>b<b>en</b></td></tr>
+<tr><td><b>разделими</b></td><td>представка + <b>ge</b> + …</td><td>an<b>ge</b>rufen · auf<b>ge</b>standen · ein<b>ge</b>kauft · fern<b>ge</b>sehen · ein<b>ge</b>schlafen</td></tr>
+<tr><td><b>неразделими</b> (be-, ver-, er-, ge-, über-, emp-, ent-, zer-)</td><td><b>без ge-</b></td><td><b>be</b>gonnen · <b>ver</b>einbart · <b>über</b>setzt · <b>be</b>zahlt · <b>er</b>trunken · <b>be</b>sucht</td></tr>
+<tr><td><b>на -ieren</b></td><td><b>без ge-</b>, винаги -t</td><td>telefonier<b>t</b> · reservier<b>t</b> · reparier<b>t</b> · studier<b>t</b></td></tr></table>
+<h4>3. Таблиците от учебника</h4>
+<table class="g"><tr><th></th><th>без представка</th><th>разделим</th><th>неразделим</th></tr>
+<tr><td>ich</td><td>habe <b>ge</b>schlafen</td><td>habe an<b>ge</b>rufen</td><td>habe begonnen</td></tr>
+<tr><td>du</td><td>hast <b>ge</b>schlafen</td><td>hast an<b>ge</b>rufen</td><td>hast begonnen</td></tr>
+<tr><td>er/sie/es</td><td>hat <b>ge</b>schlafen</td><td>hat an<b>ge</b>rufen</td><td>hat begonnen</td></tr>
+<tr><td>wir</td><td>haben <b>ge</b>schlafen</td><td>haben an<b>ge</b>rufen</td><td>haben begonnen</td></tr><tr><td>ihr</td><td>habt <b>ge</b>schlafen</td><td>habt an<b>ge</b>rufen</td><td>habt begonnen</td></tr><tr><td>sie/Sie</td><td>haben <b>ge</b>schlafen</td><td>haben an<b>ge</b>rufen</td><td>haben begonnen</td></tr></table>
+<p class="tip">⚠️ В таблицата от учебника (Kapitel 5, Teil C) при wir/ihr/sie пише <b>sind/seid geschlafen</b> — това е печатна грешка: schlafen е винаги с <b>haben</b> (wir <b>haben</b> geschlafen).</p>
+<table class="g"><tr><th></th><th>haben + gekauft</th><th>sein + gereist</th></tr>
+<tr><td>ich</td><td>habe gekauft</td><td>bin gereist</td></tr><tr><td>du</td><td>hast gekauft</td><td>bist gereist</td></tr>
+<tr><td>er/sie/es</td><td>hat gekauft</td><td>ist gereist</td></tr><tr><td>wir</td><td>haben gekauft</td><td>sind gereist</td></tr>
+<tr><td>ihr</td><td>habt gekauft</td><td>seid gereist</td></tr><tr><td>sie/Sie</td><td>haben gekauft</td><td>sind gereist</td></tr></table>
+<h4>4. Силните глаголи от урока (учи ги с трите форми)</h4>
+<table class="g"><tr><th>инфинитив</th><th>Präteritum</th><th>Perfekt</th></tr>
+<tr><td>schlafen</td><td>schlief</td><td>hat geschlafen</td></tr><tr><td>anrufen</td><td>rief an</td><td>hat angerufen</td></tr>
+<tr><td>beginnen</td><td>begann</td><td>hat begonnen</td></tr><tr><td>aufstehen</td><td>stand auf</td><td><b>ist</b> aufgestanden</td></tr>
+<tr><td>gehen</td><td>ging</td><td><b>ist</b> gegangen</td></tr><tr><td>kommen</td><td>kam</td><td><b>ist</b> gekommen</td></tr>
+<tr><td>fahren</td><td>fuhr</td><td><b>ist</b> gefahren</td></tr><tr><td>sterben</td><td>starb</td><td><b>ist</b> gestorben</td></tr>
+<tr><td>ertrinken</td><td>ertrank</td><td><b>ist</b> ertrunken</td></tr><tr><td>einschlafen</td><td>schlief ein</td><td><b>ist</b> eingeschlafen</td></tr>
+<tr><td>lesen</td><td>las</td><td>hat gelesen</td></tr><tr><td>schreiben</td><td>schrieb</td><td>hat geschrieben</td></tr>
+<tr><td>sehen</td><td>sah</td><td>hat gesehen</td></tr><tr><td>essen</td><td>aß</td><td>hat gegessen</td></tr>
+<tr><td>trinken</td><td>trank</td><td>hat getrunken</td></tr><tr><td>laufen</td><td>lief</td><td><b>ist</b> gelaufen</td></tr></table>
+<h4>5. Как се превежда?</h4>
+<p>Perfekt = българското минало свършено: <i>Ich habe gegessen</i> → „<b>Ядох</b>“ / „<b>Ял съм</b>“. Не превеждай „имам ядено“ — <b>haben</b> тук не значи „имам“, а е само помощна дума.</p>
+<p><i>Was hast du gestern gemacht?</i> = Какво прави вчера? · <i>Ich bin ins Kino gegangen.</i> = Отидох на кино.</p>`
+  },
+  {
+    id: "uhrzeit", title: "Колко е часът? halb, Viertel, vor, nach", icon: "🕒",
+    html: `
+<p>Има два начина да кажеш часа: <b>официално</b> (по радиото, гарата) и <b>разговорно</b> (между хората).</p>
+<table class="g"><tr><th>часовник</th><th>официално</th><th>разговорно</th></tr>
+<tr><td>13:00</td><td>dreizehn Uhr</td><td>(es ist) <b>eins</b> / ein Uhr</td></tr>
+<tr><td>17:15</td><td>siebzehn Uhr fünfzehn</td><td><b>Viertel nach fünf</b></td></tr>
+<tr><td>14:30</td><td>vierzehn Uhr dreißig</td><td><b>halb drei</b> ⚠️</td></tr>
+<tr><td>18:45</td><td>achtzehn Uhr fünfundvierzig</td><td><b>Viertel vor sieben</b></td></tr>
+<tr><td>16:10</td><td>sechzehn Uhr zehn</td><td><b>zehn nach vier</b></td></tr>
+<tr><td>20:55</td><td>zwanzig Uhr fünfundfünfzig</td><td><b>fünf vor neun</b></td></tr></table>
+<p class="tip">⚠️ <b>halb</b> гледа НАПРЕД: <i>halb drei</i> = половин час <b>до</b> три = <b>2:30</b>, не 3:30! Мисли си „половината на третия час“.</p>
+<h4>Писане и говорене</h4>
+<p>Пише се <b>14.30 Uhr</b> (с точка), казва се „vierzehn Uhr dreißig“. „Uhr“ стои между часа и минутите.</p>
+<h4>Минутите около „halb“ (разговорно)</h4>
+<p>14:25 = fünf <b>vor halb</b> drei · 14:35 = fünf <b>nach halb</b> drei (често в Германия; можеш и просто „vierzehn Uhr fünfunddreißig“).</p>
+<h4>Wann? (кога) ≠ Wie lange? (колко време)</h4>
+<table class="g"><tr><th>въпрос</th><th>отговор</th></tr>
+<tr><td><b>Wie spät ist es?</b> / Wie viel Uhr ist es?</td><td><b>Es ist</b> halb acht. (без um!)</td></tr>
+<tr><td><b>Wann</b> beginnt das Konzert?</td><td><b>Um</b> 20 Uhr. (момент → um)</td></tr>
+<tr><td><b>Wie lange</b> dauert das Konzert?</td><td>Es dauert <b>drei Stunden</b>. / <b>von</b> 20 <b>bis</b> 23 Uhr.</td></tr>
+<tr><td>от кога нататък?</td><td><b>Ab</b> 19 Uhr sieht Martin fern.</td></tr></table>
+<h4>Продължителност</h4>
+<p>½ = <b>eine halbe Stunde</b> (30 мин.) · 1½ = <b>anderthalb</b> / eineinhalb <b>Stunden</b> (90 мин.) · 2½ = <b>zweieinhalb Stunden</b> (150 мин.) · ¼ = <b>eine Viertelstunde</b> (15 мин.)</p>
+<p class="tip">💡 Над един час → мн.ч.: <i>anderthalb Stunde<b>n</b></i>. Затова „eine anderthalb Stunde“ е грешно.</p>
+<h4>Как се превежда?</h4>
+<p><i>Es ist Viertel vor sieben.</i> → „Седем без петнайсет е.“ (не „четвърт преди седем“) · <i>Es ist zehn nach vier.</i> → „Четири и десет е.“</p>`
+  },
+  {
+    id: "alltag", title: "Денят ми: разделими глаголи, zuerst/dann, müssen/sollen", icon: "☀️",
+    html: `
+<h4>1. Разделимите глаголи в дневния режим</h4>
+<p>Представката (<b>auf-, an-, ein-, fern-, zurück-, ab-</b>) отива <b>в края</b>, а глаголът стои на 2-ро място:</p>
+<table class="g"><tr><th>I.</th><th>II.</th><th>…</th><th>КРАЙ</th></tr>
+<tr><td>Um 8 Uhr</td><td><b>steht</b></td><td>Martin</td><td><b>auf</b>.</td></tr>
+<tr><td>Um 9.30 Uhr</td><td><b>fängt</b></td><td>er mit der Arbeit</td><td><b>an</b>.</td></tr>
+<tr><td>Er</td><td><b>ruft</b></td><td>Frau Körner</td><td><b>an</b>.</td></tr>
+<tr><td>Ab 19 Uhr</td><td><b>sieht</b></td><td>Martin</td><td><b>fern</b>.</td></tr></table>
+<p><b>НЕ</b> се отделят: <b>be-, ver-, er-, ge-, emp-, ent-, zer-</b> (+ über- в „übersetzen“): <i>Ich <b>vereinbare</b> einen Termin. Ich <b>bezahle</b>. Ich <b>übersetze</b> den Brief.</i></p>
+<p class="tip">🔊 Ударението подсказва: разделимите са с ударение на представката (<b>AN</b>rufen, <b>AUF</b>stehen), неразделимите — на корена (ver<b>EIN</b>baren, be<b>ZAH</b>len, über<b>SET</b>zen).</p>
+<h4>2. zuerst – dann – danach – zum Schluss</h4>
+<p>Тези думи заемат <b>1-во място</b> → глаголът остава на 2-ро, подлогът минава <b>след</b> него:</p>
+<p><i><b>Zuerst</b> liest er seine E-Mails. <b>Dann</b> ruft er die Firma an. <b>Danach</b> fährt er zum Flughafen. <b>Zum Schluss</b> bucht er einen Flug.</i></p>
+<p class="tip">⚠️ Не казвай <s>Dann er fährt</s> — на немски е <b>Dann fährt er</b>. Същото след часовете: <i>Um 8 Uhr <b>steht er</b> auf.</i></p>
+<h4>3. müssen и sollen</h4>
+<table class="g"><tr><th></th><th>müssen</th><th>sollen</th></tr>
+<tr><td>ich</td><td>muss</td><td>soll</td></tr><tr><td>du</td><td>musst</td><td>sollst</td></tr><tr><td>er/sie/es</td><td><b>muss</b></td><td><b>soll</b></td></tr>
+<tr><td>wir</td><td>müssen</td><td>sollen</td></tr><tr><td>ihr</td><td>müsst</td><td>sollt</td></tr><tr><td>sie/Sie</td><td>müssen</td><td>sollen</td></tr></table>
+<p><b>müssen</b> = необходимо е (аз самият трябва): <i>Ich <b>muss</b> heute 55 E-Mails <b>beantworten</b>.</i><br>
+<b>sollen</b> = някой друг ми казва / очаква: <i>Der Chef sagt: Die Sekretärin <b>soll</b> ein Hotelzimmer <b>buchen</b>.</i><br>
+<b>Soll ich …?</b> = предложение „Да … ли?“: <i><b>Soll ich</b> Spaghetti kochen? – Ja, bitte! / Nein, das brauchst du nicht.</i></p>
+<p class="tip">🧱 Вторият глагол (инфинитив) е <b>в края</b>. При разделим глагол остава цял: <i>Ich muss Frau Körner <b>anrufen</b>.</i></p>
+<h4>4. Предлози за деня</h4>
+<p><b>um</b> 8 Uhr (в колко) · <b>von</b> 13 <b>bis</b> 13.30 Uhr (от … до) · <b>ab</b> 19 Uhr (от … нататък) · <b>mit dem</b> Auto (с какво) · <b>zur</b> Arbeit (накъде, die → zur) · <b>ins</b> Bett (накъде, das → ins) · <b>zu Hause</b> (къде) · <b>nach Hause</b> (накъде)</p>`
+  },
 ];

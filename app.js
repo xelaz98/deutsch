@@ -208,6 +208,7 @@ function audioTexts() {
   ITEMS.forEach((it) => examplesFor(it).forEach(([de]) => texts.add(de)));
   ALPHABET.forEach((a) => { texts.add(a.say); texts.add(a.ex); texts.add(a.ch + " wie " + a.spell); });
   if (typeof DIALOGS !== "undefined") DIALOGS.forEach((d) => d.lines.forEach((l) => texts.add(l[1])));
+  if (typeof ex14Texts === "function") ex14Texts().forEach((t) => texts.add(t));
   if (typeof HOMEWORK !== "undefined") HOMEWORK.forEach((h) => { texts.add(h.de); h.sample.forEach(([de]) => texts.add(de)); });
   SOUNDS.forEach(([, list]) => list.forEach(([, , , ex]) => ex.forEach((w) => texts.add(w))));
   [...Array(21).keys(), 30, 40, 50, 60, 70, 80, 90, 100, 1000].forEach((n) => texts.add(num2de(n)));
@@ -460,8 +461,9 @@ document.addEventListener("dblclick", (e) => {
 });
 
 // ───────── рамка ─────────
-const TABS = [["home", "🏠", "Днес"], ["cards", "🃏", "Учи"], ["ex", "🏋️", "Упражнения"], ["dict", "📖", "Речник"], ["grammar", "📐", "Граматика"], ["basics", "🔤", "Основи"], ["verbs", "⚙️", "Глаголи"], ["quiz", "✍️", "Бърз тест"]];
-const TOP_MAIN = ["home", "cards", "ex", "dict", "grammar"], BOTTOM_MAIN = ["home", "cards", "ex", "dict"];
+const TABS = [["home", "🧭", "Път"], ["review", "🔁", "Преговор"], ["games", "🎮", "Игри"], ["grammar", "📐", "Граматика"], ["dict", "📖", "Речник"],
+  ["ex", "🏋️", "Всички упражнения"], ["cards", "🃏", "Карти"], ["basics", "🔤", "Основи"], ["verbs", "⚙️", "Глаголи"], ["quiz", "✍️", "Бърз тест"]];
+const TOP_MAIN = ["home", "review", "games", "grammar", "dict"], BOTTOM_MAIN = ["home", "review", "games", "dict"];
 const tabInfo = (k) => TABS.find((t) => t[0] === k);
 if (!tabInfo(S.tab)) S.tab = "home";
 function renderNav() {
@@ -523,7 +525,7 @@ function fitNav() {
 }
 addEventListener("resize", fitNav);
 function openMore() {
-  const rows = TABS.filter(([k]) => !BOTTOM_MAIN.includes(k)).map(([k, ic, l]) => `<button class="mrow ${S.tab === k ? "on" : ""}" data-go="${k}"><span class="ni">${ic}</span><span><b>${l}</b><small>${{ grammar: "Всички правила, обяснени просто", basics: "Азбука, звуци, четене, числа", verbs: "Таблици на всички глаголи", quiz: "Бързи тестове: превод, род, диктовка…" }[k] || ""}</small></span></button>`).join("");
+  const rows = TABS.filter(([k]) => !BOTTOM_MAIN.includes(k)).map(([k, ic, l]) => `<button class="mrow ${S.tab === k ? "on" : ""}" data-go="${k}"><span class="ni">${ic}</span><span><b>${l}</b><small>${{ grammar: "Всички правила, обяснени просто", basics: "Азбука, звуци, четене, числа", verbs: "Таблици на всички глаголи", quiz: "Бързи тестове: превод, род, диктовка…", ex: "Библиотека с всички видове задачи, по уроци", cards: "Флашкарти със самооценка" }[k] || ""}</small></span></button>`).join("");
   openPanel("Още", `<div class="mlist">${rows}</div><h4 class="pn-sec">Настройки</h4>${settingsHTML()}
     <p class="credit">Пиктограми: Sergio Palao, <a href="https://arasaac.org" target="_blank" rel="noopener">ARASAAC</a> (правителство на Арагон), лиценз CC BY-NC-SA 4.0.</p>`, (e) => {
     const g = e.target.closest("[data-go]"); if (g) { closePanel(); go(g.dataset.go); return; }
@@ -575,7 +577,8 @@ function go(tab) { if (!tabInfo(tab)) tab = "home"; S.tab = tab; store.set("tab"
 function render() {
   stopAudio();
   keyHandler = null; view.onclick = null; activeQuiz = null;
-  ({ home: renderHome, basics: renderBasics, ex: renderExercises, dict: renderDict, cards: renderCardsHome, quiz: renderQuizHome, verbs: renderVerbs, grammar: renderGrammar })[S.tab]();
+  if (S.tab !== "games") stopGame();
+  ({ home: renderPath, review: renderReview, games: renderGames, basics: renderBasics, ex: renderExercises, dict: renderDict, cards: renderCardsHome, quiz: renderQuizHome, verbs: renderVerbs, grammar: renderGrammar })[S.tab]();
 }
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -1053,20 +1056,30 @@ function renderVerbs() {
 let gTopic = store.get("gTopic", GRAMMAR[0].id);
 function renderGrammar() {
   const g = GRAMMAR.find((x) => x.id === gTopic) || GRAMMAR[0];
+  const gr = gRead(); if (!gr[g.id]) { gr[g.id] = Date.now(); store.set("gread", gr); }
+  const inUnits = new Set(UNITS.flatMap((u) => u.g)), U = UNITS.find((u) => u.g.includes(g.id));
+  const groups = [...UNITS].reverse().filter((u) => u.g.length).map((u) => [lessonName(u) + " · " + short(u.title), u.g]);
+  const rest = GRAMMAR.filter((x) => !inUnits.has(x.id)).map((x) => x.id); if (rest.length) groups.push(["Други", rest]);
+  const exk = (G2EX[g.id] || U?.ex || []).filter(exByK);
+  const flat = groups.flatMap((x) => x[1]), i = flat.indexOf(g.id), nx = GRAMMAR.find((x) => x.id === flat[i + 1]);
   view.innerHTML = `<div class="gwrap">
-    <div class="gnav">${GRAMMAR.map((x) => `<button data-g="${x.id}" class="${x.id === g.id ? "on" : ""}">${x.icon}&nbsp; ${x.title}</button>`).join("")}</div>
-    <article class="gbody"><h2>${g.title}</h2>${g.html}</article></div>`;
+    <div class="gnav">${groups.map(([h, ids]) => `<div class="gh">${esc(h)}</div>` + ids.map((id) => { const x = GRAMMAR.find((y) => y.id === id); return `<button data-g="${x.id}" class="${x.id === g.id ? "on" : ""}">${x.icon}&nbsp; ${x.title}${gr[x.id] ? "" : ' <i class="gnew">ново</i>'}</button>`; }).join("")).join("")}</div>
+    <article class="gbody">${U ? `<div class="muted" style="font-size:13px">${esc(lessonName(U))}</div>` : ""}<h2>${g.title}</h2>${g.html}
+      ${exk.length ? `<div class="gpractice"><b>🏋️ Упражнявай това</b><div class="gpx">${exk.map((k) => { const t = exByK(k); return `<button class="btn" data-gex="${k}">${t.ic} ${esc(t.t)}</button>`; }).join("")}</div></div>` : ""}
+      ${nx ? `<button class="btn primary" data-g="${nx.id}" style="margin-top:14px">Следваща тема: ${nx.icon} ${esc(nx.title)} →</button>` : ""}</article></div>`;
   view.onclick = (e) => {
+    const x = e.target.closest("[data-gex]");
+    if (x) { startEx(x.dataset.gex, { tab: "grammar", back: () => go("grammar") }); return; }
     const b = e.target.closest("[data-g]");
-    if (b) { gTopic = b.dataset.g; store.set("gTopic", gTopic); renderGrammar(); return; }
+    if (b) { gTopic = b.dataset.g; store.set("gTopic", gTopic); renderGrammar(); window.scrollTo(0, 0); return; }
     const cell = e.target.closest(".spk");
-    if (cell) speak(cell.textContent.replace(/\(.*?\)/g, "").replace(/[\u0400-\u04FF]+/g, "").replace(/[→=+−]/g, ","));
+    if (cell) speak(cell.textContent.replace(/\(.*?\)/g, "").replace(/[Ѐ-ӿ]+/g, "").replace(/[→=+−]/g, ","));
   };
-  view.querySelectorAll("table.g td, .gbody i").forEach((el) => { if (/[a-zäöüß]{2}/i.test(el.textContent.replace(/[\u0400-\u04FF]+/g, ""))) el.classList.add("spk"); });
+  view.querySelectorAll("table.g td, .gbody i").forEach((el) => { if (/[a-zäöüß]{2}/i.test(el.textContent.replace(/[Ѐ-ӿ]+/g, ""))) el.classList.add("spk"); });
   keyHandler = (e) => {
-    const i = GRAMMAR.findIndex((x) => x.id === g.id);
-    if (e.key === "ArrowDown" || e.key === "j") { gTopic = GRAMMAR[Math.min(GRAMMAR.length - 1, i + 1)].id; renderGrammar(); }
-    if (e.key === "ArrowUp" || e.key === "k") { gTopic = GRAMMAR[Math.max(0, i - 1)].id; renderGrammar(); }
+    const j = flat.indexOf(g.id);
+    if (e.key === "ArrowDown" || e.key === "j") { gTopic = flat[Math.min(flat.length - 1, j + 1)]; renderGrammar(); }
+    if (e.key === "ArrowUp" || e.key === "k") { gTopic = flat[Math.max(0, j - 1)]; renderGrammar(); }
   };
 }
 
@@ -1089,7 +1102,8 @@ function hwHTML() {
       <details><summary>🧭 Как да го напиша</summary><ol>${h.plan.map((x) => `<li>${x}</li>`).join("")}</ol>
         <p class="muted">Полезни думи: ${h.words.map(esc).join(" · ")}</p></details>
       <details><summary>📖 Пример (не го преписвай — направи своя)</summary>${h.sample.map(([de, bg]) => `<p>${sayBtn(de)} ${esc(de)}<br><small class="muted">${esc(bg)}</small></p>`).join("")}</details>
-      <textarea class="hw-text" rows="6" placeholder="Mein Lieblingsrezept: …" spellcheck="false">${esc(st.text)}</textarea>
+      <details class="hw-w" ${st.text && !st.done ? "open" : ""}><summary>✍️ Пиши тук${n ? ` (${n} думи)` : ""}</summary>
+      <textarea class="hw-text" rows="6" placeholder="Mein Lieblingsrezept: …" spellcheck="false">${esc(st.text)}</textarea></details>
       <div class="hw-b"><small class="muted hw-n">${n} думи · пази се автоматично</small>
         ${h.grammar ? `<button class="btn" data-hwg="${h.grammar}">📐 Imperativ</button>` : ""}
         <button class="btn${st.done ? "" : " primary"}" data-hwdone>${st.done ? "↩ Не е готово" : "✓ Готово"}</button></div>
@@ -1100,116 +1114,11 @@ function bindHW() {
   view.querySelectorAll("[data-hw]").forEach((el) => {
     const id = el.dataset.hw, get = () => store.get("hw:" + id, { text: "", done: false }), ta = el.querySelector(".hw-text");
     ta.addEventListener("input", () => { store.set("hw:" + id, { ...get(), text: ta.value }); el.querySelector(".hw-n").textContent = `${(ta.value.match(/[A-Za-zÄÖÜäöüß]+/g) || []).length} думи · пази се автоматично`; });
-    el.querySelector("[data-hwdone]").addEventListener("click", () => { const s = get(); store.set("hw:" + id, { ...s, done: !s.done }); toast(s.done ? "Върнато като неготово" : "Браво! Домашното е готово ✅"); renderHome(); });
+    el.querySelector("[data-hwdone]").addEventListener("click", () => { const s = get(); store.set("hw:" + id, { ...s, done: !s.done }); toast(s.done ? "Върнато като неготово" : "Браво! Домашното е готово ✅"); renderPath(); });
     const g = el.querySelector("[data-hwg]");
     if (g) g.addEventListener("click", () => { gTopic = g.dataset.hwg; store.set("gTopic", gTopic); go("grammar"); });
   });
 }
-function renderHome() {
-  const all = ITEMS;
-  const due = all.filter((i) => S.srs[i.id] && isDue(i)).length;
-  const fresh = all.filter((i) => !S.srs[i.id]).length;
-  const weak = all.filter((i) => S.srs[i.id] && box(i) <= 1).length;
-  const td = S.log[today()] || 0, pct = Math.min(1, td / S.goal), st = streak();
-  const h = new Date().getHours();
-  const hello = h < 11 ? "Guten Morgen" : h < 18 ? "Guten Tag" : "Guten Abend";
-  const R = 34, C = 2 * Math.PI * R;
-  const wotd = (() => { const n = all.filter((i) => i.type === "noun" && i.art && i.art !== "pl"); return n[Math.floor(Date.now() / DAY) % n.length]; })();
-  const week = [...Array(7)].map((_, k) => { const off = 6 - k, d = today(off); return { d, n: S.log[d] || 0, lbl: ["Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"][new Date(Date.now() - off * DAY).getDay()] }; });
-  const wmax = Math.max(S.goal, ...week.map((w) => w.n));
-  const rm = roadmap();
-  view.innerHTML = `
-  <section class="hero">
-    <div>
-      <div class="hello" data-say="${hello}!">${hello}! 👋</div>
-      <p class="hint" style="margin:4px 0 16px">${due ? `<b>${due}</b> думи чакат преговор` : "Нищо за преговор"} · <b>${fresh}</b> нови · 🔥 серия <b>${st}</b> ${st === 1 ? "ден" : "дни"}</p>
-      <div class="ctas"><button class="cta" id="go-lesson">▶&nbsp; Продължи урока <span>5 нови думи с картинки и упражнения</span></button>
-      <button class="cta cta2" id="go-learn">🃏&nbsp; Преговор <span>${due ? due + " чакат" : Math.min(20, due + fresh) + " карти"}</span></button>
-      <button class="cta cta2" id="go-ex">🏋️&nbsp; Упражнения <span>${EX_TYPES.length} вида задачи</span></button></div>
-    </div>
-    <div class="ring" title="Днес: ${td} от ${S.goal}">
-      <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="${R}" class="rb"/><circle cx="40" cy="40" r="${R}" class="rf" style="stroke-dasharray:${C};stroke-dashoffset:${C * (1 - pct)}"/></svg>
-      <div><b>${td}</b><small>от ${S.goal}</small></div>
-    </div>
-  </section>
-
-  ${(() => { const L = LESSONS[LESSONS.length - 1], li = ITEMS.filter((i) => inLesson(i, L.id)), k = li.filter((i) => box(i) >= 3).length;
-    return `<section class="latest"><div class="lt-l"><span class="muted">Последен урок · ${esc(L.date)}</span><b>${esc(lessonName(L))}: ${esc(L.title)}</b>
-      <div class="bar"><i class="k" style="width:${(k / li.length) * 100}%"></i></div><small class="muted">${k} от ${li.length} думи научени</small></div>
-      <div class="lt-b"><button class="btn primary" data-lesson="${L.id}">🃏 Учи думите</button><button class="btn" data-lex="${L.id}">🏋️ Упражнения</button><button class="btn" data-ldict="${L.id}">📖 Думите</button></div></section>`; })()}
-  ${hwHTML()}
-  ${store.get("howtoHidden", true) ? `<p class="keys" style="text-align:left;margin-top:14px"><button class="link" id="howto-show">❓ Как да уча с това приложение</button></p>` : `
-  <section class="howto">
-    <div class="howto-h"><b>❓ Как да учиш тук — 4 стъпки</b><button class="link" id="howto-hide">скрий</button></div>
-    <ol>
-      <li><b>Започни от нулата:</b> „🔤 Основи“ → азбука и звуци. Така ще можеш да четеш всяка дума.</li>
-      <li><b>Всеки ден натисни „▶ Учи сега“.</b> Виждаш дума → опитваш да си спомниш → Space → казваш честно „знам“ или „не знам“. Приложението само решава кога да ти я покаже пак.</li>
-      <li><b>Цъкни върху всяка дума</b> (в речника, на картата, след отговор) → отваря се <b>„картичка“</b>: превод, как се чете, просто обяснение, спрежение и примерни изречения. Посочи дума в изречението → виждаш превода ѝ.</li>
-      <li><b>Провери се в „✍️ Тест“.</b> Там звукът е изключен, за да не ти подсказва. Грешките отиват автоматично в „Слабите“ за повторение.</li>
-    </ol>
-    <p class="muted" style="margin:6px 0 0">Цветовете навсякъде: <span class="art der">der</span> = мъжки, <span class="art die">die</span> = женски, <span class="art das">das</span> = среден, <span class="art pl">die</span> = мн.ч.</p>
-  </section>`}
-  <details class="roadd"><summary>Пътят от А до Я · <span class="muted">${rm.steps.filter((x) => x.done).length} от ${rm.steps.length} стъпки</span></summary>
-  <div class="road">${rm.steps.map((st, i) => `<button class="step ${st.done ? "done" : ""} ${i === rm.nextI ? "next" : ""}" data-step="${i}">
-    <span class="si">${st.done ? "✓" : st.ic}</span><b>${esc(st.t)}</b><small>${esc(st.d)}</small>
-    ${st.p !== undefined ? `<span class="sp"><i style="width:${Math.round(st.p * 100)}%"></i></span>` : ""}
-    ${i === rm.nextI ? `<em>следваща стъпка</em>` : ""}</button>`).join("")}</div></details>
-
-  <div class="quick">
-    <button class="qk" data-act="gender"><span>🎨</span><b>der · die · das</b><small>тренирай рода</small></button>
-    <button class="qk" data-act="mc"><span>🔤</span><b>Бърз тест</b><small>избери превода</small></button>
-    <button class="qk" data-act="conj"><span>⚙️</span><b>Спрежение</b><small>ich, du, er…</small></button>
-    <button class="qk" data-act="weak"><span>🎯</span><b>Слабите</b><small>${weak} думи</small></button>
-  </div>
-
-  <div class="two">
-    <div class="panel">
-      <h3 style="margin-top:0">Уроци</h3>
-      ${LESSONS.map((l) => {
-        const li = all.filter((i) => inLesson(i, l.id)), n = li.length;
-        const k = li.filter((i) => box(i) >= 3).length, w = li.filter((i) => box(i) >= 0 && box(i) < 3).length;
-        return `<div class="lp">
-          <div class="lp-h"><b>${lessonName(l)}</b><span>${esc(l.title)}</span><em>${Math.round((k / n) * 100)}%</em></div>
-          <div class="bar"><i class="k" style="width:${(k / n) * 100}%"></i><i class="w" style="width:${(w / n) * 100}%"></i></div>
-          <div class="lp-f"><small>${l.date ? l.date + " · " : ""}${k} научени · ${w} в процес · ${n - k - w} нови</small><button class="link" data-lesson="${l.id}">Учи урока →</button></div>
-        </div>`;
-      }).join("")}
-      <div class="legend2"><span><i class="k"></i>научени</span><span><i class="w"></i>в процес</span><span><i></i>нови</span></div>
-    </div>
-    <div class="panel">
-      <h3 style="margin-top:0">Дума на деня</h3>
-      <div class="wotd g-${wotd.art}" data-open="${esc(wotd.id)}">
-        <div class="big">${deHTML(wotd)}</div>${trHTML(deFull(wotd))}
-        <div>${esc(wotd.bg)}${wotd.pl ? ` · мн.ч. die ${esc(wotd.pl)}` : ""}</div>
-        <small>цъкни за всичко за думата 📖</small>
-      </div>
-      <h3>Последните 7 дни</h3>
-      <div class="week">${week.map((w) => `<div class="wd ${w.d === today() ? "now" : ""}" title="${w.n} отговора"><div class="wb"><i style="height:${(w.n / wmax) * 100}%" class="${w.n >= S.goal ? "full" : ""}"></i></div><small>${w.lbl}</small></div>`).join("")}</div>
-      <div class="toolbar" style="margin-top:12px"><span class="lbl">Дневна цел</span>${[20, 40, 60, 100].map((g) => `<button class="chip ${S.goal === g ? "on" : ""}" data-goal="${g}">${g}</button>`).join("")}</div>
-    </div>
-  </div>
-  <p class="keys" style="margin-top:22px">💡 Цъкни върху всяка немска дума, за да я чуеш. Цъкни пак — ще я чуеш бавно.</p>`;
-  const learnAll = () => { S.lessons = new Set(LESSONS.map((l) => l.id)); store.set("lessons", [...S.lessons]); cardOpt.group = "all"; S.tab = "cards"; renderNav(); renderSub(); render(); startCards("due", pool()); };
-  view.onclick = (e) => {
-    const t = e.target.closest("button"); if (!t) return;
-    if (t.id === "go-learn") learnAll();
-    if (t.id === "go-ex") { go("ex"); return; }
-    if (t.id === "go-lesson") { startEx("learn"); return; }
-    if (t.dataset.lex) { S.lessons = new Set([+t.dataset.lex]); store.set("lessons", [...S.lessons]); renderSub(); startEx("mix"); return; }
-    if (t.dataset.ldict) { S.lessons = new Set([+t.dataset.ldict]); store.set("lessons", [...S.lessons]); go("dict"); return; }
-    if (t.id === "howto-hide") { store.set("howtoHidden", true); renderHome(); }
-    if (t.id === "howto-show") { store.set("howtoHidden", false); renderHome(); }
-    if (t.dataset.step) rm.steps[+t.dataset.step].go();
-    if (t.dataset.goal) { S.goal = +t.dataset.goal; store.set("goal", S.goal); renderStats(); renderHome(); }
-    if (t.dataset.lesson) { S.lessons = new Set([+t.dataset.lesson]); store.set("lessons", [...S.lessons]); cardOpt.group = "all"; S.tab = "cards"; renderNav(); renderSub(); renderStats(); render(); startCards("due", pool()); }
-    if (t.dataset.act === "weak") { S.tab = "cards"; renderNav(); renderSub(); render(); startCards("weak", pool()); }
-    else if (t.dataset.act) { S.tab = "quiz"; renderNav(); renderSub(); render(); startQuiz(t.dataset.act); }
-  };
-  keyHandler = (e) => { if (e.key === "Enter") learnAll(); };
-  bindHW();
-}
-
-
 // ───────── ОСНОВИ (азбука, звуци, четене, спелуване, числа) ─────────
 const BASICS = [
   ["alphabet", "🔤", "Азбука"], ["sounds", "🗣", "Звуци"], ["rules", "📏", "Правила за четене"],
@@ -1346,25 +1255,6 @@ function bNumbers(el) {
   $("#nv").oninput = draw; $("#ny").onchange = draw;
   $("#nv").onkeydown = (e) => { if (e.key === "Enter") { const b = $("#nout [data-say]"); if (b) speak(b.dataset.say); } };
   $("#nq").onclick = () => { go("quiz"); startQuiz("numbers"); };
-}
-
-// ───────── пътна карта ─────────
-function roadmap() {
-  const pct = (id) => { const li = ITEMS.filter((i) => inLesson(i, id)); return li.filter((i) => box(i) >= 3).length / li.length; };
-  const steps = [
-    { ic: "🔤", t: "Азбука", d: "26 букви + ä ö ü ß", done: !!S.visited.alphabet, go: () => { bTopic = "alphabet"; go("basics"); } },
-    { ic: "🗣", t: "Звуци и четене", d: "ei, ie, sch, ch…", done: !!(S.visited.sounds && S.visited.rules), go: () => { bTopic = S.visited.sounds ? "rules" : "sounds"; go("basics"); } },
-    { ic: "👋", t: "Първи фрази", d: "поздрави, учтивост, дни", p: pct(0), go: () => lessonCards(0) },
-    { ic: "🔢", t: "Числа", d: "0 – 1000 на слух", done: !!S.visited.numbers, go: () => { bTopic = "numbers"; go("basics"); } },
-    ...LESSONS.filter((l) => l.id > 0).map((l) => ({ ic: "📘", t: "Урок " + l.id, d: l.title, p: pct(l.id), go: () => lessonCards(l.id) })),
-  ];
-  steps.forEach((s) => { if (s.p !== undefined) s.done = s.p >= 0.6; });
-  const nextI = steps.findIndex((s) => !s.done);
-  return { steps, nextI };
-}
-function lessonCards(id) {
-  S.lessons = new Set([id]); store.set("lessons", [...S.lessons]); cardOpt.group = "all";
-  S.tab = "cards"; renderNav(); renderSub(); renderStats(); render(); startCards("due", pool());
 }
 
 // ───────── старт ─────────

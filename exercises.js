@@ -1092,7 +1092,8 @@ function learnItems(n = 5) {
   const L = [...S.lessons].sort((a, b) => b - a);
   const cand = ITEMS.filter((i) => i.lessons.some((l) => S.lessons.has(l)) && ["noun", "verb", "adj", "adv", "word"].includes(i.type) && !/\s–\s/.test(i.de));
   const order = (i) => -Math.max(...i.lessons.filter((l) => S.lessons.has(l)));
-  const fresh = cand.filter((i) => box(i) < 0).sort((a, b) => order(a) - order(b));
+  const isOld = (i) => (Math.min(...i.lessons) < -order(i) ? 1 : 0); // думата е от по-ранен урок → след истински новите
+  const fresh = cand.filter((i) => box(i) < 0).sort((a, b) => order(a) - order(b) || isOld(a) - isOld(b));
   const weak = shuffle(cand.filter((i) => box(i) >= 0 && box(i) <= 1));
   const picked = [...fresh.slice(0, n)];
   if (picked.length < n) picked.push(...weak.slice(0, n - picked.length));
@@ -1379,6 +1380,7 @@ function startEx(k, opts = {}) {
   if (k === "mix") qs = [...Array(15)].map(() => rnd(EX_TYPES.filter((t) => t.gen)).gen());
   else if (k === "dialog") { const dlg = DIALOGS[dialogIdx++ % DIALOGS.length]; qs = dlg.qs.map((_, i) => genDialogQ(dlg, i)); }
   else if (k === "word") qs = genWordTraining(opts.item);
+  else if (k === "custom") qs = opts.qs;
   else if (k === "learn") { const L = buildLearn(); if (!L) { toast("Няма нови думи в избраните уроци — избери друг урок"); return; } qs = L.qs; opts.items = L.items; }
   else if (k === "weak") {
     const weak = shuffle(ITEMS.filter((i) => S.srs[i.id] && box(i) <= 1)).slice(0, 3);
@@ -1386,18 +1388,20 @@ function startEx(k, opts = {}) {
     qs = weak.flatMap((it) => shuffle(genWordTraining(it)).slice(0, 4));
   } else { const t = EX_TYPES.find((x) => x.k === k); qs = [...Array(k === "bank" ? 4 : 10)].map(() => t.gen()); }
   const t = EX_TYPES.find((x) => x.k === k);
-  exSess = { k, title: k === "learn" ? "Урок: нови думи" : k === "word" ? `Тренирай: ${opts.item.de}` : k === "mix" ? "Микс от всичко" : k === "weak" ? "Слабите думи" : t.t, qs, i: 0, score: 0, wrong: [], opts, xp: 0 };
-  if (S.tab !== "ex") { S.tab = "ex"; store.set("tab", "ex"); renderNav(); renderSub(); }
+  exSess = { k, title: opts.title || (k === "learn" ? "Нови думи" : k === "word" ? `Тренирай: ${opts.item.de}` : k === "mix" ? "Микс от всичко" : k === "weak" ? "Грешките ми" : t.t), qs: qs.filter(Boolean), i: 0, score: 0, wrong: [], opts, xp: 0 };
+  const tb = opts.tab || "ex";
+  if (S.tab !== tb) { S.tab = tb; store.set("tab", tb); renderNav(); renderSub(); }
   keyHandler = null; view.onclick = null; activeQuiz = null;
   drawEx();
 }
+function exBack() { const b = exSess && exSess.opts.back; exSess = null; if (b) b(); else renderExercises(); }
 function drawEx() {
   const s = exSess;
   if (s.i >= s.qs.length) return exDone();
   const q = s.qs[s.i];
   let answered = false;
   stopAudio();
-  const next = () => { s.i++; drawEx(); window.scrollTo(0, 0); };
+  const next = () => { s.i++; if (s.opts.onNext) s.opts.onNext(s); drawEx(); window.scrollTo(0, 0); };
   let body = "";
   if (q.kind === "intro") body = `<button class="btn primary nextbtn" id="exnext">Разбрах →</button>`;
   else if (q.kind === "mc") body = `<div class="opts ${q.emo ? "emog" : ""}">${q.options.map((o, n) => `<button class="opt ${q.emo ? "emopt" : ""}" data-n="${n}"><kbd>${n + 1}</kbd><span>${q.emo ? o : esc(o)}</span></button>`).join("")}</div>`;
@@ -1422,15 +1426,15 @@ function drawEx() {
     <div class="card excard" style="cursor:default"><div class="extask">${q.task}</div>${q.prompt || ""}</div>
     ${body}<div class="exfb" id="fb"></div>
     <div class="keys">${q.kind === "mc" ? "1–" + q.options.length + " – отговор · " : q.kind === "order" ? "цъкни думите поред · Backspace – махни · " : q.kind === "bank" ? "цъкни празното място, после думата · " : q.kind === "match" ? "цъкни немска дума, после превода ѝ · " : ""}Enter – напред · Esc – назад</div></div>`;
-  $("#exback").onclick = renderExercises;
+  $("#exback").onclick = exBack;
   if (q.autoSay) setTimeout(() => speak(q.autoSay, { auto: true }), 150);
   const pd = view.querySelector("[data-play-dlg]");
   if (pd) pd.onclick = (e) => { e.stopPropagation(); playSequence(q.dlg.lines.map((l) => l[1]), null, 350); };
 
   const finish = (ok, given) => {
-    answered = true;
+    answered = true; q.ok = ok;
     if (ok) { s.score++; s.xp += 10; addXP(10); } else s.wrong.push({ q, given });
-    if (q.item) { if (ok) { if (box(q.item) <= 0) grade(q.item, 1); } else grade(q.item, 0); }
+    if (q.item && !s.opts.noGrade) { if (s.opts.srs) grade(q.item, ok ? 2 : 0); else if (ok) { if (box(q.item) <= 0) grade(q.item, 1); } else grade(q.item, 0); }
     const full = q.full ? sentHTML(q.full, q.bg || "", q.item || null, { bd: "full" }) : "";
     $("#fb").className = "exfb on " + (ok ? "ok" : "bad");
     $("#fb").innerHTML = `<div class="exhead">${ok ? "✓ Правилно!" : `✗ Не съвсем. Правилно е: <b>${q.emo ? q.answer : esc(q.answer)}</b>`}</div>
@@ -1445,7 +1449,7 @@ function drawEx() {
   };
   if (q.kind === "intro") {
     $("#exnext").onclick = next;
-    keyHandler = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); next(); } else if (e.key === "Escape") renderExercises(); };
+    keyHandler = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); next(); } else if (e.key === "Escape") exBack(); };
   } else if (q.kind === "mc") {
     const pick = (n) => {
       if (answered) return;
@@ -1457,7 +1461,7 @@ function drawEx() {
     keyHandler = (e) => {
       if (!answered && /^[1-9]$/.test(e.key) && +e.key <= q.options.length) pick(+e.key - 1);
       else if (e.key === "Enter" && answered) { e.preventDefault(); next(); }
-      else if (e.key === "Escape") renderExercises();
+      else if (e.key === "Escape") exBack();
     };
   } else if (q.kind === "type") {
     const inp = $("#exa"); inp.focus();
@@ -1470,7 +1474,7 @@ function drawEx() {
         const ok = q.accept ? q.accept(inp.value) : sameDe(inp.value, q.answer);
         inp.classList.add(ok ? "right" : "wrong"); inp.readOnly = true;
         finish(ok, inp.value);
-      } else if (e.key === "Escape") renderExercises();
+      } else if (e.key === "Escape") exBack();
     };
   } else if (q.kind === "tap") {
     view.querySelector(".tapline").onclick = (e) => {
@@ -1480,7 +1484,7 @@ function drawEx() {
       if (!ok) b.classList.add("wrong");
       finish(ok, b.textContent);
     };
-    keyHandler = (e) => { if (e.key === "Enter" && answered) next(); else if (e.key === "Escape") renderExercises(); };
+    keyHandler = (e) => { if (e.key === "Enter" && answered) next(); else if (e.key === "Escape") exBack(); };
   } else if (q.kind === "match") {
     let sel = null, miss = 0, done = 0;
     view.querySelector(".matchg").addEventListener("click", (e) => {
@@ -1490,7 +1494,7 @@ function drawEx() {
       if (sel.dataset.m === b.dataset.m) { sel.classList.add("ok"); b.classList.add("ok"); sel.classList.remove("sel"); sel = null; done++; if (done === q.pairs.length) finish(miss === 0, miss ? `${miss} грешни опита` : "без грешка"); }
       else { miss++; b.classList.add("bad"); sel.classList.add("bad"); const s1 = sel; setTimeout(() => { b.classList.remove("bad"); s1.classList.remove("bad"); }, 500); }
     });
-    keyHandler = (e) => { if (e.key === "Enter" && answered) next(); else if (e.key === "Escape") renderExercises(); };
+    keyHandler = (e) => { if (e.key === "Enter" && answered) next(); else if (e.key === "Escape") exBack(); };
   } else if (q.kind === "bank") {
     const fill = q.blanks.map(() => null); let cur = 0; const pool = q.bank.map((t, i) => ({ t, i, used: false }));
     const draw = () => {
@@ -1515,7 +1519,7 @@ function drawEx() {
         draw(); if (cur < 0) check();
       }
     });
-    keyHandler = (e) => { if (e.key === "Enter" && answered) next(); else if (e.key === "Escape") renderExercises(); };
+    keyHandler = (e) => { if (e.key === "Enter" && answered) next(); else if (e.key === "Escape") exBack(); };
   } else {
     const placed = [], free = q.sh.map((t) => ({ t }));
     const draw = () => {
@@ -1533,45 +1537,45 @@ function drawEx() {
     keyHandler = (e) => {
       if (e.key === "Enter" && answered) next();
       else if (e.key === "Backspace" && !answered && placed.length) { free.push(placed.pop()); draw(); }
-      else if (e.key === "Escape") renderExercises();
+      else if (e.key === "Escape") exBack();
     };
   }
 }
 function exDone() {
   const s = exSess, total = s.qs.filter((q) => q.kind !== "intro").length || 1, pct = Math.round((s.score / total) * 100);
   if (pct >= 70) confetti();
+  if (s.opts.onDone && s.opts.onDone(pct, s) === false) return; // сесията сама рисува резултата (напр. началния тест)
   const learned = s.k === "learn" && s.opts.items ? `<div class="learned">${s.opts.items.map((it) => `<button class="pill" data-open="${esc(it.id)}">${emojiOf(it) || ""} ${deHTML(it)} — ${esc(it.bg)}</button>`).join("")}</div>` : "";
-  const best = store.get("exBest", {}); if (s.k !== "word" && (best[s.k] ?? -1) < pct) { best[s.k] = pct; store.set("exBest", best); }
+  const best = store.get("exBest", {}); if (!["word", "custom"].includes(s.k) && (best[s.k] ?? -1) < pct) { best[s.k] = pct; store.set("exBest", best); }
   view.innerHTML = `<div class="stage"><div class="card done" style="cursor:default">
     <div class="score">${pct >= 90 ? "🏆" : pct >= 70 ? "💪" : "📚"} ${s.score}/${total}</div><p class="meta">${esc(s.title)} · ${pct}%</p>
     <div class="xpgain">+${s.xp} ⭐</div>${learned ? `<h3>Думите от урока</h3>${learned}` : ""}
     ${s.wrong.length ? `<div class="exmist"><h3>Грешките ти — прочети защо</h3>${s.wrong.map(({ q, given }) => `<div class="exm">
       <div class="extask">${q.task}</div><div>${q.full ? esc(q.full) : q.emo ? q.answer : esc(q.answer)}</div>
       <div class="muted">ти: <s>${q.emo ? given || "—" : esc(given || "—")}</s> → правилно: <b>${q.emo ? q.answer : esc(q.answer)}</b></div><div class="exwhy">${q.explain}</div></div>`).join("")}</div>` : "<p>Без нито една грешка! 🎉</p>"}
-    <div class="btns" style="grid-template-columns:1fr 1fr;width:100%"><button class="btn" id="exb">← Упражнения</button><button class="btn primary" id="exa2">${s.k === "word" ? "Пак" : s.k === "learn" ? "Следващи думи →" : "Още 10"} <kbd style="color:inherit">Enter</kbd></button></div>
+    <div class="btns" style="grid-template-columns:1fr 1fr;width:100%"><button class="btn" id="exb">← ${s.opts.back ? "Пътят" : "Упражнения"}</button><button class="btn primary" id="exa2">${s.opts.againLabel || (s.k === "word" ? "Пак" : s.k === "learn" ? "Следващи думи →" : "Още 10")} <kbd style="color:inherit">Enter</kbd></button></div>
   </div></div>`;
-  $("#exb").onclick = renderExercises;
-  const again = () => startEx(s.k, s.opts);
+  $("#exb").onclick = exBack;
+  const again = () => (s.opts.again ? s.opts.again() : startEx(s.k, s.opts));
   $("#exa2").onclick = again;
-  keyHandler = (e) => { if (e.key === "Enter") again(); if (e.key === "Escape") renderExercises(); };
+  keyHandler = (e) => { if (e.key === "Enter") again(); if (e.key === "Escape") exBack(); };
 }
-let exFilter = "Всички";
+// библиотека с всички упражнения — подредени по уроци (най-новият е отворен)
 function renderExercises() {
   exSess = null;
-  const best = store.get("exBest", {});
-  const skills = [...new Set(EX_TYPES.map((t) => t.skill))];
-  view.innerHTML = `<h2>Упражнения</h2>
-    <p class="hint">Вдъхновени от упражненията в учебника (Begegnungen A1, Kapitel 2), но изреченията се сглобяват наново всеки път — примерите не свършват. След всеки отговор има <b>обяснение защо</b>. Звукът се пуска след отговора.</p>
+  const best = store.get("exBest", {}), used = new Set(UNITS.flatMap((u) => u.ex));
+  const btn = (t) => `<button class="mode" data-ex="${t.k}"><span class="ic">${t.ic}</span><b>${esc(t.t)}</b><span>${esc(t.d)}</span>${best[t.k] !== undefined ? `<em class="exbest">най-добро: ${best[t.k]}%</em>` : ""}</button>`;
+  const groups = [...UNITS].reverse().filter((u) => u.ex.length).map((u, n) => `<details class="exgrp" ${n === 0 ? "open" : ""}><summary><b>${esc(lessonName(u))}</b> · ${esc(short(u.title))} <span class="muted">(${u.ex.length})</span></summary><div class="modes" style="margin-top:8px">${u.ex.map((k) => btn(exByK(k))).join("")}</div></details>`).join("");
+  const other = EX_TYPES.filter((t) => t.gen && !used.has(t.k));
+  view.innerHTML = `<h2>Всички упражнения</h2>
+    <p class="hint">Библиотека за свободна тренировка. За учене стъпка по стъпка ползвай <b>🧭 Път</b>. Изреченията се сглобяват наново всеки път, а след всеки отговор има <b>обяснение защо</b>.</p>
     <div class="modes exheros" style="margin-top:8px">
-      <button class="mode exhero exlearn" data-ex="learn"><span class="ic">▶️</span><b>Продължи урока</b><span>5 нови думи: запознаване + картинки, слух, писане, изречения</span></button>
       <button class="mode exhero" data-ex="mix"><span class="ic">🎲</span><b>Микс от всичко</b><span>15 разнообразни задачи</span></button>
-      <button class="mode" data-ex="weak"><span class="ic">🎯</span><b>Слабите ми думи</b><span>Тренировка на думите, които бъркаш</span></button>
       <div class="mode exsearch"><span class="ic">🏋️</span><b>Тренирай конкретна дума</b><input class="search" id="exw" placeholder="напиши дума (немски или български)…" style="margin-top:6px"><div id="exwl"></div></div>
     </div>
-    <div class="exfilter">${["Всички", ...skills].map((sk) => `<button class="chip ${exFilter === sk ? "on" : ""}" data-exf="${esc(sk)}">${esc(sk)}</button>`).join("")}</div>
-    ${skills.filter((sk) => exFilter === "Всички" || exFilter === sk).map((sk) => `<h3>${esc(sk)}</h3><div class="modes" style="margin-top:0">${EX_TYPES.filter((t) => t.skill === sk).map((t) => `<button class="mode" data-ex="${t.k}"><span class="ic">${t.ic}</span><b>${esc(t.t)}</b><span>${esc(t.d)}</span>${best[t.k] !== undefined ? `<em class="exbest">най-добро: ${best[t.k]}%</em>` : ""}</button>`).join("")}</div>`).join("")}
-    <p class="keys" style="margin-top:20px">💡 Упражненията следват избраните уроци горе (освен ако думите са твърде малко).</p>`;
-  view.onclick = (e) => { const f = e.target.closest("[data-exf]"); if (f) { exFilter = f.dataset.exf; renderExercises(); return; } const b = e.target.closest("[data-ex]"); if (b) startEx(b.dataset.ex); };
+    ${groups}
+    ${other.length ? `<details class="exgrp"><summary><b>Други</b> <span class="muted">(${other.length})</span></summary><div class="modes" style="margin-top:8px">${other.map(btn).join("")}</div></details>` : ""}`;
+  view.onclick = (e) => { const b = e.target.closest("[data-ex]"); if (b) startEx(b.dataset.ex); };
   const inp = $("#exw");
   inp.oninput = () => {
     const t = canon(inp.value);
@@ -1587,3 +1591,245 @@ document.addEventListener("click", (e) => {
   closeSheet(true);
   startEx("word", { item: it });
 }, true);
+
+// ───────── урок 14: mich/mir, Perfekt, часът, денят ─────────
+// местоимения: nom → [Akkusativ, Dativ, български Akk, български Dat]
+const PR14 = { ich: ["mich", "mir", "ме", "ми"], du: ["dich", "dir", "те", "ти"], er: ["ihn", "ihm", "го", "му"], "sie (тя)": ["sie", "ihr", "я", "ѝ"], es: ["es", "ihm", "го", "му"],
+  wir: ["uns", "uns", "ни", "ни"], ihr: ["euch", "euch", "ви", "ви"], "sie (те)": ["sie", "ihnen", "ги", "им"], Sie: ["Sie", "Ihnen", "Ви", "Ви"] };
+const MM_A = { anrufen: "anrufen + Akkusativ (обаждам се <b>на</b> някого, но на немски е „кого?“)", zurückrufen: "zurückrufen + Akkusativ", besuchen: "besuchen + Akkusativ (посещавам кого?)",
+  lieben: "lieben + Akkusativ (обичам кого?)", kennen: "kennen + Akkusativ (познавам кого?)", sehen: "sehen + Akkusativ (виждам кого?)", fragen: "fragen + Akkusativ (питам кого?) — внимавай, не е Dativ!",
+  finden: "finden + Akkusativ (намирам кого/какво за …)", abholen: "abholen + Akkusativ (вземам кого?)", verstehen: "verstehen + Akkusativ (разбирам кого?)", einladen: "einladen + Akkusativ (каня кого?)",
+  stören: "stören + Akkusativ (притеснявам кого?)", interessieren: "interessieren + Akkusativ (интересува кого?)", hören: "hören + Akkusativ (чувам кого?)", treffen: "treffen + Akkusativ (срещам кого?)",
+  vergessen: "vergessen + Akkusativ (забравям кого?)", brauchen: "brauchen + Akkusativ (трябва ми кой?)", suchen: "suchen + Akkusativ (търся кого?)", sich: "възвратен глагол: sich freuen / sich setzen → mich, dich (Akkusativ)" };
+const MM_D = { helfen: "helfen + Dativ (помагам <b>на</b> кого?)", danken: "danken + Dativ (благодаря <b>на</b> кого?)", gefallen: "gefallen + Dativ (харесва <b>на</b> кого?)", schmecken: "schmecken + Dativ (вкусно е <b>на</b> кого?)",
+  gehören: "gehören + Dativ (принадлежи <b>на</b> кого?)", antworten: "antworten + Dativ (отговарям <b>на</b> кого?)", gratulieren: "gratulieren + Dativ (честитя <b>на</b> кого?)",
+  geben: "geben: <b>на кого</b> (Dativ) + какво (Akkusativ)", zeigen: "zeigen: <b>на кого</b> (Dativ) + какво (Akk.)", schenken: "schenken: <b>на кого</b> (Dativ) + какво (Akk.)",
+  empfehlen: "empfehlen: <b>на кого</b> (Dativ) + какво (Akk.)", erklären: "erklären: <b>на кого</b> (Dativ) + какво (Akk.)", schreiben: "schreiben: <b>на кого</b> (Dativ) + какво (Akk.)",
+  bringen: "bringen: <b>на кого</b> (Dativ) + какво (Akk.)", geht: "Wie geht es …? → Dativ (буквално „как върви <b>на</b> теб?“)", leid: "Es tut … leid → Dativ (жал ми е)", kalt: "Mir ist kalt → Dativ (студено <b>ми</b> е)" };
+const MM_PA = { für: "für + Akkusativ — винаги", ohne: "ohne + Akkusativ — винаги", gegen: "gegen + Akkusativ — винаги", um: "um + Akkusativ — винаги" };
+const MM_PD = { mit: "mit + Dativ — винаги", bei: "bei + Dativ — винаги", zu: "zu + Dativ — винаги", von: "von + Dativ — винаги", nach: "nach + Dativ — винаги", aus: "aus + Dativ — винаги", seit: "seit + Dativ — винаги" };
+// [изречение с _, nom, ключ, превод]
+const MM = [
+  ["Ich rufe _ morgen an.", "du", "anrufen", "Ще ти се обадя утре."], ["Kannst du _ heute Abend anrufen?", "ich", "anrufen", "Можеш ли да ми се обадиш довечера?"],
+  ["Ich rufe _ in fünf Minuten zurück.", "Sie", "zurückrufen", "Ще Ви се обадя пак след пет минути."], ["Wir rufen _ am Montag an.", "sie (тя)", "anrufen", "Ще ѝ се обадим в понеделник."],
+  ["Meine Oma besucht _ am Sonntag.", "wir", "besuchen", "Баба ни идва на гости в неделя."], ["Besuchst du _ morgen?", "ich", "besuchen", "Ще ми дойдеш ли на гости утре?"],
+  ["Ich besuche _ im Krankenhaus.", "er", "besuchen", "Ще го посетя в болницата."], ["Ich liebe _.", "du", "lieben", "Обичам те."], ["Liebst du _?", "ich", "lieben", "Обичаш ли ме?"],
+  ["Kennst du _ noch?", "ich", "kennen", "Помниш ли ме още? (буквално „познаваш ли ме още“)"], ["Ich kenne _ nicht.", "er", "kennen", "Не го познавам."], ["Kennen Sie _?", "sie (те)", "kennen", "Познавате ли ги?"],
+  ["Ich sehe _ morgen im Kurs.", "du", "sehen", "Ще те видя утре в курса."], ["Siehst du _? Ich bin hier!", "ich", "sehen", "Виждаш ли ме? Тук съм!"], ["Wir sehen _ am Wochenende.", "ihr", "sehen", "Ще се видим с вас през уикенда."],
+  ["Darf ich _ etwas fragen?", "Sie", "fragen", "Може ли да Ви попитам нещо?"], ["Frag _ doch!", "er", "fragen", "Ами питай него!"], ["Der Lehrer fragt _.", "ich", "fragen", "Учителят ме пита."],
+  ["Wie findest du _?", "sie (тя)", "finden", "Как ти се струва тя?"], ["Ich finde _ sehr nett.", "du", "finden", "Намирам те за много мил."], ["Ich hole _ vom Bahnhof ab.", "du", "abholen", "Ще те взема от гарата."],
+  ["Holst du _ um acht Uhr ab?", "ich", "abholen", "Ще ме вземеш ли в осем?"], ["Ich verstehe _ nicht.", "Sie", "verstehen", "Не Ви разбирам."], ["Verstehst du _?", "ich", "verstehen", "Разбираш ли ме?"],
+  ["Wir laden _ zum Essen ein.", "ihr", "einladen", "Каним ви на вечеря."], ["Peter lädt _ zur Party ein.", "ich", "einladen", "Петер ме кани на парти."], ["Die Musik stört _.", "ich", "stören", "Музиката ме притеснява."],
+  ["Störe ich _?", "du", "stören", "Притеснявам ли те?"], ["Die Ausstellung interessiert _ nicht.", "ich", "interessieren", "Изложбата не ме интересува."], ["Interessiert _ Fußball?", "du", "interessieren", "Интересува ли те футбол?"],
+  ["Hörst du _? – Ja, ich höre _ gut.", "ich", "hören", "Чуваш ли ме? – Да, чувам те добре.", "du"], ["Ich treffe _ um sieben Uhr.", "er", "treffen", "Ще се срещна с него в седем."],
+  ["Vergiss _ nicht!", "ich", "vergessen", "Не ме забравяй!"], ["Wir brauchen _.", "du", "brauchen", "Трябваш ни."], ["Ich suche _ schon eine Stunde!", "du", "suchen", "Търся те вече цял час!"],
+  ["Ich freue _ auf das Wochenende.", "ich", "sich", "Радвам се за уикенда."], ["Setz _ bitte!", "du", "sich", "Седни, моля!"], ["Freust du _?", "du", "sich", "Радваш ли се?"],
+  ["Kannst du _ helfen?", "ich", "helfen", "Можеш ли да ми помогнеш?"], ["Ich helfe _ gern.", "du", "helfen", "С удоволствие ще ти помогна."], ["Wir helfen _.", "sie (те)", "helfen", "Помагаме им."],
+  ["Hilf _ bitte!", "sie (тя)", "helfen", "Помогни ѝ, моля!"], ["Ich danke _.", "du", "danken", "Благодаря ти."], ["Wir danken _ für die Einladung.", "Sie", "danken", "Благодарим Ви за поканата."],
+  ["Der Film gefällt _.", "ich", "gefallen", "Филмът ми харесва."], ["Gefällt _ die Stadt?", "du", "gefallen", "Харесва ли ти градът?"], ["Das Kleid gefällt _.", "sie (тя)", "gefallen", "Роклята ѝ харесва."],
+  ["Berlin gefällt _ sehr.", "wir", "gefallen", "Берлин много ни харесва."], ["Die Suppe schmeckt _ nicht.", "er", "schmecken", "Супата не му харесва."], ["Schmeckt _ der Kuchen?", "ihr", "schmecken", "Харесва ли ви кексът?"],
+  ["Schmeckt es _?", "Sie", "schmecken", "Харесва ли Ви яденето?"], ["Das Buch gehört _.", "ich", "gehören", "Книгата е моя."], ["Gehört das Auto _?", "du", "gehören", "Твоя ли е колата?"],
+  ["Die Tasche gehört _.", "sie (тя)", "gehören", "Чантата е нейна."], ["Bitte antworte _ schnell!", "ich", "antworten", "Моля те, отговори ми бързо!"], ["Ich antworte _ morgen.", "Sie", "antworten", "Ще Ви отговоря утре."],
+  ["Wir gratulieren _ zum Geburtstag!", "du", "gratulieren", "Честит рожден ден! (буквално „Честитим ти…“)"], ["Gib _ bitte das Salz!", "ich", "geben", "Подай ми солта, моля!"], ["Ich gebe _ das Buch.", "er", "geben", "Давам му книгата."],
+  ["Ich zeige _ die Stadt.", "du", "zeigen", "Ще ти покажа града."], ["Zeig _ das Foto!", "wir", "zeigen", "Покажи ни снимката!"], ["Was schenkst du _?", "sie (тя)", "schenken", "Какво ще ѝ подариш?"],
+  ["Ich schenke _ ein Buch.", "du", "schenken", "Ще ти подаря книга."], ["Der Kellner empfiehlt _ den Fisch.", "wir", "empfehlen", "Сервитьорът ни препоръчва рибата."], ["Kannst du _ das erklären?", "ich", "erklären", "Можеш ли да ми го обясниш?"],
+  ["Ich schreibe _ eine E-Mail.", "Sie", "schreiben", "Ще Ви пиша имейл."], ["Bringst du _ einen Kaffee?", "ich", "bringen", "Ще ми донесеш ли кафе?"], ["Wie geht es _?", "du", "geht", "Как си?"],
+  ["Wie geht es _?", "Sie", "geht", "Как сте?"], ["Danke, es geht _ gut.", "ich", "geht", "Благодаря, добре съм."], ["Wie geht es _?", "ihr", "geht", "Как сте (вие)?"],
+  ["Es tut _ leid.", "ich", "leid", "Съжалявам."], ["_ ist kalt.", "ich", "kalt", "Студено ми е."],
+  ["Das Geschenk ist für _.", "du", "für", "Подаръкът е за теб."], ["Ist der Kaffee für _?", "ich", "für", "За мен ли е кафето?"], ["Ohne _ gehe ich nicht!", "du", "ohne", "Без теб няма да отида!"],
+  ["Was hast du gegen _?", "er", "gegen", "Какво имаш против него?"], ["Wir sitzen um _ herum.", "er", "um", "Седим около него."], ["Ich habe ein Geschenk für _.", "sie (тя)", "für", "Имам подарък за нея."],
+  ["Kommst du mit _?", "ich", "mit", "Идваш ли с мен?"], ["Ich gehe mit _ ins Kino.", "du", "mit", "Ще отида с теб на кино."], ["Sprich mit _!", "er", "mit", "Говори с него!"],
+  ["Er wohnt bei _.", "wir", "bei", "Той живее при нас."], ["Bist du heute bei _?", "sie (те)", "bei", "Днес при тях ли си?"], ["Komm zu _!", "ich", "zu", "Ела при мен!"],
+  ["Ich komme morgen zu _.", "du", "zu", "Утре идвам у вас (при теб)."], ["Ist der Brief von _?", "du", "von", "От теб ли е писмото?"], ["Das ist ein Geschenk von _.", "ihr", "von", "Това е подарък от вас."],
+  ["Nach _ kommt Peter.", "ich", "nach", "След мен идва Петер."],
+];
+function mmCase(key) { return MM_A[key] || MM_PA[key] ? "a" : "d"; }
+function mmWhy(key) { return MM_A[key] || MM_D[key] || MM_PA[key] || MM_PD[key]; }
+function genMM(mode) {
+  const pool = MM.filter((m) => !mode || mmCase(m[2]) === mode);
+  const [s, nom, key, bg, nom2] = rnd(pool), c = mmCase(key), [akk, dat, bA, bD] = PR14[nom], ans = c === "a" ? akk : dat, other = c === "a" ? dat : akk;
+  let full = s.replace("_", ans), shown = s.replace("_", BLANK), ans2 = null;
+  if (nom2) { ans2 = PR14[nom2][0]; full = full.replace("_", ans2); shown = shown.replace("_", ans2); }
+  const cap0 = (x) => (s.startsWith("_") ? cap(x) : x);
+  if (s.startsWith("_")) full = cap(full);
+  const opts = [...new Set([ans, other, ...shuffle([...new Set(Object.values(PR14).flatMap((p) => p.slice(0, 2)))].filter((x) => x !== ans && x !== other)).slice(0, ans === other ? 3 : 2)])].slice(0, 4).map(cap0);
+  const caseBG = c === "a" ? "<b>Akkusativ</b> (кого? → " + bA + ")" : "<b>Dativ</b> (на кого? → " + bD + ")";
+  return { kind: "mc", task: mode === "a" ? "mich, dich, ihn… (Akkusativ)" : mode === "d" ? "mir, dir, ihm… (Dativ)" : "mich или mir? dich или dir?",
+    prompt: `<div class="exs">${shown}</div><div class="exh">(${esc(nom)})</div>`, options: shuffle(opts), answer: cap0(ans), say: full, full, bg, keys: true,
+    explain: `${mmWhy(key)} → ${caseBG}: ${esc(nom.split(" ")[0])} → <b>${ans}</b>.${akk !== dat ? ` Ако беше ${c === "a" ? "Dativ" : "Akkusativ"} → „${other}“.` : " (uns/euch са еднакви в двата падежа.)"}` };
+}
+
+// Perfekt: Partizip II → [инфинитив, h|s, правило, превод на инфинитива]
+const PERF = {
+  gemacht: ["machen", "h", "w"], gekauft: ["kaufen", "h", "w"], gekocht: ["kochen", "h", "w"], gearbeitet: ["arbeiten", "h", "wt"], gefrühstückt: ["frühstücken", "h", "w"], gespielt: ["spielen", "h", "w"],
+  gelernt: ["lernen", "h", "w"], gewohnt: ["wohnen", "h", "w"], gehört: ["hören", "h", "w"], gebucht: ["buchen", "h", "w"], gewartet: ["warten", "h", "wt"], geduscht: ["duschen", "h", "w"], gereist: ["reisen", "s", "w"],
+  gelesen: ["lesen", "h", "s"], geschrieben: ["schreiben", "h", "s"], geschlafen: ["schlafen", "h", "s"], gesehen: ["sehen", "h", "s"], gegessen: ["essen", "h", "s"], getrunken: ["trinken", "h", "s"], genommen: ["nehmen", "h", "s"],
+  gegangen: ["gehen", "s", "s"], gekommen: ["kommen", "s", "s"], gefahren: ["fahren", "s", "s"], gelaufen: ["laufen", "s", "s"], geflogen: ["fliegen", "s", "s"], gestorben: ["sterben", "s", "s"], geblieben: ["bleiben", "s", "s"],
+  angerufen: ["anrufen", "h", "sep"], aufgestanden: ["aufstehen", "s", "sep"], eingekauft: ["einkaufen", "h", "sep"], ferngesehen: ["fernsehen", "h", "sep"], eingeschlafen: ["einschlafen", "s", "sep"], angefangen: ["anfangen", "h", "sep"],
+  angekommen: ["ankommen", "s", "sep"], zurückgefahren: ["zurückfahren", "s", "sep"], abgesagt: ["absagen", "h", "sep"], zurückgerufen: ["zurückrufen", "h", "sep"],
+  begonnen: ["beginnen", "h", "ins"], vereinbart: ["vereinbaren", "h", "ins"], übersetzt: ["übersetzen", "h", "ins"], bezahlt: ["bezahlen", "h", "ins"], besucht: ["besuchen", "h", "ins"], ertrunken: ["ertrinken", "s", "ins"], beantwortet: ["beantworten", "h", "ins"],
+  telefoniert: ["telefonieren", "h", "ier"], reserviert: ["reservieren", "h", "ier"], repariert: ["reparieren", "h", "ier"], studiert: ["studieren", "h", "ier"],
+};
+const PERF_RULE = { w: "слаб глагол: <b>ge-</b> + корен + <b>-t</b>", wt: "слаб глагол с корен на -t/-d: <b>ge-</b> + корен + <b>-et</b>", s: "силен глагол: <b>ge-</b> + корен + <b>-en</b> (често сменя гласната) — учи го наизуст",
+  sep: "разделим глагол: <b>ge</b> влиза между представката и корена", ins: "неразделима представка (be-, ver-, er-, über-) → <b>без ge-</b>", ier: "глагол на -ieren → <b>без ge-</b>, окончание -t" };
+const PERF_AUX = { s: "движение или промяна на състоянието → <b>sein</b>", h: "няма движение от А до Б и промяна → <b>haben</b>" };
+const PERF_S = [
+  ["Um acht Uhr ist Martin aufgestanden.", "Мартин стана в осем часа."], ["Um halb neun hat er gefrühstückt.", "В осем и половина закуси."], ["Um neun Uhr ist Martin mit dem Auto zur Arbeit gefahren.", "В девет Мартин отиде на работа с колата."],
+  ["Um halb zehn hat er mit der Arbeit angefangen.", "В девет и половина започна работа."], ["Er hat viele E-Mails geschrieben.", "Написа много имейли."], ["Um 10.30 Uhr hat er Frau Körner angerufen.", "В 10:30 се обади на госпожа Кьорнер."],
+  ["Er hat einen Termin vereinbart.", "Уговори си среща."], ["Martin hat Mittagspause gemacht.", "Мартин направи обедна почивка."], ["Er ist in die Kantine gegangen.", "Отиде в столовата."],
+  ["Danach hat er zwei Briefe übersetzt.", "След това преведе две писма."], ["Er hat im Supermarkt eingekauft.", "Пазарува в супермаркета."], ["Zu Hause hat er Fisch gekocht.", "Вкъщи сготви риба."],
+  ["Ab 19 Uhr hat Martin ferngesehen.", "От 19 ч. Мартин гледа телевизия."], ["Um 22.30 Uhr ist er ins Bett gegangen.", "В 22:30 си легна."], ["Zuerst habe ich meine E-Mails gelesen.", "Първо прочетох имейлите си."],
+  ["Um elf Uhr bin ich zum Flughafen gefahren.", "В единайсет отидох до летището."], ["Ich bin nicht pünktlich angekommen.", "Не пристигнах навреме."], ["Ich bin zu einer Tankstelle gelaufen.", "Отидох пеша до една бензиностанция."],
+  ["Ich habe Benzin gekauft.", "Купих бензин."], ["Dann bin ich wieder zurückgefahren.", "После се върнах обратно."], ["Um 14 Uhr hat die Besprechung angefangen.", "В 14 ч. срещата започна."],
+  ["Hast du den ganzen Tag nichts gegessen?", "Цял ден ли не си ял нищо?"], ["Wie lange hast du geschlafen?", "Колко дълго спа?"], ["Ich habe acht Stunden geschlafen.", "Спах осем часа."],
+  ["Das Kind ist schnell eingeschlafen.", "Детето заспа бързо."], ["Der Film hat um 20 Uhr begonnen.", "Филмът започна в 20 ч."], ["Wir haben einen Spielfilm gesehen.", "Гледахме игрален филм."],
+  ["Habt ihr die Hausaufgaben gemacht?", "Направихте ли домашните?"], ["Hast du das Buch schon gelesen?", "Прочете ли вече книгата?"], ["Ist Paul schon zum Flughafen gefahren?", "Тръгна ли вече Паул за летището?"],
+  ["Ist Otto schon aufgestanden?", "Стана ли вече Ото?"], ["Ich habe gestern Tennis gespielt.", "Вчера играх тенис."], ["Wir sind letztes Jahr nach Italien gereist.", "Миналата година пътувахме до Италия."],
+  ["Sie haben in Berlin gewohnt.", "Живяха в Берлин."], ["Ich habe ein Hotelzimmer gebucht.", "Резервирах хотелска стая."], ["Wir haben einen Tisch reserviert.", "Резервирахме маса."],
+  ["Otto hat den Computer repariert.", "Ото поправи компютъра."], ["Ich habe mit meiner Mutter telefoniert.", "Говорих по телефона с майка си."], ["Er hat Medizin studiert.", "Той е учил медицина."],
+  ["Wir haben die Rechnung bezahlt.", "Платихме сметката."], ["Ich habe meine Oma besucht.", "Посетих баба си."], ["Mein Großvater ist 2020 gestorben.", "Дядо ми почина през 2020."],
+  ["Im See ist ein Mann ertrunken.", "В езерото се удави един мъж."], ["Bist du gestern ins Kino gegangen?", "Ходи ли вчера на кино?"], ["Wann bist du nach Hause gekommen?", "Кога се прибра?"],
+  ["Ich habe zwei Tassen Kaffee getrunken.", "Изпих две чаши кафе."], ["Wir haben eine Stunde gewartet.", "Чакахме един час."], ["Hast du den Termin abgesagt?", "Отмени ли срещата?"],
+  ["Sie hat Deutsch gelernt.", "Тя учи немски."], ["Ich bin zwei Tage in München geblieben.", "Останах два дни в Мюнхен."], ["Das Flugzeug ist nach Madrid geflogen.", "Самолетът полетя за Мадрид."],
+  ["Ich habe die E-Mail schon beantwortet.", "Вече отговорих на имейла."], ["Er hat mich nicht zurückgerufen.", "Той не ми се обади пак."], ["Habt ihr Musik gehört?", "Слушахте ли музика?"],
+];
+const AUXF = { h: ["habe", "hast", "hat", "haben", "habt", "haben"], s: ["bin", "bist", "ist", "sind", "seid", "sind"] };
+function perfParse(de) {
+  const w = de.replace(/[.?!]$/, "").split(" "), part = w[w.length - 1], AX = AUXF.h.concat(AUXF.s);
+  const ai = w.findIndex((x) => AX.includes(x.toLowerCase())), aux = w[ai].toLowerCase(), P = PERF[part];
+  return { w, part, aux, ai, P, idx: AUXF[P[1]].indexOf(aux) };
+}
+function perfExplain(p) {
+  const [inf, hs, rule] = p.P;
+  return `<b>${esc(inf)}</b> → ${p.aux} … <b>${esc(p.part)}</b>. ${PERF_AUX[hs]}. Partizip II: ${PERF_RULE[rule]}. Помощният глагол е на 2-ро място, Partizip II — в края.`;
+}
+function genPerfHS() {
+  const [de, bg] = rnd(PERF_S), p = perfParse(de), hs = p.P[1], other = hs === "h" ? "s" : "h";
+  const k = p.idx, opts = [...new Set([p.aux, AUXF[other][k], AUXF[hs][(k + 2) % 6], AUXF[other][(k + 3) % 6]])].slice(0, 4);
+  const w = [...p.w]; w[p.ai] = "___";
+  const shown = w.join(" ") + de.slice(-1);
+  return { kind: "mc", task: "Perfekt: haben или sein?", prompt: `<div class="exs">${esc(shown)}</div><div class="exh">(${esc(p.P[0])})</div>`, options: shuffle(opts.map((o) => (p.ai === 0 ? cap(o) : o))), answer: p.ai === 0 ? cap(p.aux) : p.aux,
+    say: de, full: de, bg, keys: true, explain: perfExplain(p) };
+}
+function wrongParts(part, inf, rule) {
+  const st = inf.replace(/e?n$/, ""), sep = rule === "sep" ? (Object.keys(SEP_PRE14).find((x) => inf.startsWith(x)) || "") : "";
+  const core = sep ? st.slice(sep.length) : st, coreInf = sep ? inf.slice(sep.length) : inf;
+  const c = new Set([sep + "ge" + core + "t", sep + "ge" + coreInf, "ge" + inf, inf.replace(/en$/, "t"), "ge" + st + "en", sep + core + "t", "ge" + sep + core + "t"]);
+  c.delete(part); return shuffle([...c].filter((x) => x && x !== inf)).slice(0, 3);
+}
+const SEP_PRE14 = { an: 1, auf: 1, ein: 1, fern: 1, zurück: 1, ab: 1, mit: 1, aus: 1 };
+function genPartizip() {
+  const [de, bg] = rnd(PERF_S), p = perfParse(de), [inf, , rule] = p.P;
+  const w = [...p.w]; w[w.length - 1] = "___";
+  const shown = w.join(" ") + de.slice(-1);
+  if (Math.random() < 0.5) return { kind: "type", task: `Напиши Partizip II на <b>${esc(inf)}</b>`, prompt: `<div class="exs">${esc(shown)}</div><div class="meta">${esc(bg)}</div>`, answer: p.part, hint: "Partizip II…",
+    accept: (v) => sameDe(v, p.part), say: de, full: de, bg, explain: perfExplain(p) };
+  return { kind: "mc", task: `Partizip II на <b>${esc(inf)}</b>`, prompt: `<div class="exs">${esc(shown)}</div>`, options: shuffle([p.part, ...wrongParts(p.part, inf, rule)]), answer: p.part, say: de, full: de, bg, keys: true, explain: perfExplain(p) };
+}
+function genPerfOrder() {
+  const [de, bg] = rnd(PERF_S), p = perfParse(de), toks = de.replace(/([.?!])$/, " $1").split(" ");
+  const last = toks.pop(); toks[toks.length - 1] += last;
+  const sentence = toks.join(" ");
+  let sh = shuffle(toks); for (let n = 0; n < 6 && sh.join(" ") === sentence; n++) sh = shuffle(toks);
+  return { kind: "order", task: "Подреди изречението в Perfekt", prompt: `<div class="meta" style="font-size:16px">${esc(bg)}</div>`, toks, sh, answer: sentence, say: de, full: de, bg, showAnat: true,
+    explain: `${p.ai === 0 ? "Въпрос без въпросителна дума → помощният глагол е 1-ви." : "Помощният глагол (<b>" + esc(p.aux) + "</b>) е на 2-ро място."} Partizip II (<b>${esc(p.part)}</b>) е в самия край. ${PERF_AUX[p.P[1]]}.` };
+}
+// Präsens → Perfekt: кое е правилно?
+function genPerfRight() {
+  const [de, bg] = rnd(PERF_S), p = perfParse(de), [inf, hs, rule] = p.P, wrong = [];
+  const swapAux = [...p.w]; swapAux[p.ai] = AUXF[hs === "h" ? "s" : "h"][p.idx]; if (p.ai === 0) swapAux[0] = cap(swapAux[0]); wrong.push(swapAux.join(" ") + de.slice(-1));
+  const wp = wrongParts(p.part, inf, rule)[0]; const w2 = [...p.w]; w2[w2.length - 1] = wp; wrong.push(w2.join(" ") + de.slice(-1));
+  if (p.w.length > p.ai + 3) { const w3 = [...p.w]; const part = w3.pop(); w3.splice(p.ai + 1, 0, part); wrong.push(w3.join(" ") + de.slice(-1)); }
+  const opts = shuffle([de, ...wrong.filter((x) => x !== de)].slice(0, 4));
+  return { kind: "mc", task: "Кое изречение е правилно (Perfekt)?", prompt: `<div class="meta" style="font-size:16px">${esc(bg)}</div>`, options: opts, answer: de, say: de, full: de, bg, explain: perfExplain(p) };
+}
+
+// часът
+const H14 = ["zwölf", "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf", "zwölf"];
+function uhrText(h, m) {
+  const n = H14[h % 12 || 12], n1 = H14[(h % 12) + 1];
+  return m === 0 ? (h % 12 === 1 ? "ein Uhr" : n + " Uhr") : m === 15 ? "Viertel nach " + n : m === 30 ? "halb " + n1 : m === 45 ? "Viertel vor " + n1
+    : m < 25 ? ["", "fünf", "zehn", "", "zwanzig"][m / 5] + " nach " + n : m === 25 ? "fünf vor halb " + n1 : m === 35 ? "fünf nach halb " + n1 : ["", "", "", "", "", "", "", "", "zwanzig", "", "zehn", "fünf"][m / 5] + " vor " + n1;
+}
+const uhrBG = (h, m) => { const hh = h % 12 || 12, n1 = (h % 12) + 1, BGH = ["", "един", "два", "три", "четири", "пет", "шест", "седем", "осем", "девет", "десет", "единайсет", "дванайсет"];
+  return m === 0 ? `${BGH[hh]} часа` : m === 30 ? `${BGH[hh]} и половина` : m < 30 ? `${BGH[hh]} и ${m === 15 ? "петнайсет" : { 5: "пет", 10: "десет", 20: "двайсет", 25: "двайсет и пет" }[m]}` : `${BGH[n1]} без ${{ 35: "двайсет и пет", 40: "двайсет", 45: "петнайсет", 50: "десет", 55: "пет" }[m]}`; };
+function clockSVG(h, m) {
+  const a = (deg, len, w, c) => { const r = (deg - 90) * Math.PI / 180; return `<line x1="50" y1="50" x2="${50 + len * Math.cos(r)}" y2="${50 + len * Math.sin(r)}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`; };
+  const ticks = [...Array(12)].map((_, i) => { const r = (i * 30 - 90) * Math.PI / 180; return `<text x="${50 + 37 * Math.cos(r)}" y="${53.5 + 37 * Math.sin(r)}" font-size="9" text-anchor="middle" fill="currentColor">${i || 12}</text>`; }).join("");
+  return `<svg class="clock" viewBox="0 0 100 100" width="150" height="150" style="display:block;margin:6px auto"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="3"/>${ticks}${a((h % 12) * 30 + m * 0.5, 22, 4.5, "currentColor")}${a(m * 6, 33, 2.5, "#e5484d")}<circle cx="50" cy="50" r="3" fill="currentColor"/></svg>`;
+}
+function genUhr() {
+  const h = 1 + ((Math.random() * 12) | 0), m = rnd([0, 5, 10, 15, 20, 30, 30, 45, 45, 40, 50, 55, 25, 35]), t = uhrText(h, m);
+  const variants = new Set([t, uhrText(h, (m + 30) % 60), uhrText(h % 12 + 1, m), uhrText(h, 60 - m === 60 ? 0 : 60 - m), uhrText((h + 10) % 12 + 1, m)]);
+  if (m === 30) variants.add("halb " + H14[h % 12 || 12]);
+  if (m === 15 || m === 45) variants.add((m === 15 ? "Viertel vor " : "Viertel nach ") + H14[m === 15 ? h % 12 || 12 : (h % 12) + 1]);
+  const opts = shuffle([t, ...shuffle([...variants].filter((x) => x !== t)).slice(0, 3)]), full = `Es ist ${t}.`, digital = `${h}.${String(m).padStart(2, "0")} Uhr`;
+  const why = m === 30 ? `⚠️ <b>halb</b> гледа напред: ${h}:30 = половината до ${(h % 12) + 1} → <b>halb ${H14[(h % 12) + 1]}</b>.` : m === 45 ? `:45 = 15 минути преди следващия час → <b>Viertel vor</b>.` : m === 15 ? `:15 = четвърт след часа → <b>Viertel nach</b>.` : m === 0 ? "Точен час → … Uhr." : m === 25 || m === 35 ? "Около половината: fünf vor/nach halb + СЛЕДВАЩИЯ час." : m < 30 ? "До :20 → минутите + <b>nach</b> + този час." : "След :35 → минутите до следващия час + <b>vor</b>.";
+  if (Math.random() < 0.6) return { kind: "mc", task: "Wie spät ist es? (разговорно)", prompt: clockSVG(h, m), options: opts, answer: t, say: full, full, bg: `Часът е ${uhrBG(h, m)}.`, keys: true, explain: `${digital} → <b>${t}</b>. ${why}` };
+  const dopts = shuffle([...new Set([digital, `${h % 12 + 1}.${String(m).padStart(2, "0")} Uhr`, `${(h + 10) % 12 + 1}.${String(m).padStart(2, "0")} Uhr`, `${h}.${String((m + 30) % 60).padStart(2, "0")} Uhr`])]);
+  return { kind: "mc", task: "Колко е часът? Избери часовника", prompt: `<div class="exs">Es ist ${esc(t)}.</div><button class="bigplay" data-say="${esc(full)}">${SPK}<span>чуй</span></button>`, options: dopts, answer: digital, say: full, full, bg: `Часът е ${uhrBG(h, m)}.`, keys: true, explain: `<b>${esc(t)}</b> = ${digital}. ${why}` };
+}
+const DAUER = [["eine halbe Stunde", 30, "половин час"], ["eine Stunde", 60, "един час"], ["anderthalb Stunden", 90, "час и половина"], ["zwei Stunden", 120, "два часа"], ["zweieinhalb Stunden", 150, "два часа и половина"], ["drei Stunden", 180, "три часа"]];
+const DAUER_E = [["der Deutschkurs", "Deutschkurs", "18.30", "21.00"], ["das Konzert", "Konzert", "19.30", "22.00"], ["der Flug", "Flug", "16.30", "19.30"], ["der Film", "Film", "20.15", "21.45"], ["die Besprechung", "Besprechung", "14.00", "15.30"], ["die Mittagspause", "Mittagspause", "13.00", "13.30"], ["der Unterricht", "Unterricht", "9.00", "11.00"], ["das Fußballspiel", "Fußballspiel", "18.00", "19.30"]];
+function genDauer() {
+  if (Math.random() < 0.4) { const [d, min, dbg] = rnd(DAUER.slice(0, 5)), pl = d.includes("Stunden"), full = `${cap(d)} ${pl ? "dauern" : "dauert"} ${min} Minuten.`;
+    const opts = shuffle([min, ...shuffle([30, 60, 90, 120, 150].filter((x) => x !== min)).slice(0, 3)]).map((x) => x + " Minuten");
+    return { kind: "mc", task: "Wie lange dauert …? (минути)", prompt: `<div class="exs">Wie lange ${pl ? "dauern" : "dauert"} ${esc(d)}?</div>`, options: opts, answer: min + " Minuten", say: full, full, bg: `${cap(dbg)} ${pl ? "траят" : "трае"} ${min} минути.`, keys: true,
+      explain: `½ = halbe Stunde (30) · 1½ = anderthalb Stunden (90) · 2½ = zweieinhalb Stunden (150). Над един час → мн.ч. Stunden${d.includes("Stunden") ? " → и глаголът е мн.ч.: dauern" : ""}.` }; }
+  const [np, n, from, to] = rnd(DAUER_E), mins = ((t) => { const [a, b] = t.split(".").map(Number); return a * 60 + b; }), d = mins(to) - mins(from), right = DAUER.find((x) => x[1] === d);
+  const full = `${cap(np)} dauert ${right[0]}.`, BGN = { Deutschkurs: "Курсът по немски", Konzert: "Концертът", Flug: "Полетът", Film: "Филмът", Besprechung: "Срещата", Mittagspause: "Обедната почивка", Unterricht: "Занятието", Fußballspiel: "Футболният мач" };
+  return { kind: "mc", task: "Wie lange dauert …?", prompt: `<div class="exs">${esc(cap(np))}: ${from}–${to} Uhr</div><div class="exh">Wie lange dauert ${esc(np.replace(/^(der|die|das)/, (a) => a))}?</div>`, options: shuffle([right[0], ...shuffle(DAUER.filter((x) => x !== right).map((x) => x[0])).slice(0, 3)]), answer: right[0],
+    say: full, full, bg: `${BGN[n]} трае ${right[2]}.`, keys: true, explain: `От ${from} до ${to} = ${d} минути = <b>${right[0]}</b>. Wann? → um ${from} Uhr · Wie lange? → ${right[0]}.` };
+}
+// денят на Мартин: разделими глаголи + глаголът на 2-ро място
+const TAG14 = [["Um acht Uhr steht Martin auf.", "Мартин става в осем часа."], ["Um halb neun frühstückt er.", "В осем и половина закусва."], ["Um neun Uhr fährt Martin mit dem Auto zur Arbeit.", "В девет Мартин отива на работа с колата."],
+  ["Um halb zehn fängt er mit der Arbeit an.", "В девет и половина започва работа."], ["Um 10.30 Uhr ruft er Frau Körner an.", "В 10:30 се обажда на госпожа Кьорнер."], ["Er vereinbart einen Termin.", "Уговаря си среща."],
+  ["Von 13 bis 13.30 Uhr macht Martin Mittagspause.", "От 13 до 13:30 Мартин има обедна почивка."], ["Danach übersetzt er zwei Briefe.", "След това превежда две писма."], ["Um 17.30 Uhr hat Martin Feierabend.", "В 17:30 Мартин свършва работа."],
+  ["Er kauft im Supermarkt ein.", "Пазарува в супермаркета."], ["Zu Hause kocht er Fisch.", "Вкъщи готви риба."], ["Ab 19 Uhr sieht Martin fern.", "От 19 ч. Мартин гледа телевизия."], ["Um 22.30 Uhr geht er ins Bett.", "В 22:30 си ляга."],
+  ["Zuerst liest er seine E-Mails.", "Първо чете имейлите си."], ["Dann ruft er die Firma an.", "После се обажда на фирмата."], ["Zum Schluss bucht er einen Flug.", "Накрая резервира полет."],
+  ["Ich rufe dich in fünf Minuten zurück.", "Ще ти се обадя пак след пет минути."], ["Wann stehst du auf?", "Кога ставаш?"], ["Wann fängt dein Unterricht an?", "Кога започват занятията ти?"], ["Ich schlafe vor dem Fernseher ein.", "Заспивам пред телевизора."],
+  ["Martin muss heute 55 E-Mails beantworten.", "Мартин трябва днес да отговори на 55 имейла."], ["Ich muss einen Termin vereinbaren.", "Трябва да си уговоря среща."], ["Die Sekretärin soll ein Hotelzimmer buchen.", "Секретарката трябва да резервира хотелска стая."],
+  ["Soll ich Spaghetti kochen?", "Да сготвя ли спагети?"], ["Ihr sollt den Termin absagen.", "Трябва да отмените срещата."]];
+function genTag14() {
+  const [de, bg] = rnd(TAG14), toks = de.replace(/([.?!])$/, " $1").split(" "), last = toks.pop(); toks[toks.length - 1] += last;
+  const sentence = toks.join(" ");
+  let sh = shuffle(toks); for (let n = 0; n < 6 && sh.join(" ") === sentence; n++) sh = shuffle(toks);
+  const end = toks[toks.length - 1].replace(/[.?!]$/, ""), mod = /(^| )(muss|musst|müssen|soll|sollst|sollen|sollt)( |$)/.test(de), sep = ["auf", "an", "ein", "fern", "zurück", "ab"].includes(end);
+  return { kind: "order", task: "Подреди: денят", prompt: `<div class="meta" style="font-size:16px">${esc(bg)}</div>`, toks, sh, answer: sentence, say: de, full: de, bg, showAnat: true,
+    explain: `${de.endsWith("?") && /^Wann/.test(de) ? "W-въпрос: въпросителната дума е 1-ва, глаголът — 2-ри." : de.endsWith("?") ? "Въпрос без W-дума → глаголът е 1-ви." : "Глаголът е на 2-ро място; ако изречението започва с час/zuerst/dann, подлогът идва след глагола."}${sep ? ` Разделим глагол → „<b>${esc(end)}</b>“ отива в края.` : ""}${mod ? " Модален глагол на 2-ро място, инфинитивът — в края." : ""}` };
+}
+const MS14 = [["Martin", 2, "muss", "heute noch 55 E-Mails beantworten", "Мартин трябва днес да отговори на 55 имейла"], ["Ich", 0, "muss", "einen Termin mit Frau Kümmel vereinbaren", "Трябва да си уговоря среща с госпожа Кюмел"],
+  ["Irina", 2, "muss", "zwei Kollegen in München anrufen", "Ирина трябва да се обади на двама колеги в Мюнхен"], ["Du", 1, "muss", "ein Gespräch mit dem Computerspezialisten führen", "Трябва да проведеш разговор с компютърния специалист"],
+  ["Wir", 3, "muss", "ein Angebot schreiben", "Трябва да напишем оферта"], ["Ihr", 4, "muss", "Gäste begrüßen", "Трябва да посрещнете гости"], ["Die Sekretärin", 2, "soll", "ein Hotelzimmer buchen", "Секретарката трябва да резервира хотелска стая (шефът така каза)"],
+  ["Du", 1, "soll", "einen Tisch reservieren", "Трябва да резервираш маса (така ти казаха)"], ["Ich", 0, "soll", "einen Blumenstrauß bestellen", "Трябва да поръчам букет (така ми казаха)"], ["Ihr", 4, "soll", "den Termin absagen", "Трябва да отмените срещата (така ви казаха)"],
+  ["Hans", 2, "soll", "ein Computerproblem lösen", "Ханс трябва да реши проблем с компютъра (така му казаха)"], ["Peter und Maria", 5, "soll", "zwei Briefe übersetzen", "Петер и Мария трябва да преведат две писма (така им казаха)"]];
+const MSF = { muss: ["muss", "musst", "muss", "müssen", "müsst", "müssen"], soll: ["soll", "sollst", "soll", "sollen", "sollt", "sollen"] };
+function genMussSoll() {
+  const [s, i, m, rest, bg] = rnd(MS14), ans = MSF[m][i], full = `${s} ${ans} ${rest}.`;
+  return { kind: "mc", task: m === "muss" ? "müssen: коя форма?" : "sollen: коя форма?", prompt: `<div class="exs">${esc(s)} ___ ${esc(rest)}.</div>`, options: shuffle([...new Set(MSF[m])]), answer: ans, say: full, full, bg: bg + ".", keys: true,
+    explain: `${m === "muss" ? "müssen" : "sollen"}: ich ${MSF[m][0]}, du ${MSF[m][1]}, er ${MSF[m][2]} (без -t!), wir ${MSF[m][3]}, ihr ${MSF[m][4]}, sie ${MSF[m][5]}. Инфинитивът (${esc(rest.split(" ").pop())}) е в края. ${m === "muss" ? "müssen = необходимо е." : "sollen = някой друг казва/иска."}` };
+}
+EX_TYPES.push(
+  { k: "michmir", skill: "Граматика", ic: "🎯", t: "mich или mir? dich или dir?", d: "Ich rufe ___ an. (du) → dich", gen: () => genMM() },
+  { k: "mmakk", skill: "Граматика", ic: "👉", t: "mich, dich, ihn… (Akkusativ)", d: "Er besucht ___. (ich) → mich", gen: () => genMM("a") },
+  { k: "mmdat", skill: "Граматика", ic: "🙋", t: "mir, dir, ihm… (Dativ)", d: "Kannst du ___ helfen? (ich) → mir", gen: () => genMM("d") },
+  { k: "perfhs", skill: "Глаголи и словоред", ic: "⏮️", t: "Perfekt: haben или sein?", d: "Er ___ nach Berlin gefahren. → ist", gen: genPerfHS },
+  { k: "partizip", skill: "Глаголи и словоред", ic: "🔧", t: "Partizip II: gemacht, gefahren, angerufen", d: "Ich habe Frau Körner ___. (anrufen)", gen: genPartizip },
+  { k: "perforder", skill: "Глаголи и словоред", ic: "🧩", t: "Perfekt: подреди изречението", d: "hat · er · gefrühstückt · um halb neun", gen: genPerfOrder },
+  { k: "perfright", skill: "Глаголи и словоред", ic: "✅", t: "Perfekt: кое е правилно?", d: "Ich bin / habe … gegessen?", gen: genPerfRight },
+  { k: "uhr", skill: "Думи", ic: "🕒", t: "Wie spät ist es? halb, Viertel", d: "🕝 → halb drei", gen: genUhr },
+  { k: "dauer", skill: "Думи", ic: "⏳", t: "Wie lange dauert …?", d: "18.30–21.00 → zweieinhalb Stunden", gen: genDauer },
+  { k: "tag14", skill: "Глаголи и словоред", ic: "☀️", t: "Денят: Um 8 Uhr steht er auf.", d: "разделими глаголи, zuerst/dann", gen: genTag14 },
+  { k: "musssoll", skill: "Глаголи и словоред", ic: "📋", t: "müssen / sollen", d: "Martin ___ 55 E-Mails beantworten.", gen: genMussSoll },
+);
+// всички изречения от урок 14 (за свалянето на звука)
+function ex14Texts() {
+  const out = [];
+  MM.forEach(([s, nom, key, , nom2]) => { const [akk, dat] = PR14[nom]; let f = s.replace("_", mmCase(key) === "a" ? akk : dat); if (nom2) f = f.replace("_", PR14[nom2][0]); out.push(s.startsWith("_") ? cap(f) : f); });
+  PERF_S.forEach(([de]) => out.push(de)); TAG14.forEach(([de]) => out.push(de));
+  MS14.forEach(([s, i, m, rest]) => out.push(`${s} ${MSF[m][i]} ${rest}.`));
+  for (let h = 1; h <= 12; h++) [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].forEach((m) => out.push(`Es ist ${uhrText(h, m)}.`));
+  DAUER.slice(0, 5).forEach(([d, min]) => out.push(`${cap(d)} ${d.includes("Stunden") ? "dauern" : "dauert"} ${min} Minuten.`));
+  DAUER_E.forEach(([np, , from, to]) => { const m = (t) => { const [a, b] = t.split(".").map(Number); return a * 60 + b; }, r = DAUER.find((x) => x[1] === m(to) - m(from)); out.push(`${cap(np)} dauert ${r[0]}.`); });
+  return out;
+}
