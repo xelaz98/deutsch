@@ -131,6 +131,7 @@ const XP = (() => {
     for (let k = 0; k < T.length; k++) {
       const t = lc(T[k].w);
       if (SEIN.has(t) || t === "gibt") return k;
+      if (typeof PRAETF !== "undefined" && PRAETF[t] && k < 4) return k;
       const c = VERBF.get(t);
       if (c && c.some((x) => x.idx.length) && !(k === T.length - 1 && T.length > 3 && c.some((x) => x.inf))) return k;
     }
@@ -374,6 +375,14 @@ const XP = (() => {
         res[li] = { kind: "verb", item: v, html: `<b>${esc(part)}</b> — <b>Partizip II</b> (минало причастие) на <b>${esc(P[0])}</b>${v ? ` (${esc(v.bg)})` : ""}.<br>Образуване: ${RULE[P[2]]}.<br>Отива <b>в самия край</b> на изречението. Заедно с <b>${esc(T[ai].w)}</b> = минало време → на български с обикновено минало: „Ich habe gekauft“ = „Купих“.` };
       }
     }
+    // Präteritum: ging, kaufte, stand … auf (таблицата V3/PRAETF е в exercises.js)
+    if (typeof PRAETF !== "undefined") T.forEach((tk, i) => {
+      const PL = PRAETF[lc(tk.w)], lastW = lc(T[T.length - 1].w), P = PL && (PL.find((x) => x.sep && x.sep === lastW) || PL.find((x) => !x.sep) || PL[0]); if (!P || (res[i].kind && res[i].kind !== "verb") || (res[i].kind === "verb" && !/^(war|hatte)/.test(lc(tk.w)) && res[i].item)) return;
+      const v = ITEMS.find((x) => x.type === "verb" && x.de === P.inf), weak = /te$/.test(V3[P.inf][0].split(" ")[0]);
+      res[i] = { kind: "verb", item: v, html: `<b>${esc(tk.w)}</b> — <b>Präteritum</b> (просто минало) на <b>${esc(P.inf)}</b>${v ? ` (${esc(v.bg)})` : ""} за <b>${P.p.join(", ")}</b>.<br>${weak ? "Слаб глагол: корен + <b>-te</b> + окончание." : "Силен глагол: сменя гласната, без -te (учи го наизуст: " + esc(P.inf) + " – " + esc(V3[P.inf][0]) + " – " + (V3[P.inf][1] === "h" ? "hat " : "ist ") + esc(V3[P.inf][2]) + ")."}<br>Един глагол, без помощен — на 2-ро място. Präteritum се ползва в разкази и с sein/haben (war, hatte); в разговор за другите глаголи по-често е Perfekt.` };
+      const li = T.length - 1;
+      if (P.sep && lc(T[li].w) === P.sep) res[li] = { kind: "verb", item: v, html: `<b>${esc(T[li].w)}</b> — представката на <b>${esc(P.inf)}</b>. И в Präteritum тя се откъсва и отива в <b>края</b>: ${esc(tk.w)} … <b>${esc(P.sep)}</b>.` };
+    });
     // роли за „Разбор“: subj · v · obj · dat · pp (предложна група) · end (глагол накрая) · neg · conj · q · other
     const roles = T.map(() => "other");
     const NOMP = ["ich", "du", "er", "sie", "es", "wir", "ihr", "man"];
@@ -405,7 +414,7 @@ const XP = (() => {
         const prev = i > 0 ? lc(T[i - 1].w) : ""; roles[i] = PREPS.has(prev) ? "pp" : vIdx >= 0 && i < vIdx ? "subj" : "obj"; return;
       }
       // имена (Martin, Körner): преди глагола или веднага след него без друг подлог → подлог
-      if (!res[i].kind && /^[A-ZÄÖÜ][a-zäöüß]+$/.test(tk.w) && vIdx >= 0 && !NOMP.includes(t)) {
+      if (!res[i].kind && /^[A-ZÄÖÜ][a-zäöüß]+$/.test(tk.w) && vIdx >= 0 && !NOMP.includes(t) && !ITEMS.some((x) => x.type !== "noun" && lc(x.de) === t) && !/^(gestern|vorgestern|heute|morgen|jetzt|immer|letzte|letztes|jeden|dann|danach|zuerst|vorher|früher)$/.test(t)) {
         const prevNoun = i > 0 && roles[i - 1] !== "other" && res[i - 1].kind === "noun" && /^(Frau|Herr|Herrn)$/.test(T[i - 1].w);
         roles[i] = prevNoun ? roles[i - 1] : i < vIdx || (i === vIdx + 1 && !roles.includes("subj")) ? "subj" : "obj"; return;
       }

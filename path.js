@@ -19,9 +19,10 @@ const UNIT_MAP = {
   12: { g: ["imperativ", "wieoft", "einkauf"], ex: ["imperativ", "verpack", "wieoft", "plural"] },
   13: { g: ["dativ", "warhatte", "kapani"], ex: ["dativart", "dativpron", "schmeckt", "warhatte"] },
   14: { g: ["alltag", "uhrzeit", "perfekt", "michmir", "faelle"], ex: ["tag14", "uhr", "dauer", "musssoll", "perfhs", "partizip", "perforder", "perfright", "michmir", "mmakk", "mmdat"] },
+  15: { g: ["zeiten", "praeteritum", "computer"], ex: ["zeitwas", "praet", "praetkonj", "stamm", "signal", "zeitum", "perftype", "praetorder", "praetmatch", "zeitfehler", "fail", "comp", "tun", "bank15", "perfhs", "partizip"] },
 };
 // упражнения точно за граматична тема (иначе — тези на урока)
-const G2EX = { perfekt: ["perfhs", "partizip", "perforder", "perfright"], michmir: ["michmir", "mmakk", "mmdat"], uhrzeit: ["uhr", "dauer"], alltag: ["tag14", "musssoll"],
+const G2EX = { zeiten: ["zeitwas", "signal", "zeitum", "zeitfehler", "bank15"], praeteritum: ["praet", "praetkonj", "stamm", "praetorder", "praetmatch", "tun"], computer: ["comp", "fail", "perftype"], perfekt: ["perfhs", "partizip", "perforder", "perfright", "perftype"], michmir: ["michmir", "mmakk", "mmdat"], uhrzeit: ["uhr", "dauer"], alltag: ["tag14", "musssoll"],
   faelle: ["michmir", "akk", "dativart", "verbakk"], dativ: ["dativart", "dativpron", "schmeckt"], akkpron: ["pronakk", "mmakk"], akk: ["akk", "verbakk"], articles: ["art"],
   trennbar: ["trennbar", "bau"], imperativ: ["imperativ"], warhatte: ["warhatte"], modal: ["modal", "musssoll"], kein: ["einkein", "nichtkein", "brauchen"], neg: ["neg", "doch"] };
 const exByK = (k) => EX_TYPES.find((t) => t.k === k && t.gen);

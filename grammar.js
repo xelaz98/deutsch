@@ -993,3 +993,84 @@ const GRAMMAR = [
 <p><b>um</b> 8 Uhr (в колко) · <b>von</b> 13 <b>bis</b> 13.30 Uhr (от … до) · <b>ab</b> 19 Uhr (от … нататък) · <b>mit dem</b> Auto (с какво) · <b>zur</b> Arbeit (накъде, die → zur) · <b>ins</b> Bett (накъде, das → ins) · <b>zu Hause</b> (къде) · <b>nach Hause</b> (накъде)</p>`
   },
 ];
+
+// ───────── урок 15 ─────────
+GRAMMAR.push(
+  {
+    id: "zeiten", title: "Трите времена: Präsens, Präteritum, Perfekt", icon: "🕰️",
+    html: `
+<p>Едно действие — три начина да го кажеш. Разликата <b>не е</b> кога е станало (Präteritum и Perfekt са <b>едно и също минало</b>), а <b>къде</b> го казваш.</p>
+<table class="g"><tr><th>Време</th><th>Пример</th><th>Как се прави</th><th>Кога</th></tr>
+<tr><td><b>Präsens</b></td><td>Ich <b>gehe</b> einkaufen.</td><td>1 глагол, сегашна форма</td><td>сега, всеки ден, и бъдеще (Morgen gehe ich …)</td></tr>
+<tr><td><b>Präteritum</b></td><td>Ich <b>ging</b> einkaufen.</td><td>1 глагол, минала форма (-te или нова гласна)</td><td>в <b>писмен</b> разказ, книги, новини · и в говора за <b>war, hatte</b>, musste, konnte</td></tr>
+<tr><td><b>Perfekt</b></td><td>Ich <b>bin</b> einkaufen <b>gegangen</b>.</td><td>haben/sein + Partizip II в края</td><td>в <b>говора</b> — когато разказваш на някого</td></tr>
+<tr><td>Plusquamperfekt</td><td>Vorher <b>hatte</b> ich <b>gefrühstückt</b>.</td><td>hatte/war + Partizip II</td><td>минало <b>преди</b> друго минало („бях закусил“)</td></tr></table>
+<p class="tip">🗣️ Практичното правило за разговор: <b>sein и haben → war, hatte</b>; <b>всичко друго → Perfekt</b>. <i>Gestern <b>war</b> ich müde. Ich <b>hatte</b> keine Zeit. Ich <b>habe</b> nichts <b>gegessen</b>.</i></p>
+<h4>Как да позная времето?</h4>
+<ul><li>Има <b>habe/hast/hat/bin/ist…</b> + дума с <b>ge-…-t/-en</b> в края → <b>Perfekt</b>.</li>
+<li>Има <b>hatte/war</b> + Partizip II в края → <b>Plusquamperfekt</b>.</li>
+<li>Само един глагол с <b>-te</b> (kaufte, arbeitete) или непозната гласна (ging, las, fuhr, aß) → <b>Präteritum</b>.</li>
+<li>Само един глагол в сегашна форма (gehe, liest, fährt) → <b>Präsens</b>.</li></ul>
+<h4>Сигнални думи</h4>
+<table class="g"><tr><th>минало</th><th>сегашно</th></tr>
+<tr><td>gestern (вчера), vorgestern (онзи ден), letzte Woche, letztes Jahr, früher, vorher</td><td>jetzt, heute, jeden Tag, immer, oft, morgen (бъдеще с Präsens)</td></tr></table>
+<h4>Един глагол — три изречения</h4>
+<table class="g"><tr><th>Präsens</th><th>Präteritum</th><th>Perfekt</th></tr>
+<tr><td>Martin <b>steht</b> um 7 Uhr <b>auf</b>.</td><td>Martin <b>stand</b> um 7 Uhr <b>auf</b>.</td><td>Martin <b>ist</b> um 7 Uhr <b>aufgestanden</b>.</td></tr>
+<tr><td>Ich <b>arbeite</b> bis 18 Uhr.</td><td>Ich <b>arbeitete</b> bis 18 Uhr.</td><td>Ich <b>habe</b> bis 18 Uhr <b>gearbeitet</b>.</td></tr>
+<tr><td>Wir <b>haben</b> kein Benzin.</td><td>Wir <b>hatten</b> kein Benzin.</td><td>Wir <b>haben</b> kein Benzin <b>gehabt</b>.</td></tr>
+<tr><td>Er <b>isst</b> nichts.</td><td>Er <b>aß</b> nichts.</td><td>Er <b>hat</b> nichts <b>gegessen</b>.</td></tr></table>
+<p class="tip">⚠️ Капани: (1) В Perfekt <b>не</b> превеждай „habe“ като „имам“ — то само показва минало. (2) Разделимите глаголи и в Präteritum хвърлят представката в края: Ich <b>kaufte</b> im Supermarkt <b>ein</b>. (3) На български „работих“ и „работил съм“ — немският Perfekt превеждаме най-често с обикновеното минало („работих“).</p>`,
+  },
+  {
+    id: "praeteritum", title: "Präteritum: ging, kaufte, war, hatte", icon: "⏪",
+    html: `
+<p>Präteritum е <b>един</b> глагол в минала форма. Има два вида глаголи:</p>
+<h4>1. Слаби (правилни) глаголи: корен + <b>-te</b></h4>
+<table class="g"><tr><th></th><th>machen</th><th>arbeiten</th><th>einkaufen</th></tr>
+<tr><td>ich</td><td>mach<b>te</b></td><td>arbeit<b>ete</b></td><td>kauf<b>te</b> … ein</td></tr>
+<tr><td>du</td><td>mach<b>test</b></td><td>arbeit<b>etest</b></td><td>kauf<b>test</b> … ein</td></tr>
+<tr><td>er/sie/es</td><td>mach<b>te</b></td><td>arbeit<b>ete</b></td><td>kauf<b>te</b> … ein</td></tr>
+<tr><td>wir</td><td>mach<b>ten</b></td><td>arbeit<b>eten</b></td><td>kauf<b>ten</b> … ein</td></tr>
+<tr><td>ihr</td><td>mach<b>tet</b></td><td>arbeit<b>etet</b></td><td>kauf<b>tet</b> … ein</td></tr>
+<tr><td>sie/Sie</td><td>mach<b>ten</b></td><td>arbeit<b>eten</b></td><td>kauf<b>ten</b> … ein</td></tr></table>
+<p class="tip">Коренът свършва на -t/-d (arbeit-, send-, wart-) → вмъква се <b>e</b>: arbeit<b>e</b>te, send<b>e</b>te. Същото като в Präsens: du arbeit<b>e</b>st.</p>
+<h4>2. Силни (неправилни) глаголи: нова гласна, <b>без -te</b></h4>
+<table class="g"><tr><th></th><th>gehen</th><th>fahren</th><th>lesen</th><th>sein</th><th>haben</th></tr>
+<tr><td>ich</td><td>ging</td><td>fuhr</td><td>las</td><td>war</td><td>hatte</td></tr>
+<tr><td>du</td><td>ging<b>st</b></td><td>fuhr<b>st</b></td><td>las<b>est</b></td><td>war<b>st</b></td><td>hatte<b>st</b></td></tr>
+<tr><td>er/sie/es</td><td>ging</td><td>fuhr</td><td>las</td><td>war</td><td>hatte</td></tr>
+<tr><td>wir</td><td>ging<b>en</b></td><td>fuhr<b>en</b></td><td>las<b>en</b></td><td>war<b>en</b></td><td>hatte<b>n</b></td></tr>
+<tr><td>ihr</td><td>ging<b>t</b></td><td>fuhr<b>t</b></td><td>las<b>t</b></td><td>war<b>t</b></td><td>hatte<b>t</b></td></tr>
+<tr><td>sie/Sie</td><td>ging<b>en</b></td><td>fuhr<b>en</b></td><td>las<b>en</b></td><td>war<b>en</b></td><td>hatte<b>n</b></td></tr></table>
+<p class="tip">🔑 Най-важното: <b>ich и er са еднакви и без окончание</b> (ich ging = er ging, ich machte = er machte). Останалите окончания са като в Präsens (-st, -en, -t, -en).</p>
+<h4>Списъкът от урока (учи по три форми)</h4>
+<table class="g"><tr><th>инфинитив</th><th>Präteritum</th><th>Perfekt</th></tr>
+<tr><td>sein</td><td>war</td><td>ist gewesen</td></tr><tr><td>haben</td><td>hatte</td><td>hat gehabt</td></tr><tr><td>tun</td><td>tat</td><td>hat getan</td></tr>
+<tr><td>gehen</td><td>ging</td><td>ist gegangen</td></tr><tr><td>fahren</td><td>fuhr</td><td>ist gefahren</td></tr><tr><td>laufen</td><td>lief</td><td>ist gelaufen</td></tr>
+<tr><td>ankommen</td><td>kam an</td><td>ist angekommen</td></tr><tr><td>aufstehen</td><td>stand auf</td><td>ist aufgestanden</td></tr><tr><td>zurückfahren</td><td>fuhr zurück</td><td>ist zurückgefahren</td></tr>
+<tr><td>lesen</td><td>las</td><td>hat gelesen</td></tr><tr><td>sehen / fernsehen</td><td>sah / sah fern</td><td>hat (fern)gesehen</td></tr><tr><td>essen</td><td>aß</td><td>hat gegessen</td></tr>
+<tr><td>vergessen</td><td>vergaß</td><td>hat vergessen</td></tr><tr><td>schreiben</td><td>schrieb</td><td>hat geschrieben</td></tr><tr><td>anrufen</td><td>rief an</td><td>hat angerufen</td></tr>
+<tr><td>anfangen</td><td>fing an</td><td>hat angefangen</td></tr><tr><td>machen, kaufen, kochen</td><td>machte, kaufte, kochte</td><td>hat gemacht, gekauft, gekocht</td></tr>
+<tr><td>arbeiten</td><td>arbeitete</td><td>hat gearbeitet</td></tr><tr><td>frühstücken</td><td>frühstückte</td><td>hat gefrühstückt</td></tr><tr><td>einkaufen</td><td>kaufte ein</td><td>hat eingekauft</td></tr>
+<tr><td>studieren</td><td>studierte</td><td>hat studiert</td></tr><tr><td>vereinbaren</td><td>vereinbarte</td><td>hat vereinbart</td></tr></table>
+<h4>tun (правя)</h4>
+<table class="g"><tr><th></th><th>Präsens</th><th>Präteritum</th></tr><tr><td>ich</td><td>tue</td><td>tat</td></tr><tr><td>du</td><td>tust</td><td>tatest</td></tr><tr><td>er/sie/es</td><td>tut</td><td>tat</td></tr><tr><td>wir</td><td>tun</td><td>taten</td></tr><tr><td>ihr</td><td>tut</td><td>tatet</td></tr><tr><td>sie/Sie</td><td>tun</td><td>taten</td></tr></table>
+<p><i>Ich habe viel zu tun.</i> = Имам много работа. · <i>(Es) tut mir leid.</i> = Съжалявам.</p>
+<p class="tip">📝 Поправки от бележките: fuhr zurück (не „führ“), aß, vergaß (с ß), sah fern, <b>das</b> Benzin, Du Armer!</p>`,
+  },
+  {
+    id: "computer", title: "На компютъра: глаголи и Perfekt", icon: "💻",
+    html: `
+<table class="g"><tr><th>с какво?</th><th>глаголи</th></tr>
+<tr><td>den Computer / den Drucker</td><td>einschalten (включвам) · ausschalten (изключвам) · anschließen (свързвам)</td></tr>
+<tr><td>den Text / die Daten</td><td>speichern (запазвам) · kopieren · ausschneiden (изрязвам) · einfügen (поставям) · löschen (трия) · ausdrucken (разпечатвам)</td></tr>
+<tr><td>eine E-Mail</td><td>schreiben · senden (изпращам) · weiterleiten (препращам) · erhalten (получавам)</td></tr></table>
+<h4>Разделими: представката в края</h4>
+<p><i>Ich <b>schalte</b> den Computer <b>ein</b>.</i> · <i>Bitte <b>drucken</b> Sie den Text <b>aus</b>!</i> · <i>Man muss den Drucker <b>anschließen</b>.</i> (с модален глагол — цял в края)</p>
+<h4>Perfekt</h4>
+<table class="g"><tr><th>разделими: ge в средата</th><th>без ge-</th><th>обикновени</th></tr>
+<tr><td>ein<b>ge</b>schaltet, aus<b>ge</b>schaltet, an<b>ge</b>schlossen, aus<b>ge</b>druckt, weiter<b>ge</b>leitet, ein<b>ge</b>fügt, aus<b>ge</b>schnitten</td><td>kopiert (-ieren), erhalten (er-)</td><td>gespeichert, gelöscht, gesendet</td></tr></table>
+<p><b>Какво се обърка?</b> <i>Der Text ist weg. Du hast <b>ihn</b> nicht <b>gespeichert</b>.</i> — <b>ihn</b> = der Text (Akkusativ), отрицанието <b>nicht</b> е точно преди Partizip II.</p>`,
+  },
+);

@@ -19,6 +19,7 @@ const LESSONS = [
   { id: 12, date: "14.11.2026", title: "Кухня и пазар: съдове, храни, опаковки, колко често, рецепта, Imperativ" },
   { id: 13, date: "17.11.2026", title: "В ресторанта: меню, вкус, Dativ (wem? mir, dir, ihm), war/hatte" },
   { id: 14, date: "19.11.2026", title: "Денят ми: часът, разделими глаголи, Perfekt (hat gemacht / ist gefahren), mich/mir" },
+  { id: 15, date: "21.11.2026", title: "Трите времена: Präsens, Präteritum, Perfekt · лош ден · на компютъра" },
 ];
 // Домашни: due = ДД.ММ.ГГГГ; черновата и „готово“ се пазят в localStorage (dl:hw:<id>)
 const HOMEWORK = [
@@ -2110,6 +2111,103 @@ W("word", "ihm", "на него, му (Dativ)", "der Mann / das Kind → ihm · 
 W("word", "ihr", "на нея, ѝ (Dativ) · вие", "Das Kleid gefällt ihr. · ⚠️ ihr = и „вие“ (подлог): Ihr seid nett.");
 W("word", "ihnen", "на тях, им (Dativ)", "Ich danke ihnen. · Ihnen (с главна) = на Вас");
 W("phrase", "Wie geht es Ihnen?", "Как сте? (учтиво)", "буквално „Как върви на Вас?“ → Dativ · Wie geht es dir? (на ти)");
+
+
+L(15); T("Минало: трите времена (Präsens · Präteritum · Perfekt)");
+V("müssen", "трябва (необходимо е)", ["muss", "musst", "muss", "müssen", "müsst", "müssen"], "Präteritum: musste · ich muss = er muss (без -t)");
+V("sollen", "трябва (някой ми казва)", ["soll", "sollst", "soll", "sollen", "sollt", "sollen"], "Präteritum: sollte");
+V("tun", "правя, върша", ["tue", "tust", "tut", "tun", "tut", "tun"], "tun – tat – hat getan · wir/sie tun (само -n, не -en)");
+W("phrase", "Ich habe viel zu tun.", "Имам много работа.", "буквално „имам много за вършене“ · zu + инфинитив");
+W("phrase", "Tut mir leid.", "Съжалявам.", "= Es tut mir leid. · mir = Dativ (на мен ми е жал)");
+W("q", "Wie war der Tag?", "Как мина денят?", "war = Präteritum на sein · Wie war dein Tag? = Как мина денят ти?");
+W("phrase", "sein – war – ist gewesen", "съм – бях – бил съм", "в говоримия език за минало почти винаги „war“");
+W("phrase", "haben – hatte – hat gehabt", "имам – имах – имал съм", "в говоримия език почти винаги „hatte“");
+W("phrase", "tun – tat – hat getan", "правя – направих – направил съм", "силен глагол");
+W("phrase", "lesen – las – hat gelesen", "чета – четох – чел съм", "силен: e → a · du lasest");
+W("phrase", "fahren – fuhr – ist gefahren", "пътувам – пътувах – пътувал съм", "силен: a → u · движение → sein");
+W("phrase", "ankommen – kam an – ist angekommen", "пристигам – пристигнах – пристигнал съм", "разделим · движение → sein");
+W("phrase", "machen – machte – hat gemacht", "правя – направих – направил съм", "слаб: -te- в Präteritum, ge-…-t в Perfekt");
+W("phrase", "laufen – lief – ist gelaufen", "тичам/вървя – тичах – тичал съм", "силен: au → ie · движение → sein");
+W("phrase", "kaufen – kaufte – hat gekauft", "купувам – купих – купил съм", "слаб глагол");
+W("phrase", "zurückfahren – fuhr zurück – ist zurückgefahren", "връщам се (с превозно средство)", "разделим · (в бележките: „führ zurück“ → правилно fuhr zurück)");
+W("phrase", "anfangen – fing an – hat angefangen", "започвам – започнах – започнал съм", "силен: a → i · разделим");
+W("phrase", "essen – aß – hat gegessen", "ям – ядох – ял съм", "ß (в бележките „ass“) · du aßest");
+W("phrase", "studieren – studierte – hat studiert", "следвам – следвах – следвал съм", "-ieren: без ge-");
+W("phrase", "vergessen – vergaß – hat vergessen", "забравям – забравих – забравил съм", "ver-: без ge- · Partizip = инфинитив!");
+W("phrase", "frühstücken – frühstückte – hat gefrühstückt", "закусвам – закусих – закусил съм", "слаб глагол");
+W("phrase", "schreiben – schrieb – hat geschrieben", "пиша – писах – писал съм", "силен: ei → ie");
+W("phrase", "vereinbaren – vereinbarte – hat vereinbart", "уговарям – уговорих – уговорил съм", "ver-: без ge-");
+W("phrase", "einkaufen – kaufte ein – hat eingekauft", "пазарувам – пазарувах – пазарувал съм", "разделим: ein- отива накрая в Präteritum");
+W("phrase", "kochen – kochte – hat gekocht", "готвя – готвих – готвил съм", "слаб глагол");
+W("phrase", "fernsehen – sah fern – hat ferngesehen", "гледам телевизия – гледах – гледал съм", "разделим + силен: e → a");
+W("phrase", "sehen – sah – hat gesehen", "виждам – видях – видял съм", "силен: e → a");
+W("phrase", "arbeiten – arbeitete – hat gearbeitet", "работя – работих – работил съм", "корен на -t → -ete- / ge-…-et");
+W("phrase", "Ich gehe einkaufen.", "Отивам да пазарувам. (Präsens)", "gehen + инфинитив в края");
+W("phrase", "Ich ging gestern einkaufen.", "Вчера ходих да пазарувам. (Präteritum)", "ging = Präteritum на gehen — пише се в разкази и книги");
+W("phrase", "Ich bin gestern einkaufen gegangen.", "Вчера ходих да пазарувам. (Perfekt)", "bin … gegangen — така се казва в разговор");
+W("phrase", "Ich bin einkaufen gegangen, vorher hatte ich gefrühstückt.", "Отидох да пазарувам, преди това бях закусил.", "hatte + gefrühstückt = Plusquamperfekt (минало преди миналото)");
+W("adv", "vorher", "преди това", "≠ nachher (след това)");
+W("adv", "gestern", "вчера", "сигнал за минало: gestern war ich …");
+
+T("Как мина денят? (лош ден)");
+W("adj", "schrecklich", "ужасен", "= furchtbar · Das war ein schrecklicher Tag.");
+V("schiefgehen", "провалям се, обърквам се", ["gehe schief", "gehst schief", "geht schief", "gehen schief", "geht schief", "gehen schief"], "почти само: es geht schief · Perfekt: ist schiefgegangen (стар правопис: schief gegangen)");
+W("phrase", "wie immer", "както винаги", "Wie immer war der Bus zu spät.");
+W("word", "niemand", "никой", "Niemand war da. · ≠ jemand (някой)");
+W("word", "jemand", "някой", "Ist jemand da?");
+W("word", "nichts", "нищо", "Ich habe nichts gegessen.");
+N("das", "Benzin", null, "бензин", "das Benzin (в бележките „der“ — правилно е das)");
+W("phrase", "viel – mehr – am meisten", "много – повече – най-много", "неправилно сравнение · Ich arbeite mehr als du.");
+W("word", "ohne", "без", "ohne + Akkusativ: ohne den Schlüssel, ohne mich");
+N("die", "Tankstelle", "Tankstellen", "бензиностанция", "an der Tankstelle = на бензиностанцията");
+V("tanken", "зареждам (гориво)", ["tanke", "tankst", "tankt", "tanken", "tankt", "tanken"], "Perfekt: hat getankt");
+V("laufen", "тичам; вървя пеша", ["laufe", "läufst", "läuft", "laufen", "lauft", "laufen"], "au → äu: er läuft · Perfekt: ist gelaufen");
+W("phrase", "auf dem Flughafen sein", "на летището съм", "auf + Dativ (къде?) · auch: am Flughafen");
+N("die", "Furcht", null, "страх", "= die Angst (по-често) · furchtbar = ужасен");
+W("adj", "furchtbar", "ужасен", "die Furcht + -bar");
+V("zurückfahren", "връщам се (с превозно средство)", ["fahre zurück", "fährst zurück", "fährt zurück", "fahren zurück", "fahrt zurück", "fahren zurück"], "a → ä · Perfekt: ist zurückgefahren");
+V("essen", "ям", ["esse", "isst", "isst", "essen", "esst", "essen"], "e → i · essen – aß – hat gegessen");
+W("phrase", "Du Armer!", "Горкият! (на мъж)", "на жена: Du Arme! · в бележките „du, Armer“");
+W("adj", "arm", "беден", "≠ reich");
+W("adj", "reich", "богат", "≠ arm");
+V("vergessen", "забравям", ["vergesse", "vergisst", "vergisst", "vergessen", "vergesst", "vergessen"], "e → i · Perfekt: hat vergessen (без ge-)");
+V("studieren", "следвам, уча в университет", ["studiere", "studierst", "studiert", "studieren", "studiert", "studieren"], "-ieren → Perfekt: hat studiert");
+V("kochen", "готвя", ["koche", "kochst", "kocht", "kochen", "kocht", "kochen"], "Perfekt: hat gekocht");
+V("arbeiten", "работя", ["arbeite", "arbeitest", "arbeitet", "arbeiten", "arbeitet", "arbeiten"], "корен на -t → du arbeitest, er arbeitet · Präteritum: arbeitete");
+V("sehen", "виждам", ["sehe", "siehst", "sieht", "sehen", "seht", "sehen"], "e → ie · sah · hat gesehen");
+
+T("Работа: среща, оферта");
+V("absagen", "отменям (среща)", ["sage ab", "sagst ab", "sagt ab", "sagen ab", "sagt ab", "sagen ab"], "einen Termin absagen · Perfekt: hat abgesagt");
+V("lösen", "решавам (проблем)", ["löse", "löst", "löst", "lösen", "löst", "lösen"], "ein Problem lösen · Perfekt: hat gelöst");
+W("phrase", "ein Gespräch führen", "водя разговор", "das Gespräch → ein Gespräch (Akk)");
+N("der", "Führerschein", "Führerscheine", "шофьорска книжка", "fahren → der Fahrer; Führer + der Schein → der · den Führerschein machen = изкарвам книжка");
+N("das", "Angebot", "Angebote", "оферта, предложение", "ein Angebot schreiben");
+V("anbieten", "предлагам", ["biete an", "bietest an", "bietet an", "bieten an", "bietet an", "bieten an"], "разделим · bot an · hat angeboten");
+V("begrüßen", "поздравявам, посрещам", ["begrüße", "begrüßt", "begrüßt", "begrüßen", "begrüßt", "begrüßen"], "be-: Perfekt hat begrüßt (без ge-) · Gäste begrüßen");
+N("der", "Gruß", "Grüße", "поздрав", "Viele Grüße! = Много поздрави! (в края на писмо)");
+
+T("На компютъра (A20–A23)");
+N("der", "Computer", "Computer", "компютър", "мн.ч. без окончание: die Computer");
+N("der", "Lautsprecher", "Lautsprecher", "високоговорител, тонколона", "laut + sprechen → der · мн.ч. без окончание");
+N("der", "Bildschirm", "Bildschirme", "екран, монитор", "das Bild + der Schirm → der");
+N("die", "Tastatur", "Tastaturen", "клавиатура", "-ur → die");
+N("die", "Taste", "Tasten", "клавиш, бутон", "Drück die Taste! = Натисни клавиша!");
+N("das", "Kabel", "Kabel", "кабел", "мн.ч. без окончание");
+N("die", "Maus", "Mäuse", "мишка (и животното, и на компютъра)", "au → äu в мн.ч.");
+N("der", "Drucker", "Drucker", "принтер", "drucken (печатам) + -er → der");
+V("speichern", "запазвам (файл)", ["speichere", "speicherst", "speichert", "speichern", "speichert", "speichern"], "wir speichern (само -n) · Perfekt: hat gespeichert");
+V("kopieren", "копирам", ["kopiere", "kopierst", "kopiert", "kopieren", "kopiert", "kopieren"], "-ieren → hat kopiert (без ge-)");
+V("einschalten", "включвам", ["schalte ein", "schaltest ein", "schaltet ein", "schalten ein", "schaltet ein", "schalten ein"], "разделим · den Computer einschalten · hat eingeschaltet");
+V("ausschalten", "изключвам", ["schalte aus", "schaltest aus", "schaltet aus", "schalten aus", "schaltet aus", "schalten aus"], "разделим · ≠ einschalten · hat ausgeschaltet");
+V("löschen", "изтривам", ["lösche", "löschst", "löscht", "löschen", "löscht", "löschen"], "Daten löschen · Perfekt: hat gelöscht");
+V("ausdrucken", "разпечатвам", ["drucke aus", "druckst aus", "druckt aus", "drucken aus", "druckt aus", "drucken aus"], "разделим · = drucken · hat ausgedruckt");
+V("ausschneiden", "изрязвам", ["schneide aus", "schneidest aus", "schneidet aus", "schneiden aus", "schneidet aus", "schneiden aus"], "разделим · силен: hat ausgeschnitten");
+V("einfügen", "вмъквам, поставям", ["füge ein", "fügst ein", "fügt ein", "fügen ein", "fügt ein", "fügen ein"], "ausschneiden → einfügen (cut → paste) · hat eingefügt");
+V("weiterleiten", "препращам", ["leite weiter", "leitest weiter", "leitet weiter", "leiten weiter", "leitet weiter", "leiten weiter"], "eine E-Mail weiterleiten · hat weitergeleitet");
+V("senden", "изпращам", ["sende", "sendest", "sendet", "senden", "sendet", "senden"], "eine E-Mail senden · hat gesendet");
+V("schreiben", "пиша", ["schreibe", "schreibst", "schreibt", "schreiben", "schreibt", "schreiben"], "schrieb · hat geschrieben");
+V("erhalten", "получавам", ["erhalte", "erhältst", "erhält", "erhalten", "erhaltet", "erhalten"], "= bekommen · er-: hat erhalten (Partizip = инфинитив)");
+V("anschließen", "свързвам, включвам (кабел)", ["schließe an", "schließt an", "schließt an", "schließen an", "schließt an", "schließen an"], "den Drucker anschließen · hat angeschlossen");
 
 ITEMS.forEach((it) => {
   it.id = (it.art ? it.art + " " : "") + it.de + "#" + it.type + (it.lesson === 0 ? "@0" : "");

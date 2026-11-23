@@ -1833,3 +1833,256 @@ function ex14Texts() {
   DAUER_E.forEach(([np, , from, to]) => { const m = (t) => { const [a, b] = t.split(".").map(Number); return a * 60 + b; }, r = DAUER.find((x) => x[1] === m(to) - m(from)); out.push(`${cap(np)} dauert ${r[0]}.`); });
   return out;
 }
+
+// ───────── урок 15: трите времена (Präsens · Präteritum · Perfekt), лош ден, компютър ─────────
+// инфинитив → [Präteritum (er), помощен h|s, Partizip II, български]
+const V3 = {
+  sein: ["war", "s", "gewesen", "съм"], haben: ["hatte", "h", "gehabt", "имам"], tun: ["tat", "h", "getan", "правя"], gehen: ["ging", "s", "gegangen", "отивам"],
+  lesen: ["las", "h", "gelesen", "чета"], anrufen: ["rief an", "h", "angerufen", "обаждам се"], fahren: ["fuhr", "s", "gefahren", "пътувам, карам"], ankommen: ["kam an", "s", "angekommen", "пристигам"],
+  machen: ["machte", "h", "gemacht", "правя"], laufen: ["lief", "s", "gelaufen", "тичам, вървя"], kaufen: ["kaufte", "h", "gekauft", "купувам"], zurückfahren: ["fuhr zurück", "s", "zurückgefahren", "връщам се"],
+  anfangen: ["fing an", "h", "angefangen", "започвам"], essen: ["aß", "h", "gegessen", "ям"], studieren: ["studierte", "h", "studiert", "следвам"], vergessen: ["vergaß", "h", "vergessen", "забравям"],
+  aufstehen: ["stand auf", "s", "aufgestanden", "ставам"], frühstücken: ["frühstückte", "h", "gefrühstückt", "закусвам"], schreiben: ["schrieb", "h", "geschrieben", "пиша"], vereinbaren: ["vereinbarte", "h", "vereinbart", "уговарям"],
+  einkaufen: ["kaufte ein", "h", "eingekauft", "пазарувам"], kochen: ["kochte", "h", "gekocht", "готвя"], fernsehen: ["sah fern", "h", "ferngesehen", "гледам телевизия"], sehen: ["sah", "h", "gesehen", "виждам"],
+  arbeiten: ["arbeitete", "h", "gearbeitet", "работя"], übersetzen: ["übersetzte", "h", "übersetzt", "превеждам"], schlafen: ["schlief", "h", "geschlafen", "спя"], trinken: ["trank", "h", "getrunken", "пия"],
+  kommen: ["kam", "s", "gekommen", "идвам"], speichern: ["speicherte", "h", "gespeichert", "запазвам"], löschen: ["löschte", "h", "gelöscht", "изтривам"], kopieren: ["kopierte", "h", "kopiert", "копирам"],
+  einschalten: ["schaltete ein", "h", "eingeschaltet", "включвам"], ausschalten: ["schaltete aus", "h", "ausgeschaltet", "изключвам"], ausdrucken: ["druckte aus", "h", "ausgedruckt", "разпечатвам"],
+  senden: ["sendete", "h", "gesendet", "изпращам"], erhalten: ["erhielt", "h", "erhalten", "получавам"], anschließen: ["schloss an", "h", "angeschlossen", "свързвам"], weiterleiten: ["leitete weiter", "h", "weitergeleitet", "препращам"],
+  einfügen: ["fügte ein", "h", "eingefügt", "вмъквам"], ausschneiden: ["schnitt aus", "h", "ausgeschnitten", "изрязвам"], tanken: ["tankte", "h", "getankt", "зареждам"], lösen: ["löste", "h", "gelöst", "решавам"],
+  anbieten: ["bot an", "h", "angeboten", "предлагам"], begrüßen: ["begrüßte", "h", "begrüßt", "поздравявам"], absagen: ["sagte ab", "h", "abgesagt", "отменям"], beginnen: ["begann", "h", "begonnen", "започвам"],
+  schiefgehen: ["ging schief", "s", "schiefgegangen", "обърквам се"], nehmen: ["nahm", "h", "genommen", "вземам"], bleiben: ["blieb", "s", "geblieben", "оставам"], einschlafen: ["schlief ein", "s", "eingeschlafen", "заспивам"],
+  telefonieren: ["telefonierte", "h", "telefoniert", "говоря по телефона"], spielen: ["spielte", "h", "gespielt", "играя"], lernen: ["lernte", "h", "gelernt", "уча"], warten: ["wartete", "h", "gewartet", "чакам"],
+};
+Object.assign(PERF, { gewesen: ["sein", "s", "s"], gehabt: ["haben", "h", "w"], getan: ["tun", "h", "s"], vergessen: ["vergessen", "h", "ins"], erhalten: ["erhalten", "h", "ins"], gespeichert: ["speichern", "h", "w"],
+  gelöscht: ["löschen", "h", "w"], kopiert: ["kopieren", "h", "ier"], eingeschaltet: ["einschalten", "h", "sep"], ausgeschaltet: ["ausschalten", "h", "sep"], ausgedruckt: ["ausdrucken", "h", "sep"], gesendet: ["senden", "h", "wt"],
+  angeschlossen: ["anschließen", "h", "sep"], weitergeleitet: ["weiterleiten", "h", "sep"], eingefügt: ["einfügen", "h", "sep"], ausgeschnitten: ["ausschneiden", "h", "sep"], getankt: ["tanken", "h", "w"], gelöst: ["lösen", "h", "w"],
+  angeboten: ["anbieten", "h", "sep"], begrüßt: ["begrüßen", "h", "ins"], schiefgegangen: ["schiefgehen", "s", "sep"], übersetzt: ["übersetzen", "h", "ins"] });
+Object.assign(SEP_PRE14, { weiter: 1, schief: 1 });
+const PERS = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"];
+// Präteritum по лица: слаб (-te) → -te, -test, -te, -ten, -tet, -ten · силен → —, -st/-est, —, -en, -t/-et, -en
+function praetF(inf, i) {
+  const [s, part] = V3[inf][0].split(" "), weak = /te$/.test(s);
+  const f = weak ? [s, s + "st", s, s + "n", s + "t", s + "n"][i] : [s, s + (/[sßzt]$/.test(s) ? "est" : "st"), s, s + "en", s + (/[td]$/.test(s) ? "et" : "t"), s + "en"][i];
+  return part ? f + " " + part : f;
+}
+const isWeak3 = (inf) => /te$/.test(V3[inf][0].split(" ")[0]);
+function presF(inf, i) { const v = ITEMS.find((x) => x.type === "verb" && x.de === inf && x.forms); return v ? v.forms[i] : null; }
+function praetWhy(inf) {
+  const [p] = V3[inf], s = p.split(" ")[0], part = p.split(" ")[1];
+  const base = inf === "sein" || inf === "haben" ? `<b>${inf}</b> → <b>${s}</b> — неправилен, учи го наизуст (най-честото минало в говора!)`
+    : isWeak3(inf) ? `<b>${esc(inf)}</b> е <b>слаб</b> глагол → корен + <b>-te</b>: ${esc(s)}${/ete$/.test(s) ? " (коренът свършва на -t/-d → -ete)" : ""}`
+    : `<b>${esc(inf)}</b> е <b>силен</b> глагол → нова гласна, без -te: <b>${esc(s)}</b> (учи го наизуст)`;
+  return base + (part ? `. Разделим: представката <b>${esc(part)}</b> отива в края, както в Präsens` : "") + ".";
+}
+const ENDS3 = "Окончания в Präteritum: ich ___ / er ___ (без окончание!), du -st, wir -en, ihr -t, sie -en.";
+// изречения: [подлог, лице, инфинитив, среда, бг сегашно, бг минало]
+const Z3 = [
+  ["Martin", 2, "aufstehen", "um sieben Uhr", "Мартин става в седем.", "Мартин стана в седем."], ["Ich", 0, "frühstücken", "schnell", "Закусвам набързо.", "Закусих набързо."],
+  ["Er", 2, "fahren", "mit dem Auto zur Arbeit", "Той отива на работа с колата.", "Той отиде на работа с колата."], ["Wir", 3, "anfangen", "um neun Uhr mit der Arbeit", "Започваме работа в девет.", "Започнахме работа в девет."],
+  ["Sabine", 2, "lesen", "die Zeitung", "Сабине чете вестника.", "Сабине прочете вестника."], ["Du", 1, "schreiben", "viele E-Mails", "Пишеш много имейли.", "Писа много имейли."],
+  ["Ich", 0, "anrufen", "Frau Kümmel", "Обаждам се на госпожа Кюмел.", "Обадих се на госпожа Кюмел."], ["Martin", 2, "vereinbaren", "einen Termin", "Мартин си уговаря среща.", "Мартин си уговори среща."],
+  ["Wir", 3, "gehen", "einkaufen", "Отиваме да пазаруваме.", "Отидохме да пазаруваме."], ["Ihr", 4, "kochen", "Spaghetti", "Готвите спагети.", "Сготвихте спагети."],
+  ["Die Kinder", 5, "fernsehen", "drei Stunden", "Децата гледат телевизия три часа.", "Децата гледаха телевизия три часа."], ["Ich", 0, "arbeiten", "bis 18 Uhr", "Работя до 18 ч.", "Работих до 18 ч."],
+  ["Paul", 2, "ankommen", "nicht pünktlich", "Паул не пристига навреме.", "Паул не пристигна навреме."], ["Ich", 0, "sein", "auf dem Flughafen", "На летището съм.", "Бях на летището."],
+  ["Wir", 3, "haben", "kein Benzin", "Нямаме бензин.", "Нямахме бензин."], ["Er", 2, "laufen", "zur Tankstelle", "Той отива пеша до бензиностанцията.", "Той отиде пеша до бензиностанцията."],
+  ["Ich", 0, "tanken", "an der Tankstelle", "Зареждам на бензиностанцията.", "Заредих на бензиностанцията."], ["Martin", 2, "zurückfahren", "mit dem Bus", "Мартин се връща с автобуса.", "Мартин се върна с автобуса."],
+  ["Du", 1, "essen", "den ganzen Tag nichts", "Цял ден не ядеш нищо.", "Цял ден не яде нищо."], ["Maria", 2, "studieren", "in Wien", "Мария следва във Виена.", "Мария следваше във Виена."],
+  ["Ich", 0, "vergessen", "den Termin", "Забравям срещата.", "Забравих срещата."], ["Ihr", 4, "sehen", "einen Spielfilm", "Гледате игрален филм.", "Гледахте игрален филм."],
+  ["Frau Klein", 2, "übersetzen", "zwei Briefe", "Госпожа Клайн превежда две писма.", "Госпожа Клайн преведе две писма."], ["Das Kind", 2, "schlafen", "zehn Stunden", "Детето спи десет часа.", "Детето спа десет часа."],
+  ["Wir", 3, "trinken", "Kaffee", "Пием кафе.", "Пихме кафе."], ["Du", 1, "kommen", "zu spät", "Идваш твърде късно.", "Дойде твърде късно."],
+  ["Ich", 0, "speichern", "den Text", "Запазвам текста.", "Запазих текста."], ["Vera", 2, "löschen", "die Daten", "Вера изтрива данните.", "Вера изтри данните."],
+  ["Er", 2, "kopieren", "die Adressen", "Той копира адресите.", "Той копира адресите."], ["Ich", 0, "einschalten", "den Computer", "Включвам компютъра.", "Включих компютъра."],
+  ["Wir", 3, "ausschalten", "den Drucker", "Изключваме принтера.", "Изключихме принтера."], ["Du", 1, "ausdrucken", "das Angebot", "Разпечатваш офертата.", "Разпечата офертата."],
+  ["Martin", 2, "senden", "eine E-Mail an Frau Körner", "Мартин изпраща имейл на госпожа Кьорнер.", "Мартин изпрати имейл на госпожа Кьорнер."], ["Ich", 0, "erhalten", "eine Nachricht", "Получавам съобщение.", "Получих съобщение."],
+  ["Otto", 2, "anschließen", "den Drucker", "Ото свързва принтера.", "Ото свърза принтера."], ["Ihr", 4, "weiterleiten", "die Information", "Препращате информацията.", "Препратихте информацията."],
+  ["Die Kollegen", 5, "anbieten", "Kaffee", "Колегите предлагат кафе.", "Колегите предложиха кафе."], ["Ich", 0, "begrüßen", "die Gäste", "Посрещам гостите.", "Посрещнах гостите."],
+  ["Hans", 2, "lösen", "das Problem", "Ханс решава проблема.", "Ханс реши проблема."], ["Wir", 3, "absagen", "den Termin", "Отменяме срещата.", "Отменихме срещата."],
+  ["Der Film", 2, "beginnen", "um 20 Uhr", "Филмът започва в 20 ч.", "Филмът започна в 20 ч."], ["Alles", 2, "schiefgehen", "", "Всичко се обърква.", "Всичко се обърка."],
+  ["Ich", 0, "tun", "nichts", "Не правя нищо.", "Не направих нищо."], ["Er", 2, "einschlafen", "vor dem Fernseher", "Той заспива пред телевизора.", "Той заспа пред телевизора."],
+  ["Ich", 0, "bleiben", "zu Hause", "Оставам вкъщи.", "Останах вкъщи."], ["Peter und Maria", 5, "nehmen", "den Zug", "Петер и Мария вземат влака.", "Петер и Мария взеха влака."],
+  ["Du", 1, "einkaufen", "im Supermarkt", "Пазаруваш в супермаркета.", "Пазарува в супермаркета."], ["Der Tag", 2, "sein", "schrecklich", "Денят е ужасен.", "Денят беше ужасен."],
+  ["Niemand", 2, "sein", "da", "Няма никого.", "Нямаше никого."], ["Ich", 0, "haben", "viel zu tun", "Имам много работа.", "Имах много работа."],
+  ["Wir", 3, "warten", "eine Stunde", "Чакаме един час.", "Чакахме един час."], ["Ich", 0, "ausschneiden", "den Text", "Изрязвам текста.", "Изрязах текста."],
+  ["Du", 1, "einfügen", "den Text", "Поставяш текста.", "Постави текста."], ["Ich", 0, "telefonieren", "mit meiner Mutter", "Говоря по телефона с майка си.", "Говорих по телефона с майка си."],
+  ["Martin", 2, "machen", "Mittagspause", "Мартин прави обедна почивка.", "Мартин направи обедна почивка."], ["Er", 2, "kaufen", "Brot", "Той купува хляб.", "Той купи хляб."],
+  ["Susanne", 2, "arbeiten", "zu Hause", "Сузане работи вкъщи.", "Сузане работи вкъщи (вчера)."], ["Ihr", 4, "lernen", "Deutsch", "Учите немски.", "Учихте немски."],
+  ["Du", 1, "sein", "müde", "Уморен си.", "Беше уморен."], ["Ihr", 4, "haben", "keine Zeit", "Нямате време.", "Нямахте време."], ["Die Kinder", 5, "spielen", "im Park", "Децата играят в парка.", "Децата играха в парка."],
+  ["Ich", 0, "lesen", "ein Buch", "Чета книга.", "Четох книга."], ["Du", 1, "fahren", "nach Berlin", "Пътуваш за Берлин.", "Пътува за Берлин."], ["Ihr", 4, "essen", "Pizza", "Ядете пица.", "Ядохте пица."],
+];
+const PRON3 = new Set(["Ich", "Du", "Er", "Sie", "Es", "Wir", "Ihr"]);
+const join3 = (a) => a.filter(Boolean).join(" ");
+// три изречения от един запис; inv = начална дума (Gestern…) → инверсия
+function z3(z, inv) {
+  const [s0, i, inf, mid] = z, s = inv && PRON3.has(s0) ? s0.toLowerCase() : s0;
+  const [pv, pp] = presF(inf, i).split(" "), [tv, tp] = praetF(inf, i).split(" "), aux = AUXF[V3[inf][1]][i], part = V3[inf][2];
+  const mk = (v, end) => (inv ? join3([inv, v, s, mid, end]) : join3([s, v, mid, end])) + ".";
+  return { pres: mk(pv, pp), praet: mk(tv, tp), perf: mk(aux, part), pv, tv, aux, part, sep: pp || tp, inf };
+}
+const ZNAME = { pres: "Präsens (сега)", praet: "Präteritum (минало — писмено/разказ)", perf: "Perfekt (минало — говоримо)", pqp: "Plusquamperfekt (минало преди миналото)" };
+const ZWHY = { pres: "един спрегнат глагол, в сегашна форма", praet: "един спрегнат глагол в <b>минала</b> форма (‑te или нова гласна) — без помощен глагол", perf: "помощен глагол <b>haben/sein в сегашно</b> + Partizip II в края", pqp: "помощен глагол <b>hatte/war</b> (минало!) + Partizip II в края" };
+const PQP = [["Vorher hatte ich gefrühstückt.", "Преди това бях закусил."], ["Er war schon nach Hause gegangen.", "Той вече се беше прибрал."], ["Wir hatten den Text nicht gespeichert.", "Не бяхме запазили текста."],
+  ["Sie hatte den Termin vergessen.", "Тя беше забравила срещата."], ["Der Film hatte schon begonnen.", "Филмът вече беше започнал."], ["Paul war schon aufgestanden.", "Паул вече беше станал."]];
+// 1) кое време е това?
+function genZeitWas() {
+  let de, bg, t;
+  if (Math.random() < 0.15) { [de, bg] = rnd(PQP); t = "pqp"; }
+  else { const z = rnd(Z3), r = z3(z); t = rnd(["pres", "praet", "perf", "praet", "perf"]); de = r[t]; bg = t === "pres" ? z[4] : z[5]; }
+  return { kind: "mc", task: "Кое време е това?", prompt: `<div class="exs">${esc(de)}</div>`, options: Object.values(ZNAME), answer: ZNAME[t], say: de, full: de, bg, keys: true,
+    explain: `${ZNAME[t]}: ${ZWHY[t]}.<br>Präsens = <i>ich gehe</i> · Präteritum = <i>ich ging</i> · Perfekt = <i>ich bin gegangen</i> · Plusquamperfekt = <i>ich war gegangen</i>.` };
+}
+// 2) Präteritum форма в изречение
+function genPraet() {
+  const z = rnd(Z3), r = z3(z), [, i, inf] = z, ans = r.tv, sh = r.praet.replace(new RegExp(`(^|\\s)${ans}(?=\\s|\\.)`), "$1___");
+  const wrong = new Set([r.pv, praetF(inf, (i + 1) % 6).split(" ")[0], praetF(inf, (i + 3) % 6).split(" ")[0], isWeak3(inf) ? inf.replace(/en$|n$/, "") + "t" : V3[inf][0].split(" ")[0] + "te"]);
+  wrong.delete(ans);
+  const why = `${praetWhy(inf)} За <b>${PERS[i]}</b>: <b>${esc(ans)}</b>. ${ENDS3}`;
+  if (Math.random() < 0.4) return { kind: "type", task: `Präteritum на <b>${esc(inf)}</b>`, prompt: `<div class="exs">${esc(sh)}</div><div class="meta">${esc(z[5])}</div>`, answer: ans, hint: "минало…", accept: (v) => sameDe(v, ans), say: r.praet, full: r.praet, bg: z[5], explain: why };
+  return { kind: "mc", task: `Präteritum на <b>${esc(inf)}</b>`, prompt: `<div class="exs">${esc(sh)}</div>`, options: shuffle([ans, ...[...wrong].slice(0, 3)]), answer: ans, say: r.praet, full: r.praet, bg: z[5], keys: true, explain: why };
+}
+// 3) Präsens → минало: кое изречение е правилното минало?
+function genZeitUm() {
+  const z = rnd(Z3), r = z3(z), [, i, inf] = z, to = rnd(["praet", "perf"]);
+  const other = V3[inf][1] === "h" ? "s" : "h", wrong = new Set();
+  if (to === "perf") { wrong.add(z3(z).perf.replace(new RegExp(`(^|\\s)${r.aux}(\\s)`), `$1${AUXF[other][i]}$2`)); wrong.add(r.perf.replace(r.part, wrongParts(r.part, inf, (PERF[r.part] || [, , "w"])[2])[0] || inf));
+    wrong.add(join3([z[0], r.aux, r.part, z[3]]) + "."); wrong.add(r.praet); }
+  else { wrong.add(r.praet.replace(r.tv, praetF(inf, (i + 3) % 6).split(" ")[0])); wrong.add(r.pres); wrong.add(r.praet.replace(r.tv, praetF(inf, (i + 1) % 6).split(" ")[0])); if (r.sep) wrong.add(join3([z[0], r.tv + r.sep, z[3]]) + "."); }
+  const ans = r[to]; wrong.delete(ans);
+  return { kind: "mc", task: `Кажи го в <b>${to === "perf" ? "Perfekt" : "Präteritum"}</b>`, prompt: `<div class="exs">${esc(r.pres)}</div><div class="meta">${esc(z[4])} → ${esc(z[5])}</div>`, options: shuffle([ans, ...[...wrong].slice(0, 3)]), answer: ans,
+    say: ans, full: ans, bg: z[5], explain: to === "perf" ? `Perfekt: <b>${esc(r.aux)}</b> на 2-ро място + <b>${esc(r.part)}</b> в края. ${PERF_AUX[V3[inf][1]]}.` : `Präteritum: само един глагол — <b>${esc(r.tv)}</b>. ${praetWhy(inf)}` };
+}
+// 4) трите форми: gehen – ging – ist gegangen
+function genStamm() {
+  const inf = rnd(Object.keys(V3)), [p, hs, part, bg] = V3[inf], aux = hs === "h" ? "hat" : "ist", slot = rnd([1, 1, 2, 2, 3]);
+  const cells = [inf, p, aux, part], ans = cells[slot], shown = cells.map((c, k) => (k === slot ? "___" : c));
+  const line = `${shown[0]} – ${shown[1]} – ${shown[2]} ${shown[3]}`, full = `${inf} – ${p} – ${aux} ${part}`;
+  const why = `<b>${esc(full)}</b> (${esc(bg)}). ${praetWhy(inf)} Perfekt: ${PERF_AUX[hs]}${PERF[part] ? "; Partizip II: " + PERF_RULE[PERF[part][2]] : ""}.`;
+  if (slot === 2) return { kind: "mc", task: "haben или sein?", prompt: `<div class="exs">${esc(line)}</div>`, options: ["hat", "ist"], answer: aux, say: full, full, bg, keys: true, explain: why };
+  return { kind: "type", task: slot === 1 ? "Напиши Präteritum" : "Напиши Partizip II", prompt: `<div class="exs">${esc(line)}</div><div class="meta">${esc(bg)}</div>`, answer: ans, hint: "…", accept: (v) => sameDe(v, ans), say: full, full, bg, explain: why };
+}
+// 5) Präteritum по лица
+function genPraetKonj() {
+  const inf = rnd(Object.keys(V3)), i = (Math.random() * 6) | 0, ans = praetF(inf, i);
+  const opts = new Set([ans]); for (let k = 0; k < 6 && opts.size < 4; k++) opts.add(praetF(inf, (i + 1 + k) % 6));
+  if (opts.size < 4) opts.add(presF(inf, i) || inf);
+  return { kind: "mc", task: `Präteritum: <b>${esc(PERS[i])}</b> + ${esc(inf)}`, prompt: `<div class="exs">${esc(PERS[i].split("/")[0])} ___</div><div class="meta">(${esc(inf)} – ${esc(V3[inf][0])})</div>`, options: shuffle([...opts]), answer: ans,
+    say: `${PERS[i].split("/")[0]} ${ans}`, full: `${PERS[i].split("/")[0]} ${ans}`, keys: true, explain: `${praetWhy(inf)} ${ENDS3}<br>${PERS.map((p, k) => `${p.split("/")[0]} <b>${esc(praetF(inf, k))}</b>`).join(" · ")}` };
+}
+// 6) сигнални думи: gestern → минало, jetzt/jeden Tag → сегашно
+const SIG = [["Gestern", "praet", "вчера"], ["Letzte Woche", "praet", "миналата седмица"], ["Vorgestern", "praet", "онзи ден"], ["Letztes Jahr", "praet", "миналата година"],
+  ["Jetzt", "pres", "сега"], ["Heute", "pres", "днес"], ["Jeden Tag", "pres", "всеки ден"], ["Immer", "pres", "винаги"]];
+function genSignal() {
+  const z = rnd(Z3.filter((x) => !["Alles", "Niemand", "Der Film", "Der Tag"].includes(x[0]))), [sig, t, sbg] = rnd(SIG), r = z3(z, sig), [, i, inf] = z;
+  const ans = t === "pres" ? r.pv : r.tv, full = r[t], sh = full.replace(new RegExp(`^${sig} ${ans}`), `${sig} ___`);
+  const opts = new Set([r.pv, r.tv, praetF(inf, (i + 1) % 6).split(" ")[0], presF(inf, (i + 3) % 6).split(" ")[0]]);
+  return { kind: "mc", task: "Сегашно или минало? Гледай първата дума!", prompt: `<div class="exs">${esc(sh)}</div><div class="meta">${esc(sig)} = ${esc(sbg)}</div>`, options: shuffle([...opts].slice(0, 4)), answer: ans,
+    say: full, full, bg: `${cap(sbg)}: ${t === "pres" ? z[4] : z[5]}`, keys: true,
+    explain: `<b>${esc(sig)}</b> (${esc(sbg)}) → ${t === "pres" ? "<b>Präsens</b>" : "<b>минало</b> → Präteritum <b>" + esc(r.tv) + "</b> (или в разговор Perfekt: " + esc(r.perf) + ")"}.<br>Времето е на 1-во място, затова глаголът е 2-ри, а подлогът идва <b>след</b> него.${r.sep ? ` Представката <b>${esc(r.sep)}</b> е в края.` : ""}` };
+}
+// 7) напиши Perfekt (помощен глагол + Partizip II)
+function genPerfType() {
+  const z = rnd(Z3), r = z3(z), [, , inf] = z, ans = `${r.aux} ${r.part}`, sh = join3([z[0], "___", z[3], "___"]) + ".";
+  return { kind: "type", task: `Perfekt: напиши помощния глагол и Partizip II на <b>${esc(inf)}</b>`, prompt: `<div class="exs">${esc(sh)}</div><div class="meta">${esc(z[5])}</div>`, answer: ans, hint: "напр. hat gemacht",
+    accept: (v) => sameDe(v, ans), say: r.perf, full: r.perf, bg: z[5], explain: `<b>${esc(r.perf)}</b><br>${PERF_AUX[V3[inf][1]]}. ${PERF[r.part] ? "Partizip II: " + PERF_RULE[PERF[r.part][2]] : ""}.` };
+}
+// 8) подреди изречение в Präteritum
+function genPraetOrder() {
+  const z = rnd(Z3), r = z3(z), de = r.praet, toks = de.replace(/\.$/, " .").split(" "); const last = toks.pop(); toks[toks.length - 1] += last;
+  const sentence = toks.join(" "); let sh = shuffle(toks); for (let n = 0; n < 6 && sh.join(" ") === sentence; n++) sh = shuffle(toks);
+  return { kind: "order", task: "Подреди изречението (Präteritum)", prompt: `<div class="meta" style="font-size:16px">${esc(z[5])}</div>`, toks, sh, answer: sentence, say: de, full: de, bg: z[5], showAnat: true,
+    explain: `Глаголът в минало (<b>${esc(r.tv)}</b>) е на 2-ро място.${r.sep ? ` Представката <b>${esc(r.sep)}</b> отива в края — като в Präsens.` : ""} ${praetWhy(z[2])}` };
+}
+// 9) свържи инфинитив ↔ Präteritum
+function genPraetMatch() {
+  const ks = shuffle(Object.keys(V3)).slice(0, 5);
+  return { kind: "match", task: "Свържи: инфинитив ↔ Präteritum", pairs: ks.map((k) => [k, V3[k][0]]), answer: ks.map((k) => `${k} → ${V3[k][0]}`).join(" · "), explain: ks.map((k) => `${esc(k)} – <b>${esc(V3[k][0])}</b> – ${V3[k][1] === "h" ? "hat" : "ist"} ${esc(V3[k][2])}`).join("<br>") };
+}
+// 10) компютър: кой глагол върви с това?
+const COMP = [["den Computer", "компютъра", ["einschalten", "ausschalten"]], ["den Text", "текста", ["speichern", "kopieren", "ausschneiden", "einfügen", "löschen", "ausdrucken", "schreiben"]],
+  ["eine E-Mail", "имейл", ["schreiben", "senden", "weiterleiten", "erhalten", "löschen", "ausdrucken"]], ["den Drucker", "принтера", ["einschalten", "ausschalten", "anschließen"]], ["die Daten", "данните", ["speichern", "löschen", "kopieren"]],
+  ["das Kabel", "кабела", ["anschließen"]]];
+const CVERB = ["speichern", "kopieren", "einschalten", "löschen", "ausdrucken", "ausschneiden", "weiterleiten", "einfügen", "senden", "ausschalten", "schreiben", "erhalten", "anschließen"];
+function genComp() {
+  const [o, obg, ok] = rnd(COMP), v = rnd(ok), wrong = shuffle(CVERB.filter((x) => !ok.includes(x))).slice(0, 3), modal = rnd([["Man muss", "Трябва да"], ["Soll ich", "Да"], ["Bitte", ""]]);
+  const vit = ITEMS.find((x) => x.type === "verb" && x.de === v), full = modal[0] === "Bitte" ? `Bitte ${v} Sie ${o}!`.replace(/^Bitte (\w+) Sie/, (m, w) => m) : `${modal[0]} ${o} ${v}${modal[0] === "Soll ich" ? "?" : "."}`;
+  const de = modal[0] === "Bitte" ? (() => { const [pv, pp] = vit.forms[5].split(" "); return `Bitte ${pv} Sie ${o}${pp ? " " + pp : ""}!`; })() : full;
+  return { kind: "mc", task: `Кое върви с <b>${esc(o)}</b>?`, prompt: `<div class="exs">${esc(o)} ___</div>`, options: shuffle([v, ...wrong]), answer: v, item: vit, say: de, full: de, keys: true,
+    explain: `<b>${esc(o)} ${esc(v)}</b> = ${esc(vit ? vit.bg : "")} ${esc(obg)}. С <b>${esc(o)}</b> вървят: ${ok.map(esc).join(", ")}.<br>В изречение: <i>${esc(de)}</i>${/^Bitte/.test(de) && /\s(ein|aus|an|weiter)!$/.test(de) ? " — разделим глагол: представката в края." : ""}` };
+}
+// 11) какво се обърка? (A23) — Perfekt с ihn/sie/es
+const FAIL = [["Der Text ist weg.", "speichern", "ihn", "Текстът изчезна."], ["Die E-Mail ist nicht angekommen.", "senden", "sie", "Имейлът не пристигна."], ["Der Computer geht nicht.", "einschalten", "ihn", "Компютърът не работи."],
+  ["Ich kann den Text nicht drucken.", "anschließen", "den Drucker", "Не мога да разпечатам текста."], ["Die Daten sind immer noch da.", "löschen", "sie", "Данните още са там."], ["Paul hat die Information nicht bekommen.", "weiterleiten", "sie", "Паул не получи информацията."],
+  ["Der Drucker ist noch an.", "ausschalten", "ihn", "Принтерът още е включен."], ["Das Dokument ist nicht im Text.", "einfügen", "es", "Документът не е в текста."], ["Frau Klein hat kein Papier.", "ausdrucken", "den Brief", "Госпожа Клайн няма лист."]];
+const FAILS = [["Du", 1], ["Martin", 2], ["Vera", 2], ["Ihr", 4], ["Wir", 3], ["Frau Klein", 2]];
+function genFail() {
+  const [s1, v, o, bg] = rnd(FAIL), [su, i] = rnd(FAILS), part = V3[v][2], de = `${s1} ${su} ${AUXF.h[i]} ${o} nicht ${part}.`;
+  const wrong = shuffle(CVERB.filter((x) => x !== v && V3[x]).map((x) => V3[x][2])).slice(0, 3);
+  return { kind: "mc", task: "Какво се обърка? Кой глагол пасва?", prompt: `<div class="exs">${esc(s1)} ${esc(su)} ${AUXF.h[i]} ${esc(o)} nicht ___.</div><div class="meta">${esc(bg)}</div>`, options: shuffle([part, ...wrong]), answer: part, say: de, full: de, keys: true,
+    explain: `${esc(v)} → <b>${esc(part)}</b> (${esc(V3[v][3])}). Perfekt с <b>haben</b>; Partizip II: ${PERF_RULE[PERF[part][2]]}.${/^(ihn|sie|es)$/.test(o) ? ` <b>${o}</b> замества ${o === "ihn" ? "der-дума (Akkusativ)" : o === "es" ? "das-дума" : "die-дума"} от първото изречение.` : ""}` };
+}
+// 12) tun
+const TUN = [["Was ___ du heute?", 1, "pres", "Какво правиш днес?"], ["Ich ___ das gern.", 0, "pres", "Правя го с удоволствие."], ["Es ___ mir leid.", 2, "pres", "Съжалявам."], ["Was ___ ihr am Wochenende?", 4, "pres", "Какво правите през уикенда?"],
+  ["Wir ___ nichts.", 3, "pres", "Не правим нищо."], ["Die Kinder ___ ihre Hausaufgaben.", 5, "pres", "Децата си пишат домашните."], ["Gestern ___ ich nichts.", 0, "praet", "Вчера не направих нищо."], ["Was ___ er gestern?", 2, "praet", "Какво направи той вчера?"],
+  ["Das ___ mir leid, sagte sie.", 2, "praet", "„Съжалявах“, каза тя."], ["Was ___ ihr gestern?", 4, "praet", "Какво правихте вчера?"]];
+function genTun() {
+  const [s, i, t, bg] = rnd(TUN), ans = t === "pres" ? presF("tun", i) : praetF("tun", i), full = s.replace("___", ans);
+  const opts = new Set([ans, presF("tun", (i + 1) % 6), presF("tun", (i + 3) % 6), praetF("tun", (i + 2) % 6), "tuen"]); opts.delete(undefined);
+  return { kind: "mc", task: "tun: коя форма?", prompt: `<div class="exs">${esc(s)}</div>`, options: shuffle([ans, ...[...opts].filter((x) => x !== ans).slice(0, 3)]), answer: ans, say: full, full, bg, keys: true,
+    explain: `tun (правя): ich tue, du tust, er tut, wir tun, ihr tut, sie tun — wir/sie само <b>-n</b>. Минало: <b>tat</b> (ich tat, du tatest, er tat, wir taten). Perfekt: hat getan.${t === "praet" ? " Тук е минало (gestern) → Präteritum." : ""}` };
+}
+// 13) текстове с банка думи
+const BANK15 = [
+  { title: "Лош ден (Präteritum)", parts: ["Gestern {war} ein schrecklicher Tag.", "Ich {stand} zu spät {auf} und {hatte} keine Zeit für das Frühstück.", "Dann {fuhr} ich zum Flughafen, aber ich {hatte} kein Benzin.", "Ich {lief} zur Tankstelle und {kaufte} Benzin.", "Ich {kam} zu spät {an}, mein Kollege {war} schon weg.", "Am Abend {aß} ich nichts und {ging} früh ins Bett."] },
+  { title: "Какво направи вчера? (Perfekt)", parts: ["Gestern {bin} ich um sieben Uhr {aufgestanden}.", "Ich {habe} schnell {gefrühstückt}.", "Dann bin ich mit dem Bus zur Arbeit {gefahren}.", "Ich habe viele E-Mails {geschrieben} und Frau Kümmel {angerufen}.", "Am Abend {habe} ich Spaghetti {gekocht} und {ferngesehen}."] },
+  { title: "На компютъра (Präsens)", parts: ["Zuerst {schalte} ich den Computer {ein}.", "Ich {schreibe} einen Text und {speichere} ihn.", "Dann {drucke} ich den Text {aus}.", "Die E-Mail von Frau Klein {leite} ich an Paul {weiter}.", "Am Abend {schalte} ich den Computer {aus}."] },
+  { title: "Какво се обърка? (Perfekt)", parts: ["Die E-Mail ist nicht angekommen. Du hast sie nicht {gesendet}.", "Der Drucker druckt nicht. Ich habe ihn nicht {angeschlossen}.", "Der Text ist weg. Er hat ihn nicht {gespeichert}.", "Der Computer geht nicht. Wir haben ihn nicht {eingeschaltet}.", "Die Daten sind noch da. Sie hat sie nicht {gelöscht}."] },
+  { title: "Едно и също в три времена", parts: ["Heute {gehe} ich einkaufen.", "Gestern {ging} ich einkaufen.", "Gestern {bin} ich einkaufen {gegangen}.", "Vorher {hatte} ich {gefrühstückt}."] },
+  { title: "Бях на летището (war / hatte)", parts: ["Wie {war} dein Tag?", "Furchtbar! Ich {war} den ganzen Tag auf dem Flughafen.", "Das Flugzeug {hatte} drei Stunden Verspätung.", "Ich {hatte} keinen Hunger, aber viel Arbeit.", "Du Armer! {Hattest} du auch keine Zeit für mich?"] },
+];
+let bank15 = 0;
+function genBank15() {
+  const t = BANK15[bank15++ % BANK15.length], blanks = [], sentences = [];
+  t.parts.forEach((p) => { sentences.push(p.replace(/[{}]/g, "")); (p.match(/\{([^}]+)\}/g) || []).forEach((m) => blanks.push(m.slice(1, -1))); });
+  return { kind: "bank", task: `Попълни текста: <b>${esc(t.title)}</b>`, parts: t.parts, blanks, bank: shuffle(blanks), sentences, answer: blanks.join(" · "), say: sentences.join(" ").length <= 200 ? sentences.join(" ") : undefined,
+    explain: "Präsens = един глагол сега · Präteritum = един глагол в минала форма (war, ging, kaufte) · Perfekt = haben/sein + Partizip II в края. Цъкни дума в текста за „Защо?“." };
+}
+// 14) коя е грешката? (миксирани времена)
+function genZeitFehler() {
+  const z = rnd(Z3), r = z3(z), [, i, inf] = z, other = V3[inf][1] === "h" ? "s" : "h";
+  const bads = [[r.perf.replace(new RegExp(`(^|\\s)${r.aux}(\\s)`), `$1${AUXF[other][i]}$2`), `Помощният глагол е грешен: ${PERF_AUX[V3[inf][1]]} → <b>${esc(r.aux)}</b>.`],
+    [r.praet.replace(r.tv, praetF(inf, (i + 1) % 6).split(" ")[0]), `Грешно лице: за <b>${PERS[i]}</b> е <b>${esc(r.tv)}</b>.`]];
+  if (r.sep) bads.push([join3([z[0], r.tv, r.sep, z[3]]) + ".", `Представката <b>${esc(r.sep)}</b> отива в <b>края</b>, не до глагола.`]);
+  if (z[3]) bads.push([join3([z[0], r.aux, r.part, z[3]]) + ".", `Partizip II <b>${esc(r.part)}</b> отива в <b>самия край</b>.`]);
+  const [bad, why] = rnd(bads), good = rnd([r.pres, r.praet, r.perf].filter((x) => x !== bad));
+  const opts = shuffle([bad, good, ...shuffle([r.pres, r.praet, r.perf].filter((x) => x !== bad && x !== good)).slice(0, 1)]);
+  return { kind: "mc", task: "Кое изречение е ГРЕШНО?", prompt: `<div class="meta">${esc(z[4])} / ${esc(z[5])}</div>`, options: opts, answer: bad, say: r.perf, full: r.perf, bg: z[5], explain: `${why}<br>Правилно: ${esc(r.pres)} · ${esc(r.praet)} · ${esc(r.perf)}` };
+}
+EX_TYPES.push(
+  { k: "zeitwas", skill: "Глаголи и словоред", ic: "🕰️", t: "Кое време е? Präsens / Präteritum / Perfekt", d: "Ich ging einkaufen. → Präteritum", gen: genZeitWas },
+  { k: "praet", skill: "Глаголи и словоред", ic: "⏪", t: "Präteritum: ging, las, kaufte", d: "Martin ___ um sieben Uhr auf. → stand", gen: genPraet },
+  { k: "praetkonj", skill: "Глаголи и словоред", ic: "👥", t: "Präteritum по лица", d: "du ___ (fahren) → fuhrst", gen: genPraetKonj },
+  { k: "stamm", skill: "Глаголи и словоред", ic: "📏", t: "Трите форми: gehen – ging – ist gegangen", d: "lesen – ___ – hat gelesen", gen: genStamm },
+  { k: "zeitum", skill: "Глаголи и словоред", ic: "🔄", t: "Сегашно → минало", d: "Ich kaufe Brot. → Ich habe Brot gekauft.", gen: genZeitUm },
+  { k: "signal", skill: "Глаголи и словоред", ic: "🚦", t: "Gestern / Jetzt: сегашно или минало?", d: "Gestern ___ ich lange. → arbeitete", gen: genSignal },
+  { k: "perftype", skill: "Глаголи и словоред", ic: "⌨️", t: "Напиши Perfekt: hat … gemacht", d: "Ich ___ den Text ___. → habe gespeichert", gen: genPerfType },
+  { k: "praetorder", skill: "Глаголи и словоред", ic: "🧱", t: "Подреди изречение в Präteritum", d: "stand · Martin · auf · um sieben Uhr", gen: genPraetOrder },
+  { k: "praetmatch", skill: "Глаголи и словоред", ic: "🔗", t: "Свържи: gehen ↔ ging", d: "5 двойки", gen: genPraetMatch },
+  { k: "zeitfehler", skill: "Глаголи и словоред", ic: "🔍", t: "Намери грешното изречение (времена)", d: "Ich habe gefahren? ✗", gen: genZeitFehler },
+  { k: "comp", skill: "Думи", ic: "💻", t: "На компютъра: den Text speichern", d: "den Drucker ___ → anschließen", gen: genComp },
+  { k: "fail", skill: "Глаголи и словоред", ic: "😩", t: "Какво се обърка? (A23)", d: "Der Text ist weg. Du hast ihn nicht ___.", gen: genFail },
+  { k: "tun", skill: "Глаголи и словоред", ic: "🛠️", t: "tun: ich tue, du tust… tat", d: "Es ___ mir leid. → tut", gen: genTun },
+  { k: "bank15", skill: "Четене", ic: "📝", t: "Текстове: лош ден, компютър, трите времена", d: "попълни с банка думи", gen: genBank15 },
+);
+// Perfekt-изреченията от урок 15 — и за старите Perfekt-упражнения
+Z3.forEach((z) => { const r = z3(z); if (PERF[r.part]) PERF_S.push([r.perf, z[5]]); });
+// Präteritum форма → [инфинитив, лице] (за „Защо?“)
+const PRAETF = {};
+Object.keys(V3).forEach((inf) => PERS.forEach((p, i) => { const f = praetF(inf, i).split(" ")[0].toLowerCase(), L = (PRAETF[f] = PRAETF[f] || []);
+  let e = L.find((x) => x.inf === inf); if (!e) L.push((e = { inf, sep: V3[inf][0].split(" ")[1], p: [] })); if (!e.p.includes(p)) e.p.push(p); }));
+function ex15Texts() {
+  const out = [];
+  Z3.forEach((z) => { const r = z3(z); out.push(r.pres, r.praet, r.perf); SIG.forEach(([s]) => { const q = z3(z, s); out.push(q.pres, q.praet); }); });
+  PQP.forEach(([de]) => out.push(de)); BANK15.forEach((t) => { const ss = t.parts.map((p) => p.replace(/[{}]/g, "")); out.push(...ss); if (ss.join(" ").length <= 200) out.push(ss.join(" ")); });
+  Object.keys(V3).forEach((k) => out.push(`${k} – ${V3[k][0]} – ${V3[k][1] === "h" ? "hat" : "ist"} ${V3[k][2]}`));
+  FAIL.forEach(([s1, v, o]) => FAILS.forEach(([su, i]) => out.push(`${s1} ${su} ${AUXF.h[i]} ${o} nicht ${V3[v][2]}.`)));
+  TUN.forEach(([s, i, t]) => out.push(s.replace("___", t === "pres" ? presF("tun", i) : praetF("tun", i))));
+  return out;
+}
