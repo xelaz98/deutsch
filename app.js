@@ -432,8 +432,8 @@ function openWord(id) {
       ${it.type === "noun" && plText(it) ? `<div class="sh-pl">мн.ч.: ${it.pl ? `<button class="pat inl" data-say="${esc("die " + it.pl)}">die ${esc(it.pl)}</button>` : esc(plText(it))}</div>` : ""}
       ${it.note ? `<div class="sh-note">💡 ${esc(it.note)}</div>` : ""}
     </div>
-    <h4>Обяснено просто</h4>${explainHTML(it)}
-    ${it.type === "verb" ? `<h4>Спрежение — сегашно време <span class="muted">(цъкни ред, за да го чуеш)</span></h4><div class="sh-cj">${conjTable(it)}</div>` : ""}
+    <h4>Обяснено просто</h4>${explainHTML(it)}${typeof verbMorphHTML === "function" ? verbMorphHTML(it) : ""}
+    ${it.type === "verb" && !(typeof verbMorphHTML === "function" && verbMorphHTML(it)) ? `<h4>Спрежение — сегашно време <span class="muted">(цъкни ред, за да го чуеш)</span></h4><div class="sh-cj">${conjTable(it)}</div>` : ""}
     ${exs.length ? `<h4>Как се използва <span class="muted">(цветовете показват кое на кое отговаря · цъкни дума за „Защо?“)</span></h4>${exs.map(([d, g], k) => sentHTML(d, g, it, { bd: k === 0 ? "full" : "lite" })).join("")}` : ""}
     ${typeof wordHistoryHTML === "function" ? wordHistoryHTML(it) : ""}
     <div class="sh-foot"><span class="muted">${typeof ST_TXT !== "undefined" ? ST_TXT[MEM.state(it.id)] : b < 0 ? "Нова дума" : "Ниво " + b + "/5"}</span>
@@ -482,6 +482,7 @@ function renderNav() {
   $("#nav").onclick = h; $("#tabbar").onclick = h;
   $(".brand").onclick = () => go("heute");
   const mb = $("#moreBtn"); if (mb) mb.onclick = openMore;
+  const sb = $("#searchBtn"); if (sb) sb.onclick = () => openSearch();
 }
 const LESSON_TABS = ["cards", "ex", "dict", "quiz", "verbs"];
 function lessonLabel() {
@@ -1074,9 +1075,11 @@ function renderGrammar() {
   view.innerHTML = `<div class="gwrap">
     <div class="gnav">${groups.map(([h, ids]) => `<div class="gh">${esc(h)}</div>` + ids.map((id) => { const x = GRAMMAR.find((y) => y.id === id); const ga = gMastery(x.id); return `<button data-g="${x.id}" class="${x.id === g.id ? "on" : ""}">${ga}${x.icon}&nbsp; ${x.title}${gr[x.id] ? "" : ' <i class="gnew">ново</i>'}</button>`; }).join("")).join("")}</div>
     <article class="gbody">${U ? `<div class="muted" style="font-size:13px">${esc(lessonName(U))}${gMasteryTxt(g.id)}</div>` : ""}<h2>${g.title}</h2>${g.html}
+      ${typeof WS !== "undefined" && WS.some((w) => w.topic === g.id) ? `<div class="gpractice"><b>📝 Попълни като в учебника</b><div class="gpx">${WS.filter((w) => w.topic === g.id).map((w) => `<button class="btn" data-gws="${w.id}">${esc(w.src)} · ${esc(w.title)}</button>`).join("")}</div></div>` : ""}
       ${exk.length ? `<div class="gpractice"><b>🏋️ Упражнявай това</b><div class="gpx">${exk.map((k) => { const t = exByK(k); return `<button class="btn" data-gex="${k}">${t.ic} ${esc(t.t)}</button>`; }).join("")}</div></div>` : ""}
       ${nx ? `<button class="btn primary" data-g="${nx.id}" style="margin-top:14px">Следваща тема: ${nx.icon} ${esc(nx.title)} →</button>` : ""}</article></div>`;
   view.onclick = (e) => {
+    const wsb = e.target.closest("[data-gws]"); if (wsb) return startWS(wsb.dataset.gws);
     const x = e.target.closest("[data-gex]");
     if (x) { startEx(x.dataset.gex, { tab: "grammar", back: () => go("grammar") }); return; }
     const b = e.target.closest("[data-g]");
@@ -1272,7 +1275,7 @@ setTimeout(warmAudio, 1500);
 
 // усвояване на граматична тема = точност в упражненията ѝ (последните 20 отговора на всяко)
 function gMasteryVal(id) { if (typeof exAcc !== "function") return null; const U = UNITS.find((u) => u.g.includes(id)), ks = G2EX[id] || (U ? U.ex : []); const a = ks.map(exAcc).filter(Boolean); const n = a.reduce((s, x) => s + x.n, 0); return n >= 3 ? a.reduce((s, x) => s + x.acc, 0) / a.length : null; }
-const gMastery = (id) => { const v = gMasteryVal(id); return v == null ? "" : `<i class="gm ${v >= 0.85 ? "ok" : v >= 0.7 ? "mid" : "bad"}" title="${Math.round(v * 100)}% в упражненията"></i>`; };
-const gMasteryTxt = (id) => { const v = gMasteryVal(id); return v == null ? " · още не си упражнявал темата" : ` · усвояване <b class="${v >= 0.85 ? "ok" : v >= 0.7 ? "mid" : "bad"}">${Math.round(v * 100)}%</b>`; };
+function gMastery(id) { const v = gMasteryVal(id); return v == null ? "" : `<i class="gm ${v >= 0.85 ? "ok" : v >= 0.7 ? "mid" : "bad"}" title="${Math.round(v * 100)}% в упражненията"></i>`; }
+function gMasteryTxt(id) { const v = gMasteryVal(id); return v == null ? " · още не си упражнявал темата" : ` · усвояване <b class="${v >= 0.85 ? "ok" : v >= 0.7 ? "mid" : "bad"}">${Math.round(v * 100)}%</b>`; }
 // офлайн режим
 if ("serviceWorker" in navigator && location.protocol !== "file:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));

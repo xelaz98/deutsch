@@ -103,6 +103,10 @@ function renderLernen() {
   view.innerHTML = `<div class="hx">
     <h1 class="hx-h1">Lernen</h1>
     <section class="hx-card hx-row" data-go="home"><div><div class="hx-k">Пътят по уроци</div><b>${U ? esc(lessonName(U) + ": " + short(U.title)) : "Всички уроци"}</b><div class="muted">нови думи → граматика → упражнения → проверка (80%)</div></div><button class="btn">Отвори →</button></section>
+    <div class="hx-grid" style="margin-bottom:8px">
+      <button class="hx-tile" data-act="ws"><b>📝 Работни листове</b><span>като в учебника: C6, C7, C8, A19… и нови всеки път</span></button>
+      <button class="hx-tile" data-act="search"><b>⌕ Търси</b><span>тема, упражнение, дума — Ctrl+K</span></button>
+    </div>
     <div class="hx-k hx-sec">Повторение</div>
     <div class="hx-grid">
       <button class="hx-tile" data-act="daily"><b>🗓️ Днешно обучение</b><span>${P.due.length} за повторение · ${P.unsure.length} несигурни</span></button>
@@ -125,6 +129,8 @@ function renderLernen() {
     const x = e.target.closest("[data-exam]"); if (x) return startExam(x.dataset.exam);
     const k = e.target.closest("[data-ex]"); if (k) return startEx(k.dataset.ex, { tab: "lernen", back: () => go("lernen") });
     if (e.target.closest("[data-act=daily]")) startDaily();
+    if (e.target.closest("[data-act=ws]")) renderWSList();
+    if (e.target.closest("[data-act=search]")) openSearch();
   };
 }
 const KAP5 = [

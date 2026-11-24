@@ -869,6 +869,29 @@ b.ok,b.mid,b.bad,em.ok,em.mid,em.bad,small.bad{font-style:normal}
   #tabbar .nl{font-size:10.5px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* таблици с оцветени части на думата */
+.m-ge{color:var(--der);font-weight:700} .m-pre{color:var(--pl);font-weight:700} .m-end{color:var(--das);font-weight:700} .m-vow{color:var(--mid);font-weight:700}
+table.mt td{white-space:nowrap} table.mt tr.sie td{border-top:2px solid var(--line)} table.mt th small{font-weight:400;color:var(--muted)}
+.mwhy{margin:8px 0 0;padding-left:18px;font-size:14px} .mwhy li{margin:4px 0}
+/* работен лист */
+.wsheet .ws-h{display:flex;gap:12px;align-items:flex-start;margin:10px 0 16px}
+.ws-src{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);color:var(--accent);font-weight:700;font-size:14px;flex:none}
+.ws-src.sm{min-width:0;height:auto;border:0;border-radius:0;font-size:12px;padding:0}
+.ws-row{display:grid;grid-template-columns:28px 1fr 1.1fr;gap:10px;align-items:start;padding:8px 0;border-bottom:1px dashed var(--line)}
+.ws-row>div{min-width:0}.wsheet .hx-h1{overflow-wrap:anywhere}.ws-fb{overflow-wrap:anywhere}
+.ws-n{color:var(--muted);padding-top:8px;font-variant-numeric:tabular-nums} .ws-p{padding-top:7px;font-size:15.5px} .ws-v{color:var(--accent)}
+.ws-ex .ws-a i{display:block;padding-top:7px;color:var(--accent);font-family:"Segoe Script","Bradley Hand",cursive}
+.ws-in{width:100%;background:transparent;border:0;border-bottom:1.5px solid var(--line);padding:7px 2px;color:var(--ink);font:inherit;font-size:15.5px;outline:none}
+.ws-in:focus{border-bottom-color:var(--accent)} .ws-in.right{border-bottom-color:var(--ok)} .ws-in.wrong{border-bottom-color:var(--bad)} .ws-in.typo{border-bottom-color:var(--mid)}
+.ws-fb{font-size:13.5px;margin-top:4px} .ws-uml{margin:14px 0 4px}
+.ws-btns{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0} .ws-btns .primary{margin-left:auto}
+/* търсене */
+.srch{margin-top:10px} .srch .hx-k{margin:12px 0 4px}
+.srow{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:9px 10px;border:0;border-radius:10px;background:transparent;color:var(--ink)} .srow:hover{background:var(--soft)}
+.srow>span:first-child{width:24px;text-align:center;flex:none}
+#searchBtn{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:10px;width:36px;height:34px;font-size:18px}
+@media (max-width:640px){.ws-row{grid-template-columns:22px 1fr}.ws-a{grid-column:2}.ws-p{padding-top:2px}}
 </style>
 </head>
 <body>
@@ -876,7 +899,7 @@ b.ok,b.mid,b.bad,em.ok,em.mid,em.bad,small.bad{font-style:normal}
   <div class="hrow">
     <button class="brand"><span class="flag"></span>Deutsch</button>
     <nav id="nav" class="topnav"></nav>
-    <div class="hright"><button id="lessonBtn" class="hbtn" hidden></button><span id="stats" class="streak"></span><button id="moreBtn" class="hbtn" title="Още: път по уроци, игри, карти, настройки">☰</button></div>
+    <div class="hright"><button id="lessonBtn" class="hbtn" hidden></button><span id="stats" class="streak"></span><button id="searchBtn" class="hbtn" title="Търси навсякъде (Ctrl+K или /)">⌕</button><button id="moreBtn" class="hbtn" title="Още: път по уроци, игри, карти, настройки">☰</button></div>
   </div>
 </header>
 <main class="wrap" id="view"></main>
@@ -899,6 +922,7 @@ b.ok,b.mid,b.bad,em.ok,em.mid,em.bad,small.bad{font-style:normal}
 <script src="check.js"></script>
 <script src="mem.js"></script>
 <script src="exam.js"></script>
+<script src="ws.js"></script>
 <script src="heute.js"></script>
 <script src="app.js"></script>
 </body>
