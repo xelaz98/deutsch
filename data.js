@@ -20,6 +20,7 @@ const LESSONS = [
   { id: 13, date: "17.11.2026", title: "В ресторанта: меню, вкус, Dativ (wem? mir, dir, ihm), war/hatte" },
   { id: 14, date: "19.11.2026", title: "Денят ми: часът, разделими глаголи, Perfekt (hat gemacht / ist gefahren), mich/mir" },
   { id: 15, date: "21.11.2026", title: "Трите времена: Präsens, Präteritum, Perfekt · лош ден · на компютъра" },
+  { id: 16, date: "24.11.2026", title: "Ремонт и уговорка, телевизия, противоположности, dürfen, смесени глаголи" },
 ];
 // Домашни: due = ДД.ММ.ГГГГ; черновата и „готово“ се пазят в localStorage (dl:hw:<id>)
 const HOMEWORK = [
@@ -2208,6 +2209,95 @@ V("senden", "изпращам", ["sende", "sendest", "sendet", "senden", "sendet
 V("schreiben", "пиша", ["schreibe", "schreibst", "schreibt", "schreiben", "schreibt", "schreiben"], "schrieb · hat geschrieben");
 V("erhalten", "получавам", ["erhalte", "erhältst", "erhält", "erhalten", "erhaltet", "erhalten"], "= bekommen · er-: hat erhalten (Partizip = инфинитив)");
 V("anschließen", "свързвам, включвам (кабел)", ["schließe an", "schließt an", "schließt an", "schließen an", "schließt an", "schließen an"], "den Drucker anschließen · hat angeschlossen");
+
+
+L(16); T("Ремонт и уговорка по телефона (A25–A31)");
+V("verbinden", "свързвам", ["verbinde", "verbindest", "verbindet", "verbinden", "verbindet", "verbinden"], "Ich verbinde Sie. = Свързвам Ви (по телефона). · verband · hat verbunden");
+V("reparieren", "поправям", ["repariere", "reparierst", "repariert", "reparieren", "repariert", "reparieren"], "-ieren → hat repariert (без ge-)");
+N("die", "Reparatur", "Reparaturen", "ремонт, поправка", "-ur → die · eine schnelle Reparatur");
+N("der", "Monteur", "Monteure", "техник (монтьор)", "-eur → der (като der Friseur) · произнася се „монтьор“");
+W("adj", "möglich", "възможен", "Das ist leider nicht möglich. = За съжаление не е възможно.");
+N("die", "Möglichkeit", "Möglichkeiten", "възможност", "möglich + -keit → винаги die");
+W("q", "Geht es nicht?", "Не може ли? Не става ли?", "Geht es am Mittwoch? – Nein, am Mittwoch geht es leider nicht.");
+W("adv", "vielleicht", "може би", "Vielleicht am Donnerstag.");
+W("adv", "leider", "за съжаление", "Leider habe ich keine Zeit.");
+V("erwarten", "очаквам", ["erwarte", "erwartest", "erwartet", "erwarten", "erwartet", "erwarten"], "er- не се отделя · Wir erwarten den Monteur. · hat erwartet");
+N("der", "Anruf", "Anrufe", "обаждане", "anrufen → der Anruf · Vielen Dank für Ihren Anruf.");
+V("anrufen", "обаждам се (по телефона)", ["rufe an", "rufst an", "ruft an", "rufen an", "ruft an", "rufen an"], "+ Akkusativ: Ich rufe dich an. · rief an · hat angerufen");
+W("phrase", "2026 – zweitausendsechsundzwanzig", "2026 година", "години след 2000: zweitausend + число · 1999 = neunzehnhundertneunundneunzig");
+N("das", "Datum", "Daten", "дата", "мн.ч. die Daten (и „данни“!) · Welches Datum haben wir heute?");
+W("q", "Welches Datum haben wir heute?", "Коя дата сме днес?", "– Heute ist der vierundzwanzigste Elfte. · welches → das Datum");
+N("das", "Vorstellungsgespräch", "Vorstellungsgespräche", "интервю за работа", "sich vorstellen (представям се) + das Gespräch → das");
+W("q", "Was kann ich für Sie tun?", "С какво мога да Ви помогна?", "буквално „Какво мога да направя за Вас?“ · für + Akk: Sie");
+N("die", "Nummer", "Nummern", "номер", "die Telefonnummer, die Typnummer");
+N("der", "Kühlschrank", "Kühlschränke", "хладилник", "kühl (хладен) + der Schrank → der · a → ä в мн.ч.");
+N("die", "Waschmaschine", "Waschmaschinen", "пералня", "waschen + die Maschine → die");
+N("die", "Anzeige", "Anzeigen", "обява", "Ich habe Ihre Anzeige gelesen.");
+V("vorbeikommen", "отбивам се, минавам (покрай)", ["komme vorbei", "kommst vorbei", "kommt vorbei", "kommen vorbei", "kommt vorbei", "kommen vorbei"], "разделим · Ich komme morgen vorbei. · ist vorbeigekommen");
+V("umziehen", "местя се (в друго жилище)", ["ziehe um", "ziehst um", "zieht um", "ziehen um", "zieht um", "ziehen um"], "разделим · Die Praxis zieht um. · zog um · ist umgezogen");
+
+T("Телевизия (Teil B)");
+N("der", "Sender", "Sender", "телевизионен канал; предавател", "senden + -er → der · мн.ч. без окончание");
+N("die", "Erde", "Erden", "Земята; пръст", "die Erdbevölkerung = населението на Земята");
+N("die", "Bevölkerung", null, "население", "-ung → die");
+V("vergleichen", "сравнявам", ["vergleiche", "vergleichst", "vergleicht", "vergleichen", "vergleicht", "vergleichen"], "ver- не се отделя · verglich · hat verglichen");
+N("der", "Vergleich", "Vergleiche", "сравнение", "Hier ein Vergleich: … = Ето едно сравнение: …");
+N("die", "Dauer", null, "продължителност", "dauern → die Dauer");
+N("der", "Zuschauer", "Zuschauer", "зрител", "zuschauen (гледам) + -er → der · мн.ч. без окончание");
+N("pl", "USA", null, "САЩ", "die USA (само мн.ч.) · in den USA = в САЩ");
+N("die", "Freizeitbeschäftigung", "Freizeitbeschäftigungen", "занимание в свободното време", "die Freizeit + die Beschäftigung (-ung) → die");
+W("adv", "fast", "почти", "fast alle = почти всички · ⚠️ не е „бързо“ (schnell)");
+N("die", "Werbung", null, "реклама", "-ung → die · Viele mögen keine Werbung.");
+W("phrase", "Spaß machen", "забавлявам, доставям удоволствие", "Das macht Spaß! = Забавно е! · Fernsehen macht keinen Spaß mehr.");
+W("adj", "beliebt", "обичан, популярен", "Die Nachrichten sind sehr beliebt.");
+N("die", "Weltmeisterschaft", "Weltmeisterschaften", "световно първенство", "die Welt + die Meisterschaft (-schaft → die)");
+
+T("Представки: be-, ver-, ent-, miss-, zer- (C, неразделими)");
+V("besprechen", "обсъждам", ["bespreche", "besprichst", "bespricht", "besprechen", "besprecht", "besprechen"], "be- не се отделя · e → i · hat besprochen");
+V("entlaufen", "избягвам (за животно)", ["entlaufe", "entläufst", "entläuft", "entlaufen", "entlauft", "entlaufen"], "ent- не се отделя · Der Hund ist entlaufen.");
+V("gehören", "принадлежа", ["gehöre", "gehörst", "gehört", "gehören", "gehört", "gehören"], "+ Dativ: Das gehört mir. · ge- не се отделя → hat gehört");
+V("verstehen", "разбирам", ["verstehe", "verstehst", "versteht", "verstehen", "versteht", "verstehen"], "ver- не се отделя · verstand · hat verstanden");
+V("empfehlen", "препоръчвам", ["empfehle", "empfiehlst", "empfiehlt", "empfehlen", "empfehlt", "empfehlen"], "emp- не се отделя · e → ie · empfahl · hat empfohlen");
+V("ergänzen", "допълвам, попълвам", ["ergänze", "ergänzt", "ergänzt", "ergänzen", "ergänzt", "ergänzen"], "er- не се отделя · Ergänzen Sie! = Попълнете! · hat ergänzt");
+V("misslingen", "не успявам, провалям се", ["misslinge", "misslingst", "misslingt", "misslingen", "misslingt", "misslingen"], "почти само: es misslingt (mir) · misslang · ist misslungen");
+V("zerreißen", "разкъсвам", ["zerreiße", "zerreißt", "zerreißt", "zerreißen", "zerreißt", "zerreißen"], "zer- не се отделя · (в бележките „zerrreißen“) · zerriss · hat zerrissen");
+
+T("Противоположности (C1, разделими)");
+N("das", "Gegenteil", "Gegenteile", "противоположност", "Was ist das Gegenteil von „aufmachen“? – zumachen.");
+V("aufmachen", "отварям", ["mache auf", "machst auf", "macht auf", "machen auf", "macht auf", "machen auf"], "≠ zumachen · Maria macht die Tür auf.");
+V("zumachen", "затварям", ["mache zu", "machst zu", "macht zu", "machen zu", "macht zu", "machen zu"], "≠ aufmachen · Heinz macht die Tür zu.");
+W("phrase", "das Licht anmachen", "светвам лампата", "≠ das Licht ausmachen (изгасям) · Er macht das Licht an.");
+V("anmachen", "включвам, светвам", ["mache an", "machst an", "macht an", "machen an", "macht an", "machen an"], "≠ ausmachen");
+V("ausmachen", "изключвам, изгасям", ["mache aus", "machst aus", "macht aus", "machen aus", "macht aus", "machen aus"], "≠ anmachen");
+V("einschalten", "включвам", ["schalte ein", "schaltest ein", "schaltet ein", "schalten ein", "schaltet ein", "schalten ein"], "≠ ausschalten");
+V("einschlafen", "заспивам", ["schlafe ein", "schläfst ein", "schläft ein", "schlafen ein", "schlaft ein", "schlafen ein"], "≠ aufwachen · ist eingeschlafen");
+V("aufwachen", "събуждам се", ["wache auf", "wachst auf", "wacht auf", "wachen auf", "wacht auf", "wachen auf"], "≠ einschlafen · ist aufgewacht (промяна → sein)");
+V("aufhören", "спирам, преставам", ["höre auf", "hörst auf", "hört auf", "hören auf", "hört auf", "hören auf"], "≠ anfangen · Die Arbeit hört um 17 Uhr auf.");
+V("ankommen", "пристигам", ["komme an", "kommst an", "kommt an", "kommen an", "kommt an", "kommen an"], "≠ abfahren · ist angekommen");
+V("abfahren", "тръгвам, заминавам", ["fahre ab", "fährst ab", "fährt ab", "fahren ab", "fahrt ab", "fahren ab"], "≠ ankommen · a → ä · ist abgefahren");
+
+T("dürfen и смесени глаголи");
+V("dürfen", "може (позволено е)", ["darf", "darfst", "darf", "dürfen", "dürft", "dürfen"], "ich darf = er darf (без -t) · durfte · Darf ich …? = Може ли да …?");
+W("q", "Darf ich dich später anrufen?", "Може ли да ти се обадя по-късно?", "Darf ich …? = молба за разрешение · anrufen цял в края");
+W("adj", "hart", "твърд; усилено", "hart arbeiten = работя усилено");
+W("phrase", "bleiben – blieb – ist geblieben", "оставам – останах – останал съм", "силен глагол, но със sein");
+W("phrase", "wohnen – wohnte – hat gewohnt", "живея – живях – живял съм", "слаб глагол");
+W("phrase", "lernen – lernte – hat gelernt", "уча – учих – учил съм", "слаб глагол");
+W("phrase", "senden – sandte – hat gesandt", "изпращам – изпратих – изпратил съм", "смесен глагол; за имейл/радио по-често: sendete – hat gesendet");
+W("phrase", "bringen – brachte – hat gebracht", "нося – донесох – донесъл съм", "смесен: сменя корена (bring → brach-) + окончание -te/-t");
+W("phrase", "rennen – rannte – ist gerannt", "тичам – тичах – тичал съм", "смесен: e → a + -te/-t · движение → sein");
+W("phrase", "nennen – nannte – hat genannt", "наричам – нарекох – нарекъл съм", "смесен: e → a + -te/-t");
+W("phrase", "schlafen – schlief – hat geschlafen", "спя – спах – спал съм", "силен глагол");
+W("phrase", "beginnen – begann – hat begonnen", "започвам – започнах – започнал съм", "(в бележките „befinnen“) · be- → без ge-");
+W("phrase", "singen – sang – hat gesungen", "пея – пях – пял съм", "силен: i → a → u");
+W("phrase", "laufen – lief – ist gelaufen", "тичам/вървя – тичах – тичал съм", "движение → sein");
+W("phrase", "gehen – ging – ist gegangen", "отивам – отидох – отишъл съм", "движение → sein");
+V("bringen", "нося, донасям", ["bringe", "bringst", "bringt", "bringen", "bringt", "bringen"], "смесен глагол: brachte · hat gebracht");
+V("rennen", "тичам (бързо)", ["renne", "rennst", "rennt", "rennen", "rennt", "rennen"], "смесен: rannte · ist gerannt");
+V("nennen", "наричам, назовавам", ["nenne", "nennst", "nennt", "nennen", "nennt", "nennen"], "смесен: nannte · hat genannt");
+V("singen", "пея", ["singe", "singst", "singt", "singen", "singt", "singen"], "sang · hat gesungen");
+V("wohnen", "живея (някъде)", ["wohne", "wohnst", "wohnt", "wohnen", "wohnt", "wohnen"], "wohnte · hat gewohnt");
+V("bleiben", "оставам", ["bleibe", "bleibst", "bleibt", "bleiben", "bleibt", "bleiben"], "blieb · ist geblieben");
 
 ITEMS.forEach((it) => {
   it.id = (it.art ? it.art + " " : "") + it.de + "#" + it.type + (it.lesson === 0 ? "@0" : "");

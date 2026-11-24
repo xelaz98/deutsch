@@ -892,6 +892,30 @@ table.mt td{white-space:nowrap} table.mt tr.sie td{border-top:2px solid var(--li
 .srow>span:first-child{width:24px;text-align:center;flex:none}
 #searchBtn{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:10px;width:36px;height:34px;font-size:18px}
 @media (max-width:640px){.ws-row{grid-template-columns:22px 1fr}.ws-a{grid-column:2}.ws-p{padding-top:2px}}
+
+/* Tabellen */
+.tbw{display:grid;grid-template-columns:240px 1fr;gap:22px;max-width:1100px;margin:0 auto;padding-top:14px}
+.tbnav{position:sticky;top:72px;align-self:start;display:flex;flex-direction:column;gap:2px}
+.tbnav button{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:transparent;color:var(--muted);padding:9px 10px;border-radius:10px;font-size:14px}
+.tbnav button:hover{background:var(--soft);color:var(--ink)} .tbnav button.on{background:var(--soft);color:var(--ink);font-weight:600}
+.tbnav em{margin-left:auto;font-style:normal;font-size:12px;opacity:.6} .tbic{width:30px;flex:none;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--accent);text-align:center}
+.tbmain{min-width:0} .tbtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.tblvl{display:flex;gap:4px;background:var(--soft);padding:3px;border-radius:10px} .tblvl button{border:0;background:transparent;color:var(--muted);padding:5px 10px;border-radius:8px;font-size:13px;font-weight:600} .tblvl button.on{background:var(--panel);color:var(--ink)}
+.tbjump{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px} .tbjump a{font-size:12.5px;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px} .tbjump a:hover{color:var(--ink)}
+.tbcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin:14px 0;scroll-margin-top:80px}
+.tbh{display:flex;align-items:flex-start;justify-content:space-between;gap:10px} .tbh h2{font-size:19px;margin:0;letter-spacing:-.015em}
+.lvl{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;flex:none} .lvl.A1{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)} .lvl.A2{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.tbwhy{color:var(--muted);font-size:14.5px;margin:8px 0 12px;line-height:1.55} .tbwhy b{color:var(--ink)}
+.tbscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.tbx{width:100%;border-collapse:collapse;font-size:14.5px;margin:6px 0 10px}
+table.tbx th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line);background:transparent}
+table.tbx td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;cursor:pointer} table.tbx tr:last-child td{border-bottom:0}
+table.tbx td.rh{color:var(--muted);font-weight:600;white-space:nowrap;cursor:default} table.tbx tr:hover td:not(.rh){background:color-mix(in srgb,var(--soft) 60%,transparent)}
+table.tbx.long td{padding:5px 10px}
+.tbtip{background:var(--soft);border-radius:12px;padding:10px 12px;font-size:14px;margin:6px 0 0}
+.tbleg{font-size:12.5px;margin:18px 0}
+@media (max-width:820px){.tbw{grid-template-columns:1fr}.tbnav{position:static;flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px;scrollbar-width:none}.tbnav button{flex:none;white-space:nowrap;padding:7px 10px;background:var(--soft)}.tbnav em{display:none}.tbic{width:auto}
+  .tbcard{padding:14px;border-radius:14px} table.tbx{font-size:13.5px} table.tbx td,table.tbx th{padding:6px 7px}}
 </style>
 </head>
 <body>
@@ -923,6 +947,7 @@ table.mt td{white-space:nowrap} table.mt tr.sie td{border-top:2px solid var(--li
 <script src="mem.js"></script>
 <script src="exam.js"></script>
 <script src="ws.js"></script>
+<script src="tables.js"></script>
 <script src="heute.js"></script>
 <script src="app.js"></script>
 </body>

@@ -2,7 +2,7 @@
 // Кешира кода, картинките и вече чутите звуци. Данните за прогреса са в localStorage — не зависят от това.
 const CACHE = "deutsch-v1";
 const CORE = ["./", "index.html", "translit.js", "emoji.js", "pics.js", "schemes.js", "data.js", "basics.js", "examples.js", "examples2.js", "core.js", "grammar.js", "explain.js",
-  "exercises.js", "dialogs.js", "path.js", "check.js", "mem.js", "exam.js", "ws.js", "heute.js", "app.js"];
+  "exercises.js", "dialogs.js", "path.js", "check.js", "mem.js", "exam.js", "ws.js", "tables.js", "heute.js", "app.js"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).catch(() => {})); self.skipWaiting(); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", (e) => {

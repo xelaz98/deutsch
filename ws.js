@@ -180,11 +180,12 @@ const _exByK = exByK;
 // ═════════ ТЪРСЕНЕ (🔍 или „/“ навсякъде) ═════════
 function searchIndex() {
   const ix = [];
+  TABLES.forEach((x) => ix.push({ t: "Таблица", ic: "▦", l: x.t + " · " + x.lvl, s: (x.t + " " + (x.why || "") + " " + String(x.html).replace(/<[^>]+>/g, " ")).toLowerCase(), go: () => { tabCat = x.cat; tabQ = ""; go("tabellen"); setTimeout(() => document.getElementById("tb-" + x.id)?.scrollIntoView({ block: "start" }), 60); } }));
   GRAMMAR.forEach((g) => ix.push({ t: "Граматика", ic: g.icon, l: g.title, s: (g.title + " " + String(g.html).replace(/<[^>]+>/g, " ").slice(0, 400)).toLowerCase(), go: () => { gTopic = g.id; store.set("gTopic", gTopic); go("grammar"); } }));
   WS.forEach((w) => ix.push({ t: "Работен лист", ic: "📝", l: `${w.src} · ${w.title}`, s: (w.title + " " + w.instr + " " + w.src).toLowerCase(), go: () => startWS(w.id) }));
   EXAMS.forEach((E) => ix.push({ t: "Изпит", ic: E.ic, l: E.t, s: (E.t + " " + E.d).toLowerCase(), go: () => startExam(E.k) }));
   EX_TYPES.filter((x) => x.gen).forEach((x) => ix.push({ t: "Упражнение", ic: x.ic, l: x.t, s: (x.t + " " + (x.d || "")).toLowerCase(), go: () => startEx(x.k, { tab: "lernen", back: () => go("lernen") }) }));
-  [["heute", "Heute — какво учим днес"], ["lernen", "Lernen"], ["dict", "Wortschatz — речник"], ["grammar", "Grammatik"], ["fort", "Fortschritt — напредък"], ["home", "Път по уроци"], ["review", "Преговор, грешките ми"], ["games", "Игри"], ["cards", "Карти"], ["basics", "Основи: азбука, звуци, числа"]]
+  [["tabellen", "Tabellen — всички таблици A1–A2"], ["heute", "Heute — какво учим днес"], ["lernen", "Lernen"], ["dict", "Wortschatz — речник"], ["grammar", "Grammatik"], ["fort", "Fortschritt — напредък"], ["home", "Път по уроци"], ["review", "Преговор, грешките ми"], ["games", "Игри"], ["cards", "Карти"], ["basics", "Основи: азбука, звуци, числа"]]
     .forEach(([k, l]) => ix.push({ t: "Раздел", ic: "→", l, s: l.toLowerCase(), go: () => go(k) }));
   return ix;
 }

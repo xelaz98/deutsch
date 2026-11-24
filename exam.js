@@ -8,10 +8,11 @@ const QSEEN = (() => { let a; try { a = JSON.parse(localStorage.getItem("dl:qsee
 const qKey = (q) => (q.exk || "") + "|" + String(q.full || (q.sentences && q.sentences.join(" ")) || q.answer || "").slice(0, 160) + "|" + String(q.prompt || q.task || "").replace(/<[^>]+>/g, "").slice(0, 80);
 function qRemember(q) { const k = qKey(q); if (QSEEN.set.has(k)) return; QSEEN.set.add(k); QSEEN.list.push(k); if (QSEEN.list.length > 600) QSEEN.set.delete(QSEEN.list.shift()); try { localStorage.setItem("dl:qseen", JSON.stringify(QSEEN.list)); } catch (e) {} }
 const sessSeen = new Set(); // в рамките на една сесия — никога същия въпрос
-EX_TYPES.forEach((t) => { const g = t.gen; if (g && !g._w) { t.gen = (...a) => {
+function wrapGens() { EX_TYPES.forEach((t) => { const g = t.gen; if (g && !g._w) { t.gen = (...a) => {
   let q, best = null;
   for (let n = 0; n < 10; n++) { q = g(...a); if (!q) return q; if (!q.exk) q.exk = t.k; const k = qKey(q); if (!sessSeen.has(k) && !QSEEN.set.has(k)) break; if (!best && !sessSeen.has(k)) best = q; q = null; }
-  q = q || best || g(...a); if (q) { if (!q.exk) q.exk = t.k; sessSeen.add(qKey(q)); qRemember(q); } return q; }; t.gen._w = 1; } });
+  q = q || best || g(...a); if (q) { if (!q.exk) q.exk = t.k; sessSeen.add(qKey(q)); qRemember(q); } return q; }; t.gen._w = 1; } }); }
+wrapGens();
 
 const LEARN_TYPES = ["noun", "verb", "adj", "adv", "word", "phrase", "q"];
 const isLearned = (it) => !!((typeof MEM !== "undefined" && MEM.get(it.id) && MEM.get(it.id).last) || (S.srs[it.id]));
@@ -345,4 +346,89 @@ function startExam(k) {
 function saveExam(k, pct, s, ms) {
   const cats = {}; s.wrong.forEach(({ q }) => { const c = q.errCat || EX_CAT[q.exk] || "word"; cats[c] = (cats[c] || 0) + 1; });
   const a = store.get("exams", []); a.push({ t: Date.now(), k, pct, n: s.qs.length, ms, cats }); if (a.length > 300) a.splice(0, a.length - 300); store.set("exams", a);
+}
+
+// ───────── урок 16: ремонт/телефон, противоположности (C1), dürfen, смесени глаголи ─────────
+Object.assign(V3, {
+  bringen: ["brachte", "h", "gebracht", "нося"], rennen: ["rannte", "s", "gerannt", "тичам"], nennen: ["nannte", "h", "genannt", "наричам"], singen: ["sang", "h", "gesungen", "пея"],
+  wohnen: ["wohnte", "h", "gewohnt", "живея"], aufmachen: ["machte auf", "h", "aufgemacht", "отварям"], zumachen: ["machte zu", "h", "zugemacht", "затварям"], anmachen: ["machte an", "h", "angemacht", "светвам"],
+  ausmachen: ["machte aus", "h", "ausgemacht", "изгасям"], aufwachen: ["wachte auf", "s", "aufgewacht", "събуждам се"], aufhören: ["hörte auf", "h", "aufgehört", "спирам"], abfahren: ["fuhr ab", "s", "abgefahren", "тръгвам"],
+  vorbeikommen: ["kam vorbei", "s", "vorbeigekommen", "отбивам се"], umziehen: ["zog um", "s", "umgezogen", "местя се"], erwarten: ["erwartete", "h", "erwartet", "очаквам"], verbinden: ["verband", "h", "verbunden", "свързвам"],
+  vergleichen: ["verglich", "h", "verglichen", "сравнявам"], verstehen: ["verstand", "h", "verstanden", "разбирам"], empfehlen: ["empfahl", "h", "empfohlen", "препоръчвам"], besprechen: ["besprach", "h", "besprochen", "обсъждам"],
+  reparieren: ["reparierte", "h", "repariert", "поправям"], einschlafen: V3.einschlafen,
+});
+Object.assign(PERF, { gebracht: ["bringen", "h", "s"], gerannt: ["rennen", "s", "s"], genannt: ["nennen", "h", "s"], aufgemacht: ["aufmachen", "h", "sep"], zugemacht: ["zumachen", "h", "sep"], angemacht: ["anmachen", "h", "sep"],
+  ausgemacht: ["ausmachen", "h", "sep"], aufgewacht: ["aufwachen", "s", "sep"], aufgehört: ["aufhören", "h", "sep"], abgefahren: ["abfahren", "s", "sep"], vorbeigekommen: ["vorbeikommen", "s", "sep"], umgezogen: ["umziehen", "s", "sep"],
+  erwartet: ["erwarten", "h", "ins"], verbunden: ["verbinden", "h", "ins"], verglichen: ["vergleichen", "h", "ins"], verstanden: ["verstehen", "h", "ins"], empfohlen: ["empfehlen", "h", "ins"], besprochen: ["besprechen", "h", "ins"],
+  gesandt: ["senden", "h", "s"] });
+Object.assign(SEP_PRE14, { vorbei: 1, um: 1 });
+Object.keys(PRAETF).forEach((k) => delete PRAETF[k]);
+Object.keys(V3).forEach((inf) => PERS.forEach((p, i) => { const f = praetF(inf, i).split(" ")[0].toLowerCase(), L = (PRAETF[f] = PRAETF[f] || []); let e = L.find((x) => x.inf === inf); if (!e) L.push((e = { inf, sep: V3[inf][0].split(" ")[1], p: [] })); if (!e.p.includes(p)) e.p.push(p); }));
+const Z16 = [
+  ["Maria", 2, "aufmachen", "die Tür", "Мария отваря вратата.", "Мария отвори вратата."], ["Heinz", 2, "zumachen", "die Tür", "Хайнц затваря вратата.", "Хайнц затвори вратата."],
+  ["Ich", 0, "anmachen", "das Licht", "Светвам лампата.", "Светнах лампата."], ["Du", 1, "ausmachen", "den Fernseher", "Изключваш телевизора.", "Изключи телевизора."],
+  ["Wir", 3, "aufwachen", "um sechs Uhr", "Събуждаме се в шест.", "Събудихме се в шест."], ["Die Arbeit", 2, "aufhören", "um 17 Uhr", "Работата свършва в 17 ч.", "Работата свърши в 17 ч."],
+  ["Der Zug", 2, "abfahren", "um acht Uhr", "Влакът тръгва в осем.", "Влакът тръгна в осем."], ["Ich", 0, "vorbeikommen", "morgen", "Минавам утре.", "Минах (вчера)."],
+  ["Die Praxis", 2, "umziehen", "im August", "Кабинетът се мести през август.", "Кабинетът се премести през август."], ["Wir", 3, "erwarten", "den Monteur", "Очакваме техника.", "Очаквахме техника."],
+  ["Der Monteur", 2, "reparieren", "die Waschmaschine", "Техникът поправя пералнята.", "Техникът поправи пералнята."], ["Ich", 0, "bringen", "dir einen Kaffee", "Нося ти кафе.", "Донесох ти кафе."],
+  ["Er", 2, "rennen", "zum Bus", "Той тича към автобуса.", "Той тичаше към автобуса."], ["Wir", 3, "nennen", "den Hund Max", "Наричаме кучето Макс.", "Нарекохме кучето Макс."],
+  ["Der Chor", 2, "singen", "schöne Lieder", "Хорът пее хубави песни.", "Хорът пя хубави песни."], ["Anton", 2, "wohnen", "in Frankfurt", "Антон живее във Франкфурт.", "Антон живееше във Франкфурт."],
+  ["Ich", 0, "verstehen", "die Frage nicht", "Не разбирам въпроса.", "Не разбрах въпроса."], ["Der Kellner", 2, "empfehlen", "den Fisch", "Сервитьорът препоръчва рибата.", "Сервитьорът препоръча рибата."],
+  ["Wir", 3, "besprechen", "das Problem", "Обсъждаме проблема.", "Обсъдихме проблема."], ["Ihr", 4, "vergleichen", "die Preise", "Сравнявате цените.", "Сравнихте цените."],
+  ["Einen Moment, ich", 0, "verbinden", "Sie", "Един момент, свързвам Ви.", "Свързах Ви."],
+];
+Z16.forEach((z) => { if (!z[0].includes(",") && presF(z[2], z[1])) { Z3.push(z); const r = z3(z); if (PERF[r.part]) PERF_S.push([r.perf, z[5]]); } });
+// C1: противоположности
+const GEGEN = [["aufmachen", "zumachen", "die Tür"], ["anmachen", "ausmachen", "das Licht"], ["einschalten", "ausschalten", "den Fernseher"], ["einschlafen", "aufwachen", "um 5.00 Uhr"], ["anfangen", "aufhören", "um 15.00 Uhr"], ["ankommen", "abfahren", "um acht Uhr"]];
+const GEGEN_S = [["Maria", 2], ["Heinz", 2], ["Ich", 0], ["Wir", 3], ["Du", 1]];
+function genGegen() {
+  const [a, b, mid] = rnd(GEGEN), dir = Math.random() < 0.5, [x, y] = dir ? [a, b] : [b, a], [s, i] = rnd(GEGEN_S);
+  const subj = mid.startsWith("um") ? (x === "anfangen" || x === "aufhören" ? ["Die Arbeit", 2] : [s, i]) : [s, i];
+  const fx = presF(x, subj[1]), fy = presF(y, subj[1]), sx = `${subj[0]} ${fx.split(" ")[0]} ${mid} ${fx.split(" ")[1]}.`, sy = `${subj[0]} ${fy.split(" ")[0]} ${mid} ${fy.split(" ")[1]}.`;
+  const wrong = shuffle(GEGEN.flatMap((g) => g).filter((v) => v !== y && v !== x)).slice(0, 3);
+  return { kind: "mc", mode: "use", exk: "gegen", task: "Кое е противоположното?", prompt: `<div class="exs">${esc(sx)}</div><div class="meta">Противоположното: ${esc(subj[0])} … ${esc(mid)} …</div>`, options: shuffle([y, ...wrong]), answer: y,
+    say: sy, full: sy, item: ITEMS.find((v) => v.type === "verb" && v.de === y), keys: true, explain: `<b>${esc(x)}</b> ≠ <b>${esc(y)}</b>. В изречение: ${esc(sy)} — представката (${esc(fy.split(" ")[1])}) отива в края.` };
+}
+// dürfen: молба за разрешение / забрана
+const DUERF = [["___ ich dich später anrufen?", 0, "Darf", "Може ли да ти се обадя по-късно?"], ["Hier ___ man nicht rauchen.", 2, "darf", "Тук не се пуши."], ["___ ich das Fenster aufmachen?", 0, "Darf", "Може ли да отворя прозореца?"],
+  ["Du ___ heute nicht fernsehen.", 1, "darfst", "Днес не бива да гледаш телевизия."], ["Die Kinder ___ im Park spielen.", 5, "dürfen", "Децата могат (им е позволено) да играят в парка."], ["___ wir hier parken?", 3, "Dürfen", "Може ли да паркираме тук?"],
+  ["Ihr ___ jetzt nach Hause gehen.", 4, "dürft", "Можете вече да си тръгнете."], ["Im Kino ___ man nicht telefonieren.", 2, "darf", "В киното не се говори по телефона."]];
+const DF = ["darf", "darfst", "darf", "dürfen", "dürft", "dürfen"];
+function genDuerfen() {
+  const [s, i, ans, bg] = rnd(DUERF), cap0 = s.startsWith("___"), full = s.replace("___", ans);
+  const opts = [...new Set([...DF, "kann", "muss"].map((x) => (cap0 ? cap(x) : x)))].filter((x) => x !== ans);
+  return { kind: "mc", exk: "duerfen", errCat: "conj", task: "dürfen: коя форма?", prompt: `<div class="exs">${esc(s)}</div>`, options: shuffle([ans, ...shuffle(opts).slice(0, 3)]), answer: ans, say: full, full, bg, keys: true,
+    explain: `dürfen = позволено е: ich <b>darf</b>, du <b>darfst</b>, er <b>darf</b> (без -t!), wir <b>dürfen</b>, ihr <b>dürft</b>, sie <b>dürfen</b>. <b>nicht dürfen</b> = забранено е. <b>Darf ich …?</b> = учтива молба. Вторият глагол е цял в края.` };
+}
+// смесени глаголи: bringen – brachte – gebracht (сменят корена като силните, но имат -te/-t като слабите)
+const MIXED = [["bringen", "brachte", "hat gebracht"], ["denken", "dachte", "hat gedacht"], ["kennen", "kannte", "hat gekannt"], ["nennen", "nannte", "hat genannt"], ["rennen", "rannte", "ist gerannt"], ["wissen", "wusste", "hat gewusst"], ["senden", "sandte", "hat gesandt"]];
+function genMixed() {
+  const [inf, p, pp] = rnd(MIXED), slot = rnd([1, 2]), ans = slot === 1 ? p : pp, line = slot === 1 ? `${inf} – ___ – ${pp}` : `${inf} – ${p} – ___`;
+  return { kind: "type", mode: "recall", exk: "mixed", errCat: "vform", task: "Смесен глагол: напиши липсващата форма", prompt: `<div class="exs">${esc(line)}</div>`, answer: ans, say: `${inf} – ${p} – ${pp}`, full: `${inf} – ${p} – ${pp}`,
+    check: (v) => CK.checkDe(v, ans, { alts: inf === "senden" ? [slot === 1 ? "sendete" : "hat gesendet"] : [] }),
+    explain: `<b>Смесени глаголи</b> (bringen, denken, kennen, nennen, rennen, wissen): сменят корена като силните (<i>bring → brach</i>), но имат окончанията на слабите: <b>-te</b> в Präteritum и <b>ge-…-t</b> в Perfekt. ${esc(inf)} – ${esc(p)} – ${esc(pp)}.` };
+}
+const TERM16 = [["Kann ich bitte Frau Klein ___? (sprechen)", "sprechen"], ["Einen Moment, bitte. Ich ___ Sie. (verbinden)", "verbinde"], ["Morgen? Nein, das ist leider nicht ___.", "möglich"], ["Gut, dann ___ ich den Monteur am Freitag. (erwarten)", "erwarte"],
+  ["Vielen Dank für Ihren ___.", "Anruf"], ["Ich habe Ihre ___ gelesen.", "Anzeige"], ["Was kann ich für Sie ___?", "tun"], ["___ es am Mittwoch? – Nein, am Mittwoch ___ es leider nicht.", "Geht geht"], ["Ich möchte einen Termin für die ___ vereinbaren.", "Reparatur"], ["Welches ___ haben wir heute?", "Datum"]];
+function genTerm16() {
+  const [s, a] = rnd(TERM16); let full = s; a.split(" ").forEach((p) => (full = full.replace("___", p))); full = full.replace(/\s*\([^)]*\)/, "");
+  return { kind: "type", mode: "use", exk: "term16", task: "Попълни (телефон, ремонт)", prompt: `<div class="exs">${esc(s)}</div>`, answer: a, say: full, full, check: (v) => CK.checkDe(v, a), explain: `${esc(full)}` };
+}
+EX_TYPES.push(
+  { k: "gegen", skill: "Думи", ic: "↔️", t: "Противоположности: aufmachen ≠ zumachen (C1)", d: "Maria macht die Tür auf. → zu", gen: genGegen },
+  { k: "duerfen", skill: "Глаголи и словоред", ic: "🙋", t: "dürfen: Darf ich …?", d: "___ ich dich später anrufen? → Darf", gen: genDuerfen },
+  { k: "mixed", skill: "Глаголи и словоред", ic: "🔀", t: "Смесени глаголи: bringen – brachte – gebracht", d: "rennen – ___ – ist gerannt", gen: genMixed },
+  { k: "term16", skill: "Четене", ic: "📞", t: "Телефон и ремонт: попълни думата", d: "Ich ___ Sie. → verbinde", gen: genTerm16 },
+);
+wrapGens(); // и за всички упражнения, добавени по-горе в този файл
+UNIT_MAP[16] = { g: ["perfektbildung", "trennbar", "modal"], ex: ["gegen", "duerfen", "mixed", "term16", "termin", "c10", "stamm", "praet", "perfhs", "partizip", "t5"] };
+G2EX.modal = [...new Set([...(G2EX.modal || []), "duerfen"])];
+UNITS.forEach((U) => { U.g = ((UNIT_MAP[U.id] || {}).g || []).filter((id) => GRAMMAR.some((x) => x.id === id)); U.ex = ((UNIT_MAP[U.id] || {}).ex || []).filter(exByK); });
+function ex16Texts() {
+  const out = [];
+  Z16.forEach((z) => { if (z[0].includes(",") || !presF(z[2], z[1])) return; const r = z3(z); out.push(r.pres, r.praet, r.perf); });
+  GEGEN.forEach(([a, b, mid]) => GEGEN_S.concat([["Die Arbeit", 2]]).forEach(([s, i]) => [a, b].forEach((v) => { const f = presF(v, i); out.push(`${s} ${f.split(" ")[0]} ${mid} ${f.split(" ")[1]}.`); })));
+  DUERF.forEach(([s, , a]) => out.push(s.replace("___", a))); MIXED.forEach(([a, b, c]) => out.push(`${a} – ${b} – ${c}`));
+  TERM16.forEach(([s, a]) => { let f = s; a.split(" ").forEach((p) => (f = f.replace("___", p))); out.push(f.replace(/\s*\([^)]*\)/, "")); });
+  return out;
 }

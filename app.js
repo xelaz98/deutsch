@@ -212,6 +212,7 @@ function audioTexts() {
   if (typeof ex14Texts === "function") ex14Texts().forEach((t) => texts.add(t));
   if (typeof ex15Texts === "function") ex15Texts().forEach((t) => texts.add(t));
   if (typeof exKap5Texts === "function") exKap5Texts().forEach((t) => texts.add(t));
+  if (typeof ex16Texts === "function") ex16Texts().forEach((t) => texts.add(t));
   if (typeof HOMEWORK !== "undefined") HOMEWORK.forEach((h) => { texts.add(h.de); h.sample.forEach(([de]) => texts.add(de)); });
   SOUNDS.forEach(([, list]) => list.forEach(([, , , ex]) => ex.forEach((w) => texts.add(w))));
   [...Array(21).keys(), 30, 40, 50, 60, 70, 80, 90, 100, 1000].forEach((n) => texts.add(num2de(n)));
@@ -466,10 +467,10 @@ document.addEventListener("dblclick", (e) => {
 });
 
 // ───────── рамка ─────────
-const TABS = [["heute", "◎", "Heute"], ["lernen", "▶", "Lernen"], ["dict", "Aa", "Wortschatz"], ["grammar", "§", "Grammatik"], ["fort", "↗", "Fortschritt"],
+const TABS = [["heute", "◎", "Heute"], ["lernen", "▶", "Lernen"], ["dict", "Aa", "Wortschatz"], ["grammar", "§", "Grammatik"], ["tabellen", "▦", "Tabellen"], ["fort", "↗", "Fortschritt"],
   ["home", "🧭", "Път по уроци"], ["review", "🔁", "Преговор"], ["games", "🎮", "Игри"],
   ["ex", "🏋️", "Всички упражнения"], ["cards", "🃏", "Карти"], ["basics", "🔤", "Основи"], ["verbs", "⚙️", "Глаголи"], ["quiz", "✍️", "Бърз тест"]];
-const TOP_MAIN = ["heute", "lernen", "dict", "grammar", "fort"], BOTTOM_MAIN = TOP_MAIN;
+const TOP_MAIN = ["heute", "lernen", "dict", "grammar", "tabellen", "fort"], BOTTOM_MAIN = TOP_MAIN;
 const tabInfo = (k) => TABS.find((t) => t[0] === k);
 if (!tabInfo(S.tab)) S.tab = "heute";
 function renderNav() {
@@ -588,7 +589,7 @@ function render() {
   stopAudio();
   keyHandler = null; view.onclick = null; activeQuiz = null;
   if (S.tab !== "games") stopGame();
-  ({ heute: renderHeute, lernen: renderLernen, fort: renderFort, home: renderPath, review: renderReview, games: renderGames, basics: renderBasics, ex: renderExercises, dict: renderWort, cards: renderCardsHome, quiz: renderQuizHome, verbs: renderVerbs, grammar: renderGrammar })[S.tab]();
+  ({ heute: renderHeute, lernen: renderLernen, fort: renderFort, tabellen: renderTabellen, home: renderPath, review: renderReview, games: renderGames, basics: renderBasics, ex: renderExercises, dict: renderWort, cards: renderCardsHome, quiz: renderQuizHome, verbs: renderVerbs, grammar: renderGrammar })[S.tab]();
 }
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
