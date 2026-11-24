@@ -2,7 +2,8 @@
 <html lang="bg">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0c0f">
 <title>Deutsch lernen</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'><rect width='3' height='1' fill='%23111'/><rect y='1' width='3' height='1' fill='%23dd0000'/><rect y='2' width='3' height='1' fill='%23ffce00'/></svg>">
 <style>
@@ -761,6 +762,113 @@ img.pic{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-al
 .exgrp{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
 .exgrp summary{cursor:pointer}
 @media (max-width:640px){.pnext{max-width:none;flex-direction:row!important;align-items:center!important;text-align:left!important;justify-content:flex-start!important}.pnext kbd{display:none}.mem{grid-template-columns:repeat(3,1fr)}.boxes{grid-template-columns:repeat(3,1fr)}.usteps{grid-template-columns:1fr 1fr}.ptest .btn,.plast .btn{width:100%}}
+
+/* ═════════ v4 · DARK-FIRST, МИНИМАЛИСТИЧНО ═════════ */
+:root,:root[data-theme="dark"]{
+  --bg:#0b0c0f; --panel:#121418; --soft:#191c21; --line:#23262d; --ink:#e7e9ee; --muted:#8a8f9a;
+  --accent:#9aa5ff; --accent-2:rgba(154,165,255,.10); --hl:#f3b544;
+  --ok:#3ecf8e; --mid:#f1b83a; --bad:#f2706b; --r:16px; --shadow:none;
+  --der:#79a6ff; --der-bg:rgba(121,166,255,.12); --die:#ff7a93; --die-bg:rgba(255,122,147,.12); --das:#4fd58f; --das-bg:rgba(79,213,143,.12);
+  --pl:#c29bff; --pl-bg:rgba(194,155,255,.12); --none:#9aa0aa; --none-bg:#1b1e24; color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#f5f6f8; --panel:#fff; --soft:#eef0f4; --line:#e3e6ec; --ink:#15171c; --muted:#6a6f7b; --accent:#4f46e5; --accent-2:#eef0ff;
+  --ok:#16a34a; --mid:#b7791f; --bad:#dc2626; --der:#2563eb; --der-bg:#e8f0ff; --die:#dc2647; --die-bg:#ffeaee; --das:#15924a; --das-bg:#e6f7ec; --pl:#8b3fd9; --pl-bg:#f3eafe; --none-bg:#efeee9; color-scheme:light;
+}
+html,body{background:var(--bg);color:var(--ink);font-feature-settings:"cv11","ss01"}
+header#top{background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line)}
+.topnav button{font-size:14px;letter-spacing:-.005em;border-radius:10px}
+.topnav button .ni,#tabbar .ni{font-weight:700;font-family:ui-monospace,"SF Mono",Menlo,monospace;opacity:.8}
+.topnav button.on{background:var(--soft);color:var(--ink)}
+#tabbar button.on{color:var(--ink);background:var(--soft)}
+#tabbar .ni{font-size:17px}
+.hbtn#moreBtn{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:10px;width:36px;height:34px;font-size:16px}
+.card,.excard{background:var(--panel);border:1px solid var(--line);box-shadow:none}
+.btn{background:var(--soft);border:1px solid var(--line);color:var(--ink);border-radius:12px}
+.btn:hover{border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.ok{background:color-mix(in srgb,var(--ok) 16%,var(--panel));border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.btn.bad{background:color-mix(in srgb,var(--bad) 14%,var(--panel));border-color:color-mix(in srgb,var(--bad) 35%,var(--line))}
+.opt{background:var(--panel);border:1px solid var(--line)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--panel))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--panel))}
+.answer{background:var(--panel);border:1px solid var(--line);font-size:20px}
+.answer:focus{border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.answer.long{font-size:17px;text-align:left}
+.answer.typo{border-color:var(--mid)}
+.answer.wrong{border-color:var(--bad)}
+textarea.answer.wr{font:16px/1.6 inherit;text-align:left;resize:vertical;min-height:110px;color:var(--ink)}
+.uml{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.uml .hintb,.uml .checkb{width:auto!important;padding:0 12px;font-size:13px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--muted);height:34px}
+.uml .checkb{margin-left:auto;background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+.exverd{margin:8px 0;padding:8px 12px;border-radius:10px;background:var(--soft);font-size:14.5px;border-left:3px solid var(--ok)}
+.exverd.mid{border-left-color:var(--mid)} .exverd.bad{border-left-color:var(--bad)}
+.exgiven{font-weight:400;font-size:14px;color:var(--muted);margin-top:4px}
+#exover{margin:4px 0 6px;display:inline-block}
+.wnotes{margin:6px 0;padding-left:20px} .wnotes li{margin:3px 0}
+.wmodel{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:15px}
+.ok{color:var(--ok)} .mid{color:var(--mid)} .bad{color:var(--bad)}
+b.ok,b.mid,b.bad,em.ok,em.mid,em.bad,small.bad{font-style:normal}
+/* състояние на думите: зелено усвоено · жълто учиш · червено бъркаш */
+.dot.st-ok{background:var(--ok)} .dot.st-learn{background:var(--mid)} .dot.st-bad{background:var(--bad)} .dot.st-new{background:var(--line)}
+.gm{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.gm.ok{background:var(--ok)} .gm.mid{background:var(--mid)} .gm.bad{background:var(--bad)}
+/* Heute / Lernen / Fortschritt */
+.hx{max-width:720px;margin:0 auto;padding-top:14px}
+.hx-date{color:var(--muted);font-size:13px;text-transform:capitalize}
+.hx-h1{font-size:30px;letter-spacing:-.03em;margin:2px 0 18px;font-weight:700}
+.hx-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hx-k{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600;margin-bottom:8px}
+.hx-sec{margin:26px 0 10px}
+.hx-main{padding:20px;border-radius:20px;background:var(--panel);border:1px solid var(--line);margin-bottom:12px}
+.hx-list{margin:0 0 16px;padding:0;list-style:none} .hx-list li{padding:7px 0;border-bottom:1px solid var(--line);font-size:15px} .hx-list li:last-child{border:0}
+.hx-go{width:100%;border:0;border-radius:14px;padding:16px 18px;background:var(--ink);color:var(--bg);font-size:17px;font-weight:650;display:flex;justify-content:space-between;align-items:center;transition:transform .12s ease,opacity .2s}
+.hx-go span{font-weight:500;opacity:.6;font-size:14px} .hx-go:active{transform:scale(.99)}
+.hx-card{padding:16px 18px;border-radius:18px;background:var(--panel);border:1px solid var(--line);margin-bottom:12px}
+.hx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer}
+.hx-row .btn{flex:none}
+.hx-card .hx-row{flex-wrap:wrap}
+.hx-weak{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)} .hx-weak:last-child{border:0} .hx-weak>div{flex:1}
+.hx-wdot{width:8px;height:8px;border-radius:50%;background:var(--bad);flex:none}
+.hx-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hx-stats>div:not(.hx-level){display:flex;flex-direction:column} .hx-stats b{font-size:26px;letter-spacing:-.02em;font-weight:650;font-variant-numeric:tabular-nums} .hx-stats span{font-size:12.5px;color:var(--muted)}
+.hx-stats:has(>div:nth-child(4):not(.hx-level)){grid-template-columns:repeat(4,1fr)}
+.hx-level{grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:12px;margin-top:6px;border-top:1px solid var(--line);font-size:13.5px}
+.hx-week{display:inline-flex;gap:4px} .hx-week i{width:10px;height:10px;border-radius:3px;background:var(--line)} .hx-week i.on{background:var(--ok)}
+.hx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.hx-tile{text-align:left;padding:14px;border-radius:14px;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;gap:4px;transition:border-color .15s}
+.hx-tile:hover{border-color:color-mix(in srgb,var(--ink) 22%,var(--line))} .hx-tile b{font-size:15px} .hx-tile span{font-size:13px;color:var(--muted)} .hx-tile em{font-size:12px;font-style:normal;font-weight:600}
+.hx-kap{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--panel)}
+.hx-kap .link{display:block;text-align:left;padding:3px 0;font-size:14px}
+.hx-teil{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px}
+.hx-filters{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.hx-filters select,.imp select,.imp input,.imp textarea{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;min-width:0;width:100%}
+.hx-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:4px 0 6px} .hx-legend .dot{display:inline-block;margin-right:5px;vertical-align:middle}
+.hx-count{font-size:13px;margin:6px 0}
+.hx-chart{width:100%;height:110px;display:block} .hx-chart .cb{fill:color-mix(in srgb,var(--ink) 18%,transparent)} .hx-chart .cl{stroke:var(--ok)}
+.hx-gl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0} .hx-gl>b{font-size:13px;margin-right:4px}
+.pill.ok,.pill.mid,.pill.bad{cursor:pointer;border:1px solid var(--line)}
+.hx-ex{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px} .hx-ex:last-child{border:0} .hx-ex b{margin-left:6px}
+.skills{display:grid;gap:6px;margin:6px 0}
+.sk{display:grid;grid-template-columns:minmax(130px,170px) 1fr 70px;align-items:center;gap:10px;font-size:13.5px}
+.sk i{height:6px;border-radius:4px;background:var(--soft);overflow:hidden;display:block} .sk i b{display:block;height:100%;border-radius:4px;background:var(--muted)}
+.sk i b.ok{background:var(--ok)} .sk i b.mid{background:var(--mid)} .sk i b.bad{background:var(--bad)} .sk em{font-style:normal;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.hhist{display:flex;gap:3px;align-items:center;flex-wrap:wrap;margin-top:6px} .hh{font-size:13px} .hh.ok{color:var(--ok)} .hh.mid{color:var(--mid)} .hh.bad{color:var(--bad)}
+/* внасяне на думи */
+.imp{display:grid;gap:8px} .imp code{background:var(--soft);padding:1px 5px;border-radius:5px;font-size:12.5px}
+.imp textarea{font-family:ui-monospace,Menlo,monospace;font-size:13.5px}
+#impNew{display:grid;grid-template-columns:2fr 1fr;gap:6px}
+.imp-sum{font-size:13.5px;margin:6px 0}
+.imp-row{border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;gap:6px;margin-bottom:6px} .imp-row.flag{border-color:color-mix(in srgb,var(--mid) 50%,var(--line))}
+.imp-l{display:flex;gap:6px;align-items:center} .imp-l select{width:auto;flex:none}
+.imp-v{font-size:12.5px} .imp-v input{width:120px;display:inline-block;padding:4px 6px} .imp-v select{width:auto;display:inline-block;padding:4px}
+.imp-flag{font-size:12.5px;color:var(--mid)}
+@media (max-width:640px){
+  .hx-h1{font-size:26px} .hx-stats b{font-size:22px} .hx-filters{grid-template-columns:1fr 1fr} .hx-filters select:first-child{grid-column:1/-1}
+  .sk{grid-template-columns:110px 1fr 54px;font-size:12.5px} .hx-grid,.hx-kap{grid-template-columns:1fr 1fr} .hx-tile{padding:12px}
+  #tabbar .nl{font-size:10.5px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -768,7 +876,7 @@ img.pic{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-al
   <div class="hrow">
     <button class="brand"><span class="flag"></span>Deutsch</button>
     <nav id="nav" class="topnav"></nav>
-    <div class="hright"><button id="lessonBtn" class="hbtn" hidden></button><span id="stats" class="streak"></span></div>
+    <div class="hright"><button id="lessonBtn" class="hbtn" hidden></button><span id="stats" class="streak"></span><button id="moreBtn" class="hbtn" title="Още: път по уроци, игри, карти, настройки">☰</button></div>
   </div>
 </header>
 <main class="wrap" id="view"></main>
@@ -782,11 +890,16 @@ img.pic{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-al
 <script src="basics.js"></script>
 <script src="examples.js"></script>
 <script src="examples2.js"></script>
+<script src="core.js"></script>
 <script src="grammar.js"></script>
 <script src="explain.js"></script>
 <script src="exercises.js"></script>
 <script src="dialogs.js"></script>
 <script src="path.js"></script>
+<script src="check.js"></script>
+<script src="mem.js"></script>
+<script src="exam.js"></script>
+<script src="heute.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

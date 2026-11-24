@@ -1710,3 +1710,4 @@ Object.assign(LEX, {
   spaghetti: "спагети", kollegen: "колеги (der Kollege)", gäste: "гости (der Gast)", brot: "хляб", müde: "уморен", park: "парк",
 });
 Object.assign(LEX, { sahen: "видяхме, гледахме (sehen)", musste: "трябваше (müssen)", reiche: "богати (reich)", drück: "натисни! (drücken)", lösch: "изтрий! (löschen)", füg: "постави! (einfügen)" });
+Object.assign(LEX, { texte: "текстове (der Text)", krause: "Краузе (фамилия)", abholen: "вземам (някого от някъде)", geschmeckt: "харесал на вкус (schmecken)", petrova: "Петрова" });

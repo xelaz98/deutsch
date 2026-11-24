@@ -5,6 +5,7 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem("dl:" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem("dl:" + k, JSON.stringify(v)); } catch {} },
 };
+document.documentElement.dataset.theme = store.get("theme", "dark");
 const S = {
   tab: store.get("tab", "home"),
   lessons: new Set(store.get("lessons", [1, 2, 3])),
@@ -210,6 +211,7 @@ function audioTexts() {
   if (typeof DIALOGS !== "undefined") DIALOGS.forEach((d) => d.lines.forEach((l) => texts.add(l[1])));
   if (typeof ex14Texts === "function") ex14Texts().forEach((t) => texts.add(t));
   if (typeof ex15Texts === "function") ex15Texts().forEach((t) => texts.add(t));
+  if (typeof exKap5Texts === "function") exKap5Texts().forEach((t) => texts.add(t));
   if (typeof HOMEWORK !== "undefined") HOMEWORK.forEach((h) => { texts.add(h.de); h.sample.forEach(([de]) => texts.add(de)); });
   SOUNDS.forEach(([, list]) => list.forEach(([, , , ex]) => ex.forEach((w) => texts.add(w))));
   [...Array(21).keys(), 30, 40, 50, 60, 70, 80, 90, 100, 1000].forEach((n) => texts.add(num2de(n)));
@@ -433,14 +435,16 @@ function openWord(id) {
     <h4>Обяснено просто</h4>${explainHTML(it)}
     ${it.type === "verb" ? `<h4>Спрежение — сегашно време <span class="muted">(цъкни ред, за да го чуеш)</span></h4><div class="sh-cj">${conjTable(it)}</div>` : ""}
     ${exs.length ? `<h4>Как се използва <span class="muted">(цветовете показват кое на кое отговаря · цъкни дума за „Защо?“)</span></h4>${exs.map(([d, g], k) => sentHTML(d, g, it, { bd: k === 0 ? "full" : "lite" })).join("")}` : ""}
-    <div class="sh-foot"><span class="muted">${b < 0 ? "Нова дума" : "Ниво " + b + "/5"}</span>
+    ${typeof wordHistoryHTML === "function" ? wordHistoryHTML(it) : ""}
+    <div class="sh-foot"><span class="muted">${typeof ST_TXT !== "undefined" ? ST_TXT[MEM.state(it.id)] : b < 0 ? "Нова дума" : "Ниво " + b + "/5"}</span>
       <button class="btn" data-train="${esc(it.id)}">🏋️ Тренирай</button><button class="btn bad" data-gr="0">Не я знам</button><button class="btn ok" data-gr="2">Знам я ✓</button></div>
   </aside>`;
   document.body.appendChild(el);
   requestAnimationFrame(() => el.classList.add("on"));
   el.querySelector(".sh-bg").onclick = () => closeSheet();
   el.querySelector(".sh-x").onclick = () => closeSheet();
-  el.querySelector(".sh-foot").onclick = (e) => { const g = e.target.closest("[data-gr]"); if (g) { grade(it, +g.dataset.gr); toast(g.dataset.gr === "2" ? "✓ Отбелязана като научена" : "Ще я повтаряш по-често"); closeSheet(); } };
+  el.querySelector(".sh-foot").onclick = (e) => { const g = e.target.closest("[data-gr]"); if (g) { grade(it, +g.dataset.gr); MEM.record(it.id, "rec", g.dataset.gr === "2"); toast(g.dataset.gr === "2" ? "✓ Записано — ще я проверя с писане" : "Ще я повтаряш по-често"); closeSheet(); } };
+
   sheetPrevKeys = keyHandler;
   keyHandler = (e) => { if (e.key === "Escape") { e.preventDefault(); closeSheet(); } };
   speak(deFull(it), { auto: true });
@@ -462,20 +466,22 @@ document.addEventListener("dblclick", (e) => {
 });
 
 // ───────── рамка ─────────
-const TABS = [["home", "🧭", "Път"], ["review", "🔁", "Преговор"], ["games", "🎮", "Игри"], ["grammar", "📐", "Граматика"], ["dict", "📖", "Речник"],
+const TABS = [["heute", "◎", "Heute"], ["lernen", "▶", "Lernen"], ["dict", "Aa", "Wortschatz"], ["grammar", "§", "Grammatik"], ["fort", "↗", "Fortschritt"],
+  ["home", "🧭", "Път по уроци"], ["review", "🔁", "Преговор"], ["games", "🎮", "Игри"],
   ["ex", "🏋️", "Всички упражнения"], ["cards", "🃏", "Карти"], ["basics", "🔤", "Основи"], ["verbs", "⚙️", "Глаголи"], ["quiz", "✍️", "Бърз тест"]];
-const TOP_MAIN = ["home", "review", "games", "grammar", "dict"], BOTTOM_MAIN = ["home", "review", "games", "dict"];
+const TOP_MAIN = ["heute", "lernen", "dict", "grammar", "fort"], BOTTOM_MAIN = TOP_MAIN;
 const tabInfo = (k) => TABS.find((t) => t[0] === k);
-if (!tabInfo(S.tab)) S.tab = "home";
+if (!tabInfo(S.tab)) S.tab = "heute";
 function renderNav() {
   const btn = (k) => { const [, ic, l] = tabInfo(k); return `<button data-tab="${k}" class="${S.tab === k ? "on" : ""}"><span class="ni">${ic}</span><span class="nl">${l}</span></button>`; };
   const inMore = !TOP_MAIN.includes(S.tab), inMoreB = !BOTTOM_MAIN.includes(S.tab);
-  $("#nav").innerHTML = TOP_MAIN.map(btn).join("") + `<button data-more="1" class="${inMore ? "on" : ""}"><span class="ni">☰</span><span class="nl">${inMore ? tabInfo(S.tab)[2] : "Още"}</span></button>`;
+  $("#nav").innerHTML = TOP_MAIN.map(btn).join("") + (inMore ? `<button class="on"><span class="nl">${tabInfo(S.tab)[2]}</span></button>` : "");
   fitNav();
-  $("#tabbar").innerHTML = BOTTOM_MAIN.map(btn).join("") + `<button data-more="1" class="${inMoreB ? "on" : ""}"><span class="ni">☰</span><span class="nl">${inMoreB ? tabInfo(S.tab)[2] : "Още"}</span></button>`;
+  $("#tabbar").innerHTML = BOTTOM_MAIN.map(btn).join("");
   const h = (e) => { const b = e.target.closest("[data-tab]"); if (b) return go(b.dataset.tab); if (e.target.closest("[data-more]")) openMore(); };
   $("#nav").onclick = h; $("#tabbar").onclick = h;
-  $(".brand").onclick = () => go("home");
+  $(".brand").onclick = () => go("heute");
+  const mb = $("#moreBtn"); if (mb) mb.onclick = openMore;
 }
 const LESSON_TABS = ["cards", "ex", "dict", "quiz", "verbs"];
 function lessonLabel() {
@@ -493,8 +499,8 @@ function renderSub() {
 }
 function renderStats() {
   fitNav();
-  const st = streak(), xp = store.get("xp", 0), lvl = Math.floor(xp / 300) + 1;
-  $("#stats").innerHTML = `<span title="Поредни дни с учене">🔥 ${st}</span> <span class="xpchip" title="Точки: ${xp} · ниво ${lvl}">⭐ ${xp}<i class="lv"> · Lv ${lvl}</i></span>`;
+  const st = streak(), c = typeof counts === "function" ? counts() : { recall: 0 };
+  $("#stats").innerHTML = `<span title="Поредни дни с учене">🔥 ${st}</span> <span class="xpchip" title="Думи, които пишеш сам">🧠 ${c.recall}</span>`;
 }
 function addXP(n) { const xp = store.get("xp", 0) + n; store.set("xp", xp); renderStats(); return xp; }
 function confetti() {
@@ -536,6 +542,7 @@ function openMore() {
 function settingsHTML() {
   return `<div class="mlist">
     <button class="mrow" data-set="tr"><span class="ni">аб</span><span><b>Транскрипция на кирилица</b><small>[дер штул] под всяка дума</small></span><span class="tgl ${S.showTr ? "on" : ""}"></span></button>
+    <button class="mrow" data-set="theme"><span class="ni">◐</span><span><b>Светла тема</b><small>по подразбиране е тъмна</small></span><span class="tgl ${store.get("theme", "dark") === "light" ? "on" : ""}"></span></button>
     <button class="mrow" data-set="auto"><span class="ni">🔊</span><span><b>Автоматичен звук в картите</b><small>изговаря думата, щом се покаже</small></span><span class="tgl ${S.auto ? "on" : ""}"></span></button>
   </div>
   <div class="legend2 pn-legend"><span class="art der">der</span> мъжки <span class="art die">die</span> женски <span class="art das">das</span> среден <span class="art pl">die</span> мн.ч.</div>`;
@@ -544,6 +551,7 @@ function settingsClick(e) {
   const t = e.target.closest("[data-set]"); if (!t) return;
   if (t.dataset.set === "tr") { S.showTr = !S.showTr; store.set("showTr", S.showTr); }
   if (t.dataset.set === "auto") { S.auto = !S.auto; store.set("auto", S.auto); }
+  if (t.dataset.set === "theme") { const th = store.get("theme", "dark") === "light" ? "dark" : "light"; store.set("theme", th); document.documentElement.dataset.theme = th; }
   t.querySelector(".tgl").classList.toggle("on");
   if (t.dataset.set === "tr") render();
 }
@@ -574,12 +582,12 @@ function openLessons() {
     lastY = y;
   }, { passive: true });
 }
-function go(tab) { if (!tabInfo(tab)) tab = "home"; S.tab = tab; store.set("tab", tab); closePanel(); closeSheet(true); renderNav(); renderSub(); render(); window.scrollTo(0, 0); $("#top")?.classList.remove("hide"); }
+function go(tab) { if (!tabInfo(tab)) tab = "heute"; renderStats(); S.tab = tab; store.set("tab", tab); closePanel(); closeSheet(true); renderNav(); renderSub(); render(); window.scrollTo(0, 0); $("#top")?.classList.remove("hide"); }
 function render() {
   stopAudio();
   keyHandler = null; view.onclick = null; activeQuiz = null;
   if (S.tab !== "games") stopGame();
-  ({ home: renderPath, review: renderReview, games: renderGames, basics: renderBasics, ex: renderExercises, dict: renderDict, cards: renderCardsHome, quiz: renderQuizHome, verbs: renderVerbs, grammar: renderGrammar })[S.tab]();
+  ({ heute: renderHeute, lernen: renderLernen, fort: renderFort, home: renderPath, review: renderReview, games: renderGames, basics: renderBasics, ex: renderExercises, dict: renderWort, cards: renderCardsHome, quiz: renderQuizHome, verbs: renderVerbs, grammar: renderGrammar })[S.tab]();
 }
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -640,7 +648,7 @@ function rowHTML(it) {
     ${sayBtn(deFull(it))}
     <div class="de">${emojiOf(it) ? `<span class="emo">${emojiOf(it)}</span>` : ""}${deHTML(it)}${pl}${tag}${trHTML(deFull(it))}</div>
     <div class="bg">${esc(it.bg)}</div>
-    <span class="dot ${b >= 0 ? "b" + b : ""}" title="${b < 0 ? "ново" : "ниво " + b + "/5"}"></span>
+    <span class="dot ${typeof stDot === "function" ? stDot(it.id) : b >= 0 ? "b" + b : ""}" title="${typeof ST_TXT !== "undefined" ? ST_TXT[MEM.state(it.id)] : ""}"></span>
     <span class="chev">›</span>
     ${it.note ? `<div class="note">💡 ${esc(it.note)}</div>` : ""}
   </div>`;
@@ -1064,8 +1072,8 @@ function renderGrammar() {
   const exk = (G2EX[g.id] || U?.ex || []).filter(exByK);
   const flat = groups.flatMap((x) => x[1]), i = flat.indexOf(g.id), nx = GRAMMAR.find((x) => x.id === flat[i + 1]);
   view.innerHTML = `<div class="gwrap">
-    <div class="gnav">${groups.map(([h, ids]) => `<div class="gh">${esc(h)}</div>` + ids.map((id) => { const x = GRAMMAR.find((y) => y.id === id); return `<button data-g="${x.id}" class="${x.id === g.id ? "on" : ""}">${x.icon}&nbsp; ${x.title}${gr[x.id] ? "" : ' <i class="gnew">ново</i>'}</button>`; }).join("")).join("")}</div>
-    <article class="gbody">${U ? `<div class="muted" style="font-size:13px">${esc(lessonName(U))}</div>` : ""}<h2>${g.title}</h2>${g.html}
+    <div class="gnav">${groups.map(([h, ids]) => `<div class="gh">${esc(h)}</div>` + ids.map((id) => { const x = GRAMMAR.find((y) => y.id === id); const ga = gMastery(x.id); return `<button data-g="${x.id}" class="${x.id === g.id ? "on" : ""}">${ga}${x.icon}&nbsp; ${x.title}${gr[x.id] ? "" : ' <i class="gnew">ново</i>'}</button>`; }).join("")).join("")}</div>
+    <article class="gbody">${U ? `<div class="muted" style="font-size:13px">${esc(lessonName(U))}${gMasteryTxt(g.id)}</div>` : ""}<h2>${g.title}</h2>${g.html}
       ${exk.length ? `<div class="gpractice"><b>🏋️ Упражнявай това</b><div class="gpx">${exk.map((k) => { const t = exByK(k); return `<button class="btn" data-gex="${k}">${t.ic} ${esc(t.t)}</button>`; }).join("")}</div></div>` : ""}
       ${nx ? `<button class="btn primary" data-g="${nx.id}" style="margin-top:14px">Следваща тема: ${nx.icon} ${esc(nx.title)} →</button>` : ""}</article></div>`;
   view.onclick = (e) => {
@@ -1261,3 +1269,10 @@ function bNumbers(el) {
 // ───────── старт ─────────
 renderNav(); renderSub(); renderStats(); render();
 setTimeout(warmAudio, 1500);
+
+// усвояване на граматична тема = точност в упражненията ѝ (последните 20 отговора на всяко)
+function gMasteryVal(id) { if (typeof exAcc !== "function") return null; const U = UNITS.find((u) => u.g.includes(id)), ks = G2EX[id] || (U ? U.ex : []); const a = ks.map(exAcc).filter(Boolean); const n = a.reduce((s, x) => s + x.n, 0); return n >= 3 ? a.reduce((s, x) => s + x.acc, 0) / a.length : null; }
+const gMastery = (id) => { const v = gMasteryVal(id); return v == null ? "" : `<i class="gm ${v >= 0.85 ? "ok" : v >= 0.7 ? "mid" : "bad"}" title="${Math.round(v * 100)}% в упражненията"></i>`; };
+const gMasteryTxt = (id) => { const v = gMasteryVal(id); return v == null ? " · още не си упражнявал темата" : ` · усвояване <b class="${v >= 0.85 ? "ok" : v >= 0.7 ? "mid" : "bad"}">${Math.round(v * 100)}%</b>`; };
+// офлайн режим
+if ("serviceWorker" in navigator && location.protocol !== "file:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));

@@ -1405,8 +1405,10 @@ function drawEx() {
   let body = "";
   if (q.kind === "intro") body = `<button class="btn primary nextbtn" id="exnext">Разбрах →</button>`;
   else if (q.kind === "mc") body = `<div class="opts ${q.emo ? "emog" : ""}">${q.options.map((o, n) => `<button class="opt ${q.emo ? "emopt" : ""}" data-n="${n}"><kbd>${n + 1}</kbd><span>${q.emo ? o : esc(o)}</span></button>`).join("")}</div>`;
-  else if (q.kind === "type") body = `<input class="answer" id="exa" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(q.hint || "напиши тук…")}">
-    <div class="uml">${["ä", "ö", "ü", "ß"].map((c) => `<button data-c="${c}" tabindex="-1">${c}</button>`).join("")}</div>`;
+  else if (q.kind === "type") body = `<input class="answer${q.long ? " long" : ""}" id="exa" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(q.hint || (q.long ? "напиши цялото изречение…" : "напиши тук…"))}">
+    <div class="uml">${["ä", "ö", "ü", "ß"].map((c) => `<button data-c="${c}" tabindex="-1">${c}</button>`).join("")}${!s.opts.exam && !q.bgAns && q.answer ? `<button class="hintb" id="exhint" tabindex="-1">подсказка</button>` : ""}<button class="checkb" id="excheck" tabindex="-1">Провери ↵</button></div>`;
+  else if (q.kind === "write") body = `<textarea class="answer wr" id="exw" rows="${q.rows || 4}" spellcheck="false" placeholder="Пиши на немски…"></textarea>
+    <div class="uml">${["ä", "ö", "ü", "ß"].map((c) => `<button data-c="${c}" tabindex="-1">${c}</button>`).join("")}<button class="checkb" id="excheck" tabindex="-1">Провери</button></div>`;
   else if (q.kind === "tap") {
     let k = 0;
     body = `<div class="tapline">${esc(q.sentence).replace(WORD_RE, (w) => `<button class="tapw" data-i="${k++}">${w}</button>`)}</div>`;
@@ -1421,7 +1423,7 @@ function drawEx() {
   }
   else body = `<div class="oline" id="ol"></div><div class="opool" id="op"></div>`;
   view.innerHTML = `<div class="stage exstage">
-    <div class="pinfo"><span><button class="link" id="exback">← ${esc(s.title)}</button></span><span>${s.i + 1} / ${s.qs.length} · ✓ ${s.score} · ⭐ ${s.xp}</span></div>
+    <div class="pinfo"><span><button class="link" id="exback">← ${esc(s.title)}</button></span><span>${s.i + 1} / ${s.qs.length}${s.opts.exam ? " · изпит" : " · ✓ " + s.score}</span></div>
     <div class="prog"><i style="width:${(s.i / s.qs.length) * 100}%"></i></div>
     <div class="card excard" style="cursor:default"><div class="extask">${q.task}</div>${q.prompt || ""}</div>
     ${body}<div class="exfb" id="fb"></div>
@@ -1432,16 +1434,25 @@ function drawEx() {
   if (pd) pd.onclick = (e) => { e.stopPropagation(); playSequence(q.dlg.lines.map((l) => l[1]), null, 350); };
 
   const finish = (ok, given) => {
-    answered = true; q.ok = ok;
+    answered = true; q.ok = ok; view.querySelector("#excheck")?.remove(); view.querySelector("#exhint")?.remove();
     if (ok) { s.score++; s.xp += 10; addXP(10); } else s.wrong.push({ q, given });
     if (q.item && !s.opts.noGrade) { if (s.opts.srs) grade(q.item, ok ? 2 : 0); else if (ok) { if (box(q.item) <= 0) grade(q.item, 1); } else grade(q.item, 0); }
+    if (!s.opts.noGrade && typeof recordAnswer === "function") recordAnswer(q, ok, given); else if (s.opts.noGrade) { const d = today(); S.log[d] = (S.log[d] || 0); }
+    if (s.opts.exam) { // изпит: без обяснения по време на изпита — всичко накрая
+      $("#fb").className = "exfb on " + (ok ? "ok" : "bad");
+      $("#fb").innerHTML = `<div class="exhead">${ok ? "✓ Записано" : "✗ Записано"}</div><button class="btn primary" id="exnext" style="margin-top:10px;width:100%">Напред <kbd style="color:inherit">Enter</kbd></button>`;
+      $("#exnext").onclick = next; return;
+    }
+    const rs = q.res, verdict = rs && rs.msg ? `<div class="exverd ${ok ? (rs.level === "exact" ? "" : "mid") : "bad"}">${rs.msg}</div>` : "";
+    const over = !ok && (q.override || (rs && rs.level === "unsure")) ? `<button class="link" id="exover">Моят отговор също е верен →</button>` : "";
     const full = q.full ? sentHTML(q.full, q.bg || "", q.item || null, { bd: "full" }) : "";
     $("#fb").className = "exfb on " + (ok ? "ok" : "bad");
-    $("#fb").innerHTML = `<div class="exhead">${ok ? "✓ Правилно!" : `✗ Не съвсем. Правилно е: <b>${q.emo ? q.answer : esc(q.answer)}</b>`}</div>
+    $("#fb").innerHTML = `<div class="exhead">${ok ? (rs && rs.level === "typo" ? "✓ Вярно — с малка грешка" : rs && rs.level === "variant" ? "✓ Правилно" : "✓ Правилно!") : `✗ Правилно е: <b>${q.emo ? q.answer : esc(q.answer)}</b>`}${!ok && given && q.kind === "type" ? `<div class="exgiven">ти: <s>${esc(given)}</s></div>` : ""}</div>${verdict}${over}
       ${full}${full ? `<div class="xhint">👆 Цъкни всяка дума в изречението за „Защо?“</div>` : ""}<div class="exwhy"><b>${ok ? "Защо:" : "Защо е така:"}</b> ${q.explain}</div>
       ${q.item ? `<div class="exlinks">${openBtn(q.item)} <button class="link" data-train="${esc(q.item.id)}">🏋️ Тренирай думата</button></div>` : ""}
       <button class="btn primary" id="exnext" style="margin-top:10px;width:100%">Напред <kbd style="color:inherit">Enter</kbd></button>`;
     $("#exnext").onclick = next;
+    $("#exover") && ($("#exover").onclick = () => { s.score++; s.wrong = s.wrong.filter((w) => w.q !== q); if (q.item) MEM.record(q.item.id, q.mode || "use", true); $("#exover").outerHTML = `<span class="muted">✓ Отчетено като вярно</span>`; });
     // на малък екран обяснението остава под ръба — доскролвай до него
     requestAnimationFrame(() => { const r = $("#fb")?.getBoundingClientRect(); if (r && r.top > innerHeight * 0.55) window.scrollBy({ top: r.top - innerHeight * 0.25, behavior: "smooth" }); });
     if (q.showAnat && q.full && typeof anatomyHTML === "function") { const sx = $("#fb .sent .sx"); if (sx) { sx.insertAdjacentHTML("afterend", anatomyHTML(q.full)); $("#fb .anat")?.classList.add("on"); } }
@@ -1465,17 +1476,40 @@ function drawEx() {
     };
   } else if (q.kind === "type") {
     const inp = $("#exa"); inp.focus();
-    view.querySelector(".uml").onclick = (e) => { const b = e.target.closest("[data-c]"); if (!b) return; const [a, z] = [inp.selectionStart, inp.selectionEnd]; inp.value = inp.value.slice(0, a) + b.dataset.c + inp.value.slice(z); inp.focus(); inp.setSelectionRange(a + 1, a + 1); };
+    view.querySelector(".uml").onclick = (e) => {
+      if (e.target.closest("#excheck")) { keyHandler({ key: "Enter", preventDefault() {} }); return; }
+      if (e.target.closest("#exhint")) { const a = String(q.answer), n = (q.hinted = (q.hinted || 0) + 1); const shown = a.split(" ").map((w, k) => (k < n - 1 ? w : k === n - 1 ? w.slice(0, Math.max(1, Math.ceil(w.length / 3))) + "…" : "")).filter(Boolean).join(" "); $("#exhint").textContent = shown; inp.focus(); return; }
+      const b = e.target.closest("[data-c]"); if (!b) return; const [a, z] = [inp.selectionStart, inp.selectionEnd]; inp.value = inp.value.slice(0, a) + b.dataset.c + inp.value.slice(z); inp.focus(); inp.setSelectionRange(a + 1, a + 1); };
     keyHandler = (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
         if (answered) return next();
         if (!inp.value.trim()) { if (q.autoSay) speak(q.autoSay, { auto: true }); return; }
-        const ok = q.accept ? q.accept(inp.value) : sameDe(inp.value, q.answer);
-        inp.classList.add(ok ? "right" : "wrong"); inp.readOnly = true;
+        let ok;
+        if (q.check) { q.res = q.check(inp.value); ok = q.res.ok; }
+        else { ok = q.accept ? q.accept(inp.value) : sameDe(inp.value, q.answer); if (!ok && typeof CK !== "undefined") { q.res = CK.checkDe(inp.value, q.answer, { noun: q.noun }); ok = q.res.ok; } }
+        if (q.hinted && ok) q.mode = "rec"; // с подсказка → по-слабо доказателство
+        inp.classList.add(ok ? (q.res && q.res.level === "typo" ? "typo" : "right") : "wrong"); inp.readOnly = true;
         finish(ok, inp.value);
       } else if (e.key === "Escape") exBack();
     };
+  } else if (q.kind === "write") {
+    const ta = $("#exw"); ta.focus();
+    const check = () => {
+      if (answered || !ta.value.trim()) return;
+      const A = q.analyze(ta.value); ta.readOnly = true; $("#excheck").remove();
+      $("#fb").className = "exfb on";
+      $("#fb").innerHTML = `<div class="exhead">Автоматична проверка: ${A.notes.length ? `<b class="mid">${A.notes.length} забележки</b>` : `<b class="ok">не намерих грешки</b>`}</div>
+        ${A.notes.length ? `<ul class="wnotes">${A.notes.map((n) => `<li>${n}</li>`).join("")}</ul>` : ""}
+        <p class="muted" style="font-size:13px">Проверката е локална: хваща haben/sein, мястото на глагола и Partizip II, непознати думи и обръщения — не всяка грешка. Сравни с примера и прецени честно.</p>
+        ${q.model && q.model[0] ? `<div class="wmodel"><b>Пример:</b> ${esc(q.model[0])}${q.model[1] ? `<br><span class="muted">${esc(q.model[1])}</span>` : ""}</div>` : ""}
+        <div class="btns" style="grid-template-columns:1fr 1fr;margin-top:10px"><button class="btn bad" id="wbad">Имах грешки</button><button class="btn ok" id="wok">Правилно е ✓</button></div>`;
+      const done = (self) => { const ok = self && A.bad === 0; q.res = { level: ok ? "exact" : "wrong", cat: null }; const w = store.get("writing", []); w.push({ t: Date.now(), task: q.wtask || q.exk, score: A.score, self, text: ta.value.slice(0, 2000) }); store.set("writing", w.slice(-100));
+        q.answer = q.answer || ""; q.explain = A.notes.length ? A.notes.join("<br>") : "Без забележки от автоматичната проверка."; finish(ok, ta.value); };
+      $("#wok").onclick = () => done(true); $("#wbad").onclick = () => done(false);
+    };
+    view.querySelector(".uml").onclick = (e) => { if (e.target.closest("#excheck")) return check(); const b = e.target.closest("[data-c]"); if (!b) return; const [a, z] = [ta.selectionStart, ta.selectionEnd]; ta.value = ta.value.slice(0, a) + b.dataset.c + ta.value.slice(z); ta.focus(); ta.setSelectionRange(a + 1, a + 1); };
+    keyHandler = (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && !answered) check(); else if (e.key === "Enter" && answered && !e.target.closest?.("textarea")) next(); else if (e.key === "Escape") exBack(); };
   } else if (q.kind === "tap") {
     view.querySelector(".tapline").onclick = (e) => {
       const b = e.target.closest(".tapw"); if (!b || answered) return;
@@ -1542,14 +1576,15 @@ function drawEx() {
   }
 }
 function exDone() {
+  if (typeof sessSeen !== "undefined") sessSeen.clear();
   const s = exSess, total = s.qs.filter((q) => q.kind !== "intro").length || 1, pct = Math.round((s.score / total) * 100);
-  if (pct >= 70) confetti();
+  if (typeof snapshot === "function") snapshot();
   if (s.opts.onDone && s.opts.onDone(pct, s) === false) return; // сесията сама рисува резултата (напр. началния тест)
   const learned = s.k === "learn" && s.opts.items ? `<div class="learned">${s.opts.items.map((it) => `<button class="pill" data-open="${esc(it.id)}">${emojiOf(it) || ""} ${deHTML(it)} — ${esc(it.bg)}</button>`).join("")}</div>` : "";
   const best = store.get("exBest", {}); if (!["word", "custom"].includes(s.k) && (best[s.k] ?? -1) < pct) { best[s.k] = pct; store.set("exBest", best); }
   view.innerHTML = `<div class="stage"><div class="card done" style="cursor:default">
     <div class="score">${pct >= 90 ? "🏆" : pct >= 70 ? "💪" : "📚"} ${s.score}/${total}</div><p class="meta">${esc(s.title)} · ${pct}%</p>
-    <div class="xpgain">+${s.xp} ⭐</div>${learned ? `<h3>Думите от урока</h3>${learned}` : ""}
+${learned ? `<h3>Думите от урока</h3>${learned}` : ""}
     ${s.wrong.length ? `<div class="exmist"><h3>Грешките ти — прочети защо</h3>${s.wrong.map(({ q, given }) => `<div class="exm">
       <div class="extask">${q.task}</div><div>${q.full ? esc(q.full) : q.emo ? q.answer : esc(q.answer)}</div>
       <div class="muted">ти: <s>${q.emo ? given || "—" : esc(given || "—")}</s> → правилно: <b>${q.emo ? q.answer : esc(q.answer)}</b></div><div class="exwhy">${q.explain}</div></div>`).join("")}</div>` : "<p>Без нито една грешка! 🎉</p>"}
