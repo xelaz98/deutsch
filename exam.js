@@ -159,7 +159,7 @@ const TEMP = [["Marcus steht ___ 8.00 Uhr auf.", "um", "час → um"], ["Der U
 function genTemp() {
   const [s, a, why] = rnd(TEMP), parts = a.split("|"); let full = s; parts.forEach((p) => (full = full.replace("___", p)));
   full = full.replace(/\s*\([^)]*\)/, "");
-  const opts = shuffle([...new Set(["um", "am", "im", "von", "bis", "vor", "nach", "ab", "seit"].filter((x) => !parts.includes(x.toLowerCase())))]).slice(0, 3);
+  const opts = shuffle([...new Set(["um", "am", "im", "von", "bis", "vor", "nach", "ab", "seit"].filter((x) => !parts.map((p) => p.toLowerCase()).includes(x)))]).slice(0, 3);
   if (parts.length > 1) return { kind: "type", mode: "use", errCat: "prep", task: "Попълни двата предлога (раздели с интервал)", prompt: `<div class="exs">${esc(s)}</div>`, answer: parts.join(" "), say: full, full, check: (v) => CK.checkDe(v, parts.join(" ")), explain: `${why}.` };
   const ans = parts[0], low = ans.toLowerCase(), cap0 = /^___/.test(s);
   return { kind: "mc", errCat: "prep", task: "Wann? Кой предлог?", prompt: `<div class="exs">${esc(s)}</div>`, options: shuffle([ans, ...opts.map((o) => (cap0 ? cap(o) : o))]), answer: ans, say: full, full, keys: true,
@@ -432,3 +432,115 @@ function ex16Texts() {
   TERM16.forEach(([s, a]) => { let f = s; a.split(" ").forEach((p) => (f = f.replace("___", p))); out.push(f.replace(/\s*\([^)]*\)/, "")); });
   return out;
 }
+
+// ───────── урок 17: времето, denn, wohin?, багаж и дрехи, lassen, Dativ-глаголи ─────────
+const WPAIR = [["die Sonne", "sonnig", "Es ist sonnig.", "☀️"], ["der Regen", "regnen", "Es regnet.", "🌧️"], ["der Schnee", "schneien", "Es schneit.", "❄️"], ["die Wolke", "bewölkt", "Es ist bewölkt.", "☁️"], ["der Nebel", "neblig", "Es ist neblig.", "🌫️"],
+  ["der Sturm", "stürmisch", "Es ist stürmisch.", "🌬️"], ["die Kälte", "kalt", "Es ist kalt.", "🥶"], ["die Hitze", "heiß", "Es ist heiß.", "🥵"], ["die Wärme", "warm", "Es ist warm.", "🌤️"], ["das Gewitter", "—", "Es gibt ein Gewitter.", "⛈️"]];
+function genWetterPaar() {
+  const P = WPAIR.filter((p) => p[1] !== "—"), [n, a, s] = rnd(P), dir = Math.random() < 0.5;
+  const ans = dir ? a : n, opts = shuffle(P.filter((p) => p[0] !== n).map((p) => (dir ? p[1] : p[0]))).slice(0, 3);
+  return { kind: "mc", mode: "rec", task: dir ? "Съществително → прилагателно/глагол" : "Прилагателно/глагол → съществително", prompt: `<div class="exw">${esc(dir ? n : a)} → ___</div>`, options: shuffle([ans, ...opts]), answer: ans, say: `${n} – ${a}`, full: s, keys: true,
+    explain: `<b>${esc(n)}</b> ↔ <b>${esc(a)}</b> → <i>${esc(s)}</i>. Окончания: <b>-ig</b> (sonnig, neblig), <b>-isch</b> (stürmisch); kalt → die K<b>ä</b>lte, warm → die W<b>ä</b>rme (умлаут); глаголи: es regnet, es schneit (винаги с <b>es</b>).` };
+}
+const WCITY = [["Athen", "Атина"], ["Berlin", "Берлин"], ["Sofia", "София"], ["Rom", "Рим"], ["Wien", "Виена"], ["Paris", "Париж"], ["Hamburg", "Хамбург"], ["München", "Мюнхен"], ["Oslo", "Осло"], ["Madrid", "Мадрид"]];
+function genWetterBild() {
+  const [n, , s, ic] = rnd(WPAIR), [c, cbg] = rnd(WCITY), t = ic === "🥶" || ic === "❄️" ? -((Math.random() * 8) | 0) - 1 : ic === "🥵" ? 32 + ((Math.random() * 6) | 0) : 8 + ((Math.random() * 18) | 0);
+  const ans = `In ${c} ${s.replace(/^Es (ist|regnet|schneit|gibt)/, (m, v) => (v === "ist" ? "ist es" : v === "gibt" ? "gibt es" : v + " es"))}`;
+  if (Math.random() < 0.5) return { kind: "mc", mode: "rec", task: `Wie ist das Wetter in ${esc(c)}?`, prompt: `<div style="font-size:64px;text-align:center">${ic}</div><div class="meta" style="text-align:center">${t} Grad</div>`, options: shuffle([s, ...shuffle(WPAIR.filter((p) => p[2] !== s).map((p) => p[2])).slice(0, 3)]), answer: s, say: s, full: s, keys: true,
+    explain: `${ic} = <b>${esc(s)}</b> (${esc(n)}). Времето винаги с <b>es</b>: Es ist + прилагателно · Es regnet / Es schneit · Es gibt ein Gewitter. Температура: <i>Die Temperaturen liegen bei ${t} Grad.</i>` };
+  return { kind: "type", mode: "use", task: `Wie ist das Wetter in ${esc(c)}? Напиши цяло изречение`, prompt: `<div style="font-size:56px;text-align:center">${ic}</div><div class="meta" style="text-align:center">${esc(cbg)}</div>`, answer: ans, say: ans, full: ans, long: true, hint: `In ${c} …`,
+    check: (v) => CK.checkDe(v, ans, { alts: [`${s.replace(/\.$/, "")} in ${c}.`] }), explain: `След <b>In ${esc(c)}</b> (1-во място) глаголът е 2-ри, а <b>es</b> минава след него: In ${esc(c)} <b>ist es</b> sonnig / <b>regnet es</b>.` };
+}
+const JZ = [["Im ___ schneit es oft.", "Winter"], ["Im ___ ist es heiß.", "Sommer"], ["Im ___ blühen die Blumen.", "Frühling"], ["Im ___ ist es stürmisch und neblig.", "Herbst"], ["Im ___ fahren wir an den Strand.", "Sommer"], ["Im ___ fahren wir Ski.", "Winter"], ["Im ___ fallen die Blätter.", "Herbst"], ["Im ___ wird es wieder warm.", "Frühling"]];
+function genJahreszeit() {
+  const [s, a] = rnd(JZ), full = s.replace("___", a);
+  return { kind: "mc", mode: "rec", task: "Кой сезон?", prompt: `<div class="exs">${esc(s)}</div>`, options: ["Frühling", "Sommer", "Herbst", "Winter"], answer: a, say: full, full, keys: true,
+    explain: `Сезоните са <b>der</b>: der Frühling (= das Frühjahr), der Sommer, der Herbst, der Winter. Кога? → <b>im</b> (in dem) Winter.` };
+}
+// wohin? (Akk) / wo? (Dat) — дестинации
+const ZIEL = [["Italien", "nach Italien", "in Italien", "държава без член → <b>nach</b> (накъде) / <b>in</b> (къде)"], ["Berlin", "nach Berlin", "in Berlin", "град → <b>nach</b> / <b>in</b>"], ["die Schweiz", "in die Schweiz", "in der Schweiz", "държава с член → <b>in die</b> (Akk) / <b>in der</b> (Dat)"],
+  ["die Türkei", "in die Türkei", "in der Türkei", "държава с член → in die / in der"], ["die USA", "in die USA", "in den USA", "мн.ч. → in die (Akk) / in den (Dat)"], ["die Nordsee", "an die Nordsee", "an der Nordsee", "море, бряг → <b>an</b>"],
+  ["die Ostsee", "an die Ostsee", "an der Ostsee", "море → an"], ["das Meer", "ans Meer", "am Meer", "море → an: ans (an das) / am (an dem)"], ["der Strand", "an den Strand", "am Strand", "плаж → an: an den / am"],
+  ["eine Insel", "auf eine Insel", "auf einer Insel", "остров → <b>auf</b>"], ["die Berge", "in die Berge", "in den Bergen", "планина → in die Berge / in den Bergen (+n в Dat. мн.ч.)"], ["der Arzt", "zum Arzt", "beim Arzt", "човек → <b>zu</b> (накъде) / <b>bei</b> (къде)"]];
+function genWohin() {
+  const [z, wohin, wo, why] = rnd(ZIEL), q = Math.random() < 0.6;
+  const s = q ? `Im Sommer fahren wir ___. (${z})` : `Wir sind im Urlaub ___. (${z})`, ans = q ? wohin : wo, full = s.replace("___", ans).replace(/\s*\([^)]*\)/, "");
+  const opts = [...new Set([wohin, wo, ...shuffle(ZIEL.filter((x) => x[0] !== z)).slice(0, 2).map((x) => (q ? x[1] : x[2]).replace(x[0].replace(/^(der|die|das|eine) /, ""), z.replace(/^(der|die|das|eine) /, "")))])];
+  return { kind: "mc", mode: "use", errCat: "prep", task: q ? "Wohin? (накъде — Akkusativ)" : "Wo? (къде — Dativ)", prompt: `<div class="exs">${esc(s)}</div>`, options: shuffle(opts.slice(0, 4)), answer: ans, say: full, full, keys: true,
+    explain: `${why}. <b>Wohin?</b> (движение) → <b>${esc(wohin)}</b> · <b>Wo?</b> (място) → <b>${esc(wo)}</b>.` };
+}
+// куфарът: Akkusativ с ein
+const PACK17 = ["Badehose", "Anzug", "Hemd", "T-Shirt", "Regenjacke", "Schlafanzug", "Bikini", "Rock", "Bluse", "Pullover", "Strumpfhose", "Nachthemd", "Kleid", "Hose", "Mantel", "Sonnencreme", "Fotoapparat", "Regenschirm", "Strickjacke", "Sonnenbrille", "Rucksack", "Koffer", "Pass"];
+function genKoffer() {
+  const it = ITEMS.find((i) => i.type === "noun" && i.de === rnd(PACK17) && ["der", "die", "das"].includes(i.art)); if (!it) return genWohin();
+  const a = { der: "einen", die: "eine", das: "ein" }[it.art], full = `Ich packe ${a} ${it.de} ein.`;
+  return { kind: "mc", mode: "use", errCat: "case", item: it, task: "Какво слагаш в куфара? (Akkusativ)", prompt: `<div class="exs">Ich packe ___ ${esc(it.de)} ein.</div><div class="meta">${esc(it.bg)}</div>`, options: ["einen", "eine", "ein", "einem"], answer: a, say: full, full, keys: true,
+    explain: `einpacken + <b>Akkusativ</b> (какво?). ${it.art} ${esc(it.de)} → <b>${a}</b>${it.art === "der" ? " — само мъжкият род се променя: ein → einen" : " — не се променя"}.` };
+}
+// denn (нормален ред) / weil (глаголът в края)
+const DW = [["Ich fahre nicht ans Meer", "ich", "hasse", "die Hitze", "Не ходя на море, защото мразя жегата."], ["Wir bleiben zu Hause", "es", "regnet", "heute", "Оставаме вкъщи, защото днес вали."], ["Ich nehme einen Regenschirm mit", "es", "gibt", "heute Regenschauer", "Вземам чадър, защото днес има превалявания."],
+  ["Er trägt einen Mantel", "es", "ist", "sehr kalt", "Той носи палто, защото е много студено."], ["Wir fahren in die Berge", "wir", "lieben", "den Schnee", "Отиваме в планината, защото обичаме снега."], ["Sie bleibt im Bett", "sie", "ist", "krank", "Тя остава в леглото, защото е болна."],
+  ["Ich kaufe Sonnencreme", "die Sonne", "scheint", "sehr stark", "Купувам слънцезащитен крем, защото слънцето грее силно."], ["Ich mag den Herbst nicht", "es", "ist", "oft neblig", "Не обичам есента, защото често е мъгливо."]];
+function genDenn() {
+  const [m, s, v, r, bg] = rnd(DW), useDenn = Math.random() < 0.5, ans = useDenn ? `${m}, denn ${s} ${v} ${r}.` : `${m}, weil ${s} ${r} ${v}.`;
+  const wrong = useDenn ? [`${m}, denn ${s} ${r} ${v}.`, `${m}, denn ${v} ${s} ${r}.`] : [`${m}, weil ${s} ${v} ${r}.`, `${m}, weil ${v} ${s} ${r}.`];
+  return { kind: "mc", mode: "use", errCat: "verbpos", task: `Свържи с <b>${useDenn ? "denn" : "weil"}</b> — кой ред е правилен?`, prompt: `<div class="meta" style="font-size:16px">${esc(bg)}</div>`, options: shuffle([ans, ...wrong]), answer: ans, say: ans, full: ans, bg,
+    explain: useDenn ? "<b>denn</b> е на позиция 0 — не заема място, след него <b>нормален ред</b>: подлог → глагол (… denn ich hasse …)." : "<b>weil</b> праща спрегнатия глагол <b>в края</b> (… weil ich die Hitze hasse). Смисълът е същият като denn." };
+}
+// lassen
+const LASS = [["Ich ___ mir die Haare schneiden.", 0, "lasse"], ["Du ___ das Auto reparieren.", 1, "lässt"], ["Er ___ den Koffer im Hotel.", 2, "lässt"], ["Wir ___ die Kinder bei Oma.", 3, "lassen"], ["Ihr ___ mich nie in Ruhe!", 4, "lasst"], ["Sie ___ das Handy zu Hause.", 5, "lassen"]];
+const LASSF = ["lasse", "lässt", "lässt", "lassen", "lasst", "lassen"];
+function genLassen() {
+  if (Math.random() < 0.3) { const [d, ans] = rnd([["du", "Lass"], ["ihr", "Lasst"], ["Sie", "Lassen Sie"]]); const full = `${ans} mich in Ruhe!`;
+    return { kind: "mc", task: `Imperativ (${d}): ___ mich in Ruhe!`, prompt: `<div class="exs">___ mich in Ruhe! (${d})</div>`, options: ["Lass", "Lasst", "Lassen Sie", "Lässt"], answer: ans, say: full, full, keys: true, explain: "Imperativ: du lässt → <b>Lass!</b> (без умлаут и без -st) · ihr → <b>Lasst!</b> · Sie → <b>Lassen Sie!</b>" }; }
+  const [s, i, ans] = rnd(LASS), full = s.replace("___", ans);
+  return { kind: "mc", errCat: "conj", task: "lassen: коя форма?", prompt: `<div class="exs">${esc(s)}</div>`, options: [...new Set(LASSF)], answer: ans, say: full, full, keys: true,
+    explain: `lassen: ich lasse, du <b>lässt</b>, er <b>lässt</b> (a → ä), wir lassen, ihr lasst, sie lassen. <b>lassen + инфинитив</b> = някой друг го прави за мен: Ich lasse mir die Haare schneiden.` };
+}
+// Dativ-глаголи с хора: helfen, gratulieren, danken, antworten
+const DPERS = [["der", "Mann", "Männern"], ["die", "Frau", "Frauen"], ["das", "Kind", "Kindern"], ["die", "Schwester", "Schwestern"], ["der", "Bruder", "Brüdern"], ["die", "Mutter", "Müttern"], ["der", "Vater", "Vätern"], ["die", "Lehrerin", "Lehrerinnen"], ["der", "Freund", "Freunden"], ["die", "Freundin", "Freundinnen"], ["das", "Geburtstagskind", "Geburtstagskindern"]];
+const DVERB = [["Ich helfe ___.", "Помагам на", "helfen"], ["Wir gratulieren ___.", "Честитим на", "gratulieren"], ["Ich danke ___.", "Благодаря на", "danken"], ["Das Kleid gefällt ___.", "Роклята харесва на", "gefallen"], ["Der Kuchen schmeckt ___.", "Тортата е вкусна на", "schmecken"], ["Das Fahrrad gehört ___.", "Колелото е на", "gehören"]];
+function genDativVerb() {
+  const [g, n, pl] = rnd(DPERS), [s, , v] = rnd(DVERB), typ = rnd(["def", "indef", "poss", "pl"]);
+  const D = { der: ["dem", "einem", "meinem"], das: ["dem", "einem", "meinem"], die: ["der", "einer", "meiner"] };
+  const np = typ === "pl" ? `den ${pl}` : `${D[g][{ def: 0, indef: 1, poss: 2 }[typ]]} ${n}`, ans = np.split(" ")[0], full = s.replace("___", np);
+  const shown = typ === "pl" ? s.replace("___", `___ ${pl}`) : s.replace("___", `___ ${n}`);
+  const pool = typ === "pl" ? ["den", "die", "dem", "der"] : typ === "def" ? ["dem", "der", "den", "die"] : typ === "indef" ? ["einem", "einer", "einen", "eine"] : ["meinem", "meiner", "meinen", "meine"];
+  const why = `<b>${esc(v)}</b> + <b>Dativ</b> (на кого? → wem?). ${typ === "pl" ? "Мн.ч. Dativ: <b>den</b> + съществителното с <b>-n</b>: den Kinder<b>n</b>." : g === "die" ? "Женски род в Dativ: der / einer / keiner / meiner." : "Мъжки и среден род в Dativ: dem / einem / keinem / meinem."}`;
+  return { kind: "mc", mode: "use", errCat: "case", task: "Dativ: попълни члена", prompt: `<div class="exs">${esc(shown)}</div><div class="meta">${typ === "pl" ? "мн.ч." : g + " " + n}</div>`, options: shuffle(pool), answer: ans, say: full, full, keys: true, explain: why };
+}
+// дрехи + gefallen/passen: глаголът се съгласува с дрехата!
+const KLEID = [["Der Rock", "s"], ["Die Bluse", "s"], ["Das Kleid", "s"], ["Der Mantel", "s"], ["Die Jeans", "p"], ["Die Schuhe", "p"], ["Die Turnschuhe", "p"], ["Das Hemd", "s"], ["Die Hose", "s"], ["Die Socken", "p"]];
+function genKleidVerb() {
+  const [k, n] = rnd(KLEID), [pr, pbg] = rnd([["mir", "ми"], ["dir", "ти"], ["ihm", "му"], ["ihr", "ѝ"], ["uns", "ни"], ["Ihnen", "Ви"]]), v = rnd(["gefallen", "passen"]);
+  const ans = v === "gefallen" ? (n === "s" ? "gefällt" : "gefallen") : n === "s" ? "passt" : "passen", full = `${k} ${ans} ${pr} nicht.`;
+  return { kind: "mc", mode: "use", errCat: "conj", task: `${v}: коя форма?`, prompt: `<div class="exs">${esc(k)} ___ ${esc(pr)} nicht.</div>`, options: v === "gefallen" ? ["gefällt", "gefallen", "gefalle", "gefallt"] : ["passt", "passen", "passe", "passst"].slice(0, 3), answer: ans, say: full, full, keys: true,
+    explain: `Подлогът е <b>дрехата</b> (${esc(k)}${n === "p" ? " — мн.ч." : ""}), не човекът! Човекът е в <b>Dativ</b> (${esc(pr)} = ${pbg}). ${n === "s" ? "ед.ч. → gefällt / passt" : "мн.ч. → gefallen / passen"}.` };
+}
+EX_TYPES.push(
+  { k: "wetterpaar", skill: "Думи", ic: "🌦️", t: "die Sonne → sonnig (времето)", d: "der Nebel → neblig", gen: genWetterPaar },
+  { k: "wetterbild", skill: "Думи", ic: "☀️", t: "Wie ist das Wetter?", d: "☁️ → Es ist bewölkt.", gen: genWetterBild },
+  { k: "jahreszeit", skill: "Думи", ic: "🍂", t: "Сезоните: im Winter …", d: "Im ___ schneit es. → Winter", gen: genJahreszeit },
+  { k: "wohin", skill: "Граматика", ic: "🧳", t: "Wohin? nach / in die / an die / auf", d: "Wir fahren ___. (die Schweiz) → in die Schweiz", gen: genWohin },
+  { k: "koffer", skill: "Граматика", ic: "🎒", t: "Куфарът: Ich packe einen/eine/ein …", d: "Ich packe ___ Mantel ein. → einen", gen: genKoffer },
+  { k: "denn", skill: "Глаголи и словоред", ic: "🔗", t: "denn или weil? (словоред)", d: "…, denn ich hasse die Hitze.", gen: genDenn },
+  { k: "lassen", skill: "Глаголи и словоред", ic: "✂️", t: "lassen: ich lasse, du lässt, Lass!", d: "Ich ___ mir die Haare schneiden.", gen: genLassen },
+  { k: "dativverb", skill: "Граматика", ic: "🎁", t: "Dativ: Ich helfe dem Mann / meiner Schwester", d: "Ich gratuliere ___ Kind. → dem", gen: genDativVerb },
+  { k: "kleidverb", skill: "Граматика", ic: "👗", t: "Die Hose passt mir / Die Schuhe gefallen mir", d: "Die Jeans ___ mir nicht. → passen", gen: genKleidVerb },
+);
+Object.assign(EX_CAT, { wohin: "prep", koffer: "case", denn: "verbpos", lassen: "conj", dativverb: "case", kleidverb: "conj" });
+Object.assign(CAT_EX, { case: [...CAT_EX.case, "dativverb", "koffer"], prep: [...CAT_EX.prep, "wohin"], verbpos: [...CAT_EX.verbpos, "denn"] });
+wrapGens();
+function ex17Texts() {
+  const out = [];
+  WPAIR.forEach(([n, a, s]) => { out.push(s, `${n} – ${a}`); WCITY.forEach(([c]) => out.push(`In ${c} ${s.replace(/^Es (ist|regnet|schneit|gibt)/, (m, v) => (v === "ist" ? "ist es" : v === "gibt" ? "gibt es" : v + " es"))}`)); });
+  JZ.forEach(([s, a]) => out.push(s.replace("___", a)));
+  ZIEL.forEach(([, wohin, wo]) => out.push(`Im Sommer fahren wir ${wohin}.`, `Wir sind im Urlaub ${wo}.`));
+  PACK17.forEach((d) => { const it = ITEMS.find((i) => i.type === "noun" && i.de === d && i.art); if (it) out.push(`Ich packe ${{ der: "einen", die: "eine", das: "ein" }[it.art]} ${d} ein.`); });
+  DW.forEach(([m, s, v, r]) => out.push(`${m}, denn ${s} ${v} ${r}.`, `${m}, weil ${s} ${r} ${v}.`));
+  LASS.forEach(([s, , a]) => out.push(s.replace("___", a))); ["Lass", "Lasst", "Lassen Sie"].forEach((x) => out.push(`${x} mich in Ruhe!`));
+  return out;
+}
+UNIT_MAP[17] = { g: ["wetter", "denn", "wohin", "dativ", "lassen"], ex: ["wetterpaar", "wetterbild", "jahreszeit", "wohin", "koffer", "denn", "lassen", "dativverb", "kleidverb", "modal", "dativart"] };
+G2EX.wetter = ["wetterpaar", "wetterbild", "jahreszeit"]; G2EX.denn = ["denn"]; G2EX.wohin = ["wohin", "koffer"]; G2EX.lassen = ["lassen"]; G2EX.dativ = [...new Set([...(G2EX.dativ || []), "dativverb", "kleidverb"])];
+UNITS.forEach((U) => { U.g = ((UNIT_MAP[U.id] || {}).g || []).filter((id) => GRAMMAR.some((x) => x.id === id)); U.ex = ((UNIT_MAP[U.id] || {}).ex || []).filter(exByK); });

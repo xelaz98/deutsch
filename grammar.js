@@ -1074,3 +1074,45 @@ GRAMMAR.push(
 <p><b>Какво се обърка?</b> <i>Der Text ist weg. Du hast <b>ihn</b> nicht <b>gespeichert</b>.</i> — <b>ihn</b> = der Text (Akkusativ), отрицанието <b>nicht</b> е точно преди Partizip II.</p>`,
   },
 );
+
+// ───────── урок 17 ─────────
+GRAMMAR.push(
+  { id: "wetter", title: "Времето: es regnet, es ist sonnig", icon: "🌦️", html: `
+<p>За времето немският <b>винаги</b> използва <b>es</b> като подлог — „то“ вали, „то“ е студено. Без es изречението е грешно.</p>
+<table class="g"><tr><th>съществително</th><th>прилагателно / глагол</th><th>изречение</th></tr>
+<tr><td>die Sonne</td><td>sonn<b>ig</b></td><td>Es ist sonnig. Die Sonne scheint.</td></tr><tr><td>die Wolke</td><td><b>be</b>wölk<b>t</b></td><td>Es ist (teilweise) bewölkt.</td></tr>
+<tr><td>der Nebel</td><td>nebl<b>ig</b></td><td>Es ist neblig.</td></tr><tr><td>der Sturm</td><td>stürm<b>isch</b></td><td>Es ist stürmisch.</td></tr>
+<tr><td>der Regen</td><td>regnen</td><td>Es regnet. (Es hat geregnet.)</td></tr><tr><td>der Schnee</td><td>schneien</td><td>Es schneit. (Es hat geschneit.)</td></tr>
+<tr><td>die K<b>ä</b>lte</td><td>kalt</td><td>Es ist kalt. Ich friere.</td></tr><tr><td>die W<b>ä</b>rme</td><td>warm</td><td>Es ist warm.</td></tr><tr><td>die Hitze</td><td>heiß</td><td>Es ist heiß.</td></tr><tr><td>das Gewitter</td><td>—</td><td>Es gibt ein Gewitter.</td></tr></table>
+<h4>Прогноза за времето (Wetterbericht)</h4>
+<table class="g"><tr><th>немски</th><th>български</th></tr><tr><td>Wie ist das Wetter in Athen?</td><td>Какво е времето в Атина?</td></tr><tr><td>In Athen ist es sonnig. (не: In Athen es ist …)</td><td>В Атина е слънчево.</td></tr>
+<tr><td>Die Temperaturen liegen bei 25 Grad.</td><td>Температурите са около 25 градуса.</td></tr><tr><td>Die Tageshöchsttemperatur liegt bei 30 Grad.</td><td>Максималната е около 30 градуса.</td></tr><tr><td>Es ist teilweise bewölkt.</td><td>Частично облачно.</td></tr><tr><td>minus fünf Grad / fünf Grad unter null</td><td>минус пет градуса</td></tr></table>
+<p class="tip">⚠️ Когато нещо друго е на 1-во място (In Athen, Heute, Im Winter), <b>es</b> минава след глагола: <i>Heute <b>regnet es</b>. Im Winter <b>ist es</b> kalt.</i> · Сезоните са <b>der</b> и с <b>im</b>: im Frühling, im Sommer, im Herbst, im Winter.</p>` },
+  { id: "denn", title: "Свързване: denn (защото) — и разликата с weil", icon: "🔗", html: `
+<p><b>denn</b> и <b>weil</b> значат „защото“, но словоредът е различен.</p>
+<table class="g"><tr><th></th><th>главно изречение</th><th>съюз</th><th>подлог</th><th>глагол</th><th>…</th></tr>
+<tr><td>denn (позиция 0)</td><td>Ich fahre nicht ans Meer,</td><td><b>denn</b></td><td>ich</td><td><b>hasse</b></td><td>die Hitze.</td></tr></table>
+<table class="g"><tr><th></th><th>главно изречение</th><th>съюз</th><th>подлог</th><th>…</th><th>глагол — КРАЙ</th></tr>
+<tr><td>weil</td><td>Ich fahre nicht ans Meer,</td><td><b>weil</b></td><td>ich</td><td>die Hitze</td><td><b>hasse</b>.</td></tr></table>
+<p>Съюзите на <b>позиция 0</b> не заемат място: <b>und, aber, oder, denn, sondern</b> („ADUSO“). След тях — нормален ред.</p>
+<h4>gern – lieber – am liebsten</h4>
+<table class="g"><tr><th>степен</th><th>пример</th></tr><tr><td>gern (с удоволствие)</td><td>Ich fahre <b>gern</b> ans Meer.</td></tr><tr><td>lieber (по-скоро)</td><td>Ich fahre <b>lieber</b> in die Berge.</td></tr><tr><td>am liebsten (най-много)</td><td>Ich fahre <b>am liebsten</b> auf eine Insel.</td></tr></table>
+<p class="tip">💡 <i>Ich mag den Winter <b>überhaupt nicht</b>, denn ich hasse die Kälte.</i> — überhaupt nicht = изобщо не.</p>` },
+  { id: "wohin", title: "Wohin? nach, in die, an die, auf — и Wo?", icon: "🧳", html: `
+<p><b>Wohin?</b> (накъде — движение) → Akkusativ · <b>Wo?</b> (къде — място) → Dativ. Предлогът зависи от вида на мястото.</p>
+<table class="g"><tr><th>какво място</th><th>Wohin? (Akk)</th><th>Wo? (Dat)</th></tr>
+<tr><td>държава/град <b>без</b> член</td><td><b>nach</b> Italien, nach Berlin</td><td><b>in</b> Italien, in Berlin</td></tr>
+<tr><td>държава <b>с</b> член</td><td><b>in die</b> Schweiz, in die Türkei, in die USA</td><td><b>in der</b> Schweiz, in der Türkei, in den USA</td></tr>
+<tr><td>море, езеро, бряг, плаж</td><td><b>an die</b> Nordsee, <b>ans</b> Meer, <b>an den</b> Strand</td><td><b>an der</b> Nordsee, <b>am</b> Meer, <b>am</b> Strand</td></tr>
+<tr><td>остров</td><td><b>auf</b> eine Insel</td><td><b>auf</b> einer Insel</td></tr>
+<tr><td>планина</td><td><b>in die</b> Berge</td><td><b>in den</b> Bergen</td></tr>
+<tr><td>човек, лекар</td><td><b>zum</b> Arzt, zu meiner Oma</td><td><b>beim</b> Arzt, bei meiner Oma</td></tr>
+<tr><td>вкъщи</td><td><b>nach</b> Hause</td><td><b>zu</b> Hause</td></tr></table>
+<p class="tip">⚠️ Капани: <i>in die Schweiz</i> (не „nach Schweiz“) · <i>auf eine Insel</i> (не „an eine Insel“) · wollen + цел: <i>Ich <b>will</b> ans Meer <b>fahren</b>.</i> (ich will = er will, без -t)</p>` },
+  { id: "lassen", title: "lassen: оставям / карам някой да направи", icon: "✂️", html: `
+<table class="g"><tr><th></th><th>lassen</th><th>Imperativ</th></tr><tr><td>ich</td><td>lasse</td><td></td></tr><tr><td>du</td><td>l<b>ä</b>sst</td><td><b>Lass!</b> (без ä)</td></tr><tr><td>er/sie/es</td><td>l<b>ä</b>sst</td><td></td></tr>
+<tr><td>wir</td><td>lassen</td><td></td></tr><tr><td>ihr</td><td>lasst</td><td><b>Lasst!</b></td></tr><tr><td>sie/Sie</td><td>lassen</td><td><b>Lassen Sie!</b></td></tr></table>
+<table class="g"><tr><th>значение</th><th>пример</th></tr><tr><td>оставям нещо някъде</td><td>Ich lasse das Handy zu Hause.</td></tr><tr><td>някой друг прави нещо за мен (+ инфинитив)</td><td>Ich lasse mir die Haare schneiden. · Er lässt das Auto reparieren.</td></tr>
+<tr><td>остави (на мира)</td><td>Lass mich in Ruhe! · Lass das!</td></tr></table>
+<p class="tip">Минало: ließ · hat gelassen. Пазаруване на дрехи: <i>anprobieren</i> (пробвам) · <i>umtauschen</i> (заменям) · <i>zurückgeben</i> (връщам).</p>` },
+);

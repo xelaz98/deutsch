@@ -1,6 +1,6 @@
 // Приблизителна транскрипция немски → кирилица по правилата за четене.
 // Целта е начинаещият да прочете думата правилно; точният звук — от аудиото.
-const TR_WHOLE = { monteur: "монтьор", monteure: "монтьоре",
+const TR_WHOLE = { jeans: "джийнс", "t-shirt": "ти-шьорт", t: "ти", shirt: "шьорт", shirts: "шьортс", handy: "хенди", handys: "хендис", pullover: "пуловер", laptop: "лептоп", monteur: "монтьор", monteure: "монтьоре",
   ukraine: "украине", usa: "у-ес-а", venedig: "венедих",
   verb: "верп", verben: "вербен", woher: "вохер", wohin: "вохин", chemiker: "хемикер",
   november: "новембер", hiphop: "хипхоп", orchester: "оркестер", klavier: "клавир", e: "и", mail: "мейл", stabil: "стабил", steak: "стейк", steaks: "стейкс", cd: "це-де", cds: "це-декс", ski: "ши", skier: "шиер", yoga: "йога", jazz: "джес", volleyball: "волибал", laptop: "лептоп", laptops: "лептопс", bzw: "бе-цет-ве", orange: "оранже", ca: "цирка", ok: "окей",

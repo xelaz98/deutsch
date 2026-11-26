@@ -213,6 +213,7 @@ function audioTexts() {
   if (typeof ex15Texts === "function") ex15Texts().forEach((t) => texts.add(t));
   if (typeof exKap5Texts === "function") exKap5Texts().forEach((t) => texts.add(t));
   if (typeof ex16Texts === "function") ex16Texts().forEach((t) => texts.add(t));
+  if (typeof ex17Texts === "function") ex17Texts().forEach((t) => texts.add(t));
   if (typeof HOMEWORK !== "undefined") HOMEWORK.forEach((h) => { texts.add(h.de); h.sample.forEach(([de]) => texts.add(de)); });
   SOUNDS.forEach(([, list]) => list.forEach(([, , , ex]) => ex.forEach((w) => texts.add(w))));
   [...Array(21).keys(), 30, 40, 50, 60, 70, 80, 90, 100, 1000].forEach((n) => texts.add(num2de(n)));

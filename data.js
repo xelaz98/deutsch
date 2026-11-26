@@ -21,6 +21,7 @@ const LESSONS = [
   { id: 14, date: "19.11.2026", title: "Денят ми: часът, разделими глаголи, Perfekt (hat gemacht / ist gefahren), mich/mir" },
   { id: 15, date: "21.11.2026", title: "Трите времена: Präsens, Präteritum, Perfekt · лош ден · на компютъра" },
   { id: 16, date: "24.11.2026", title: "Ремонт и уговорка, телевизия, противоположности, dürfen, смесени глаголи" },
+  { id: 17, date: "26.11.2026", title: "Времето и сезоните, denn, пътуване (wohin?), дрехи, lassen, Dativ-глаголи" },
 ];
 // Домашни: due = ДД.ММ.ГГГГ; черновата и „готово“ се пазят в localStorage (dl:hw:<id>)
 const HOMEWORK = [
@@ -2298,6 +2299,158 @@ V("nennen", "наричам, назовавам", ["nenne", "nennst", "nennt", "
 V("singen", "пея", ["singe", "singst", "singt", "singen", "singt", "singen"], "sang · hat gesungen");
 V("wohnen", "живея (някъде)", ["wohne", "wohnst", "wohnt", "wohnen", "wohnt", "wohnen"], "wohnte · hat gewohnt");
 V("bleiben", "оставам", ["bleibe", "bleibst", "bleibt", "bleiben", "bleibt", "bleiben"], "blieb · ist geblieben");
+
+
+L(17); T("Сезони и времето (das Wetter)");
+N("die", "Jahreszeit", "Jahreszeiten", "сезон, годишно време", "das Jahr + die Zeit → die · im Frühling, im Sommer …");
+N("der", "Frühling", "Frühlinge", "пролет", "сезоните са der · im Frühling = през пролетта");
+N("das", "Frühjahr", "Frühjahre", "пролет (= der Frühling)", "das Jahr → das · im Frühjahr");
+N("der", "Regen", null, "дъжд", "Im Herbst gibt es viel Regen. · regnen → es regnet");
+N("der", "Regenschauer", "Regenschauer", "краткотраен дъжд, превалявания", "(в бележките „Regenschläge“ — вероятно Regenschauer) · der Schauer = кратък дъжд");
+V("regnen", "вали (дъжд)", ["regne", "regnest", "regnet", "regnen", "regnet", "regnen"], "почти само: es regnet · es hat geregnet");
+W("phrase", "es regnet", "вали дъжд", "безлично: es + глагол · es hat geregnet");
+N("die", "Wolke", "Wolken", "облак", "→ bewölkt = облачно");
+W("adj", "warm", "топъл", "→ die Wärme · wärmer – am wärmsten");
+N("die", "Wärme", null, "топлина", "warm → die Wärme (a → ä)");
+N("der", "Sommer", "Sommer", "лято", "im Sommer · мн.ч. без окончание");
+N("die", "Sonne", "Sonnen", "слънце", "→ sonnig · Die Sonne scheint.");
+V("scheinen", "светя, грея; изглеждам", ["scheine", "scheinst", "scheint", "scheinen", "scheint", "scheinen"], "Die Sonne scheint. · schien · hat geschienen");
+W("phrase", "es scheint", "грее (слънце); изглежда, че", "Die Sonne scheint. · Es scheint, er ist krank.");
+N("die", "Hitze", null, "жега", "heiß → die Hitze");
+W("adj", "heiß", "горещ", "Heute ist es heiß. · → die Hitze");
+N("der", "Himmel", "Himmel", "небе", "am Himmel = на небето");
+N("das", "Licht", "Lichter", "светлина; лампа", "das Licht anmachen");
+N("das", "Gewitter", "Gewitter", "гръмотевична буря", "Ge-…-er → das");
+N("der", "Stern", "Sterne", "звезда", "die Sterne am Himmel");
+W("phrase", "die Sterne am Himmel", "звездите на небето", "am = an dem (Dativ, къде?)");
+N("die", "Temperatur", "Temperaturen", "температура", "-ur → die · Die Temperaturen liegen bei 20 Grad.");
+N("der", "Grad", "Grad", "градус", "(в бележките „das Grad“ — за температура е der Grad) · 20 Grad (мн.ч. без окончание) · minus 5 Grad");
+N("der", "Herbst", "Herbste", "есен", "im Herbst");
+N("der", "Sturm", "Stürme", "буря, силен вятър", "→ stürmisch");
+W("adj", "stürmisch", "бурен, ветровит", "der Sturm → stürmisch");
+N("der", "Nebel", "Nebel", "мъгла", "→ neblig");
+W("adj", "neblig", "мъгливо", "der Nebel → neblig (e изпада)");
+N("die", "Nacht", "Nächte", "нощ", "in der Nacht = през нощта · die Nacht е единствената „част от деня“ от женски род");
+N("der", "Winter", "Winter", "зима", "im Winter");
+N("der", "Schnee", null, "сняг", "→ schneien · es schneit");
+V("schneien", "вали сняг", ["schneie", "schneist", "schneit", "schneien", "schneit", "schneien"], "почти само: es schneit · es hat geschneit");
+W("phrase", "es schneit", "вали сняг", "безлично: es + глагол");
+N("das", "Eis", null, "лед; сладолед", "Das Eis ist glatt. · Ein Eis, bitte!");
+N("die", "Kälte", null, "студ", "kalt → die Kälte (a → ä)");
+N("der", "Frost", "Fröste", "слана, мраз", "минусови температури");
+V("frieren", "мръзна; замръзвам", ["friere", "frierst", "friert", "frieren", "friert", "frieren"], "Ich friere. = Студено ми е. · fror · hat gefroren");
+W("adj", "kalt", "студен", "→ die Kälte · kälter – am kältesten");
+W("adj", "bewölkt", "облачно", "die Wolke → bewölkt");
+W("adj", "sonnig", "слънчево", "die Sonne → sonnig");
+N("das", "Wetter", null, "времето (метеорологично)", "Wie ist das Wetter? · само ед.ч.");
+N("die", "Wettervorhersage", "Wettervorhersagen", "прогноза за времето", "vorher (предварително) + sagen → die Vorhersage");
+N("der", "Wetterbericht", "Wetterberichte", "прогноза/сводка за времето", "der Bericht → der");
+W("phrase", "liegen bei", "са около (за числа)", "Die Temperaturen liegen bei 25 Grad. = Температурите са около 25 градуса.");
+W("adv", "teilweise", "частично, на места", "(в бележките „teiweise“) · teilweise bewölkt = частично облачно");
+N("die", "Tageshöchsttemperatur", "Tageshöchsttemperaturen", "максимална дневна температура", "der Tag + höchst (най-висок) + die Temperatur → die");
+W("q", "Wie ist das Wetter in Athen?", "Какво е времето в Атина?", "– In Athen ist es sonnig und heiß.");
+
+T("Свързване на изречения: denn · gern – lieber – am liebsten");
+W("word", "denn", "защото", "позиция 0 — след denn нормален словоред: …, denn ich hasse die Hitze. (≠ weil — глаголът в края)");
+V("hassen", "мразя", ["hasse", "hasst", "hasst", "hassen", "hasst", "hassen"], "du hasst (ss + t) · Ich hasse den Winter.");
+W("adv", "überhaupt", "изобщо", "überhaupt nicht = изобщо не · Ich mag den Winter überhaupt nicht.");
+N("die", "Satzverbindung", "Satzverbindungen", "свързване на изречения", "der Satz + die Verbindung (-ung) → die");
+W("phrase", "gern – lieber – am liebsten", "с удоволствие – по-скоро – най-много", "Ich fahre gern ans Meer, lieber in die Berge und am liebsten auf eine Insel.");
+W("phrase", "kalt – die Kälte", "студен – студ", "прилагателно → съществително (a → ä)");
+W("phrase", "heiß – die Hitze", "горещ – жега", "");
+W("phrase", "warm – die Wärme", "топъл – топлина", "a → ä");
+W("phrase", "stürmisch – der Sturm", "бурен – буря", "");
+W("phrase", "neblig – der Nebel", "мъгливо – мъгла", "");
+W("phrase", "bewölkt – die Wolke", "облачно – облак", "");
+W("phrase", "regnen – der Regen", "вали – дъжд", "es regnet");
+W("phrase", "schneien – der Schnee", "вали сняг – сняг", "es schneit");
+W("phrase", "sonnig – die Sonne", "слънчево – слънце", "");
+
+T("Пътуване: накъде? (wohin?)");
+V("wollen", "искам (твърдо намерение)", ["will", "willst", "will", "wollen", "wollt", "wollen"], "ich will = er will (без -t) · инфинитивът в края: Ich will ans Meer fahren.");
+V("raten", "гадая, отгатвам; съветвам", ["rate", "rätst", "rät", "raten", "ratet", "raten"], "a → ä: du rätst, er rät · Rate mal! = Познай!");
+N("das", "Reiseziel", "Reiseziele", "дестинация, цел на пътуването", "die Reise + das Ziel → das");
+W("q", "wohin?", "накъде?", "→ Akkusativ: in die Schweiz, an den Strand · ≠ wo? (къде, Dativ)");
+W("phrase", "nach Italien fahren", "пътувам до Италия", "държави и градове без член → nach");
+W("phrase", "in die Schweiz fahren", "пътувам до Швейцария", "държави с член (die Schweiz, die Türkei) → in + Akk");
+W("phrase", "in die USA fliegen", "летя до САЩ", "die USA (мн.ч.) → in die USA");
+N("die", "Nordsee", null, "Северно море", "an die Nordsee fahren (до морето → an)");
+W("phrase", "an die Nordsee fahren", "пътувам до Северно море", "вода/бряг → an + Akk");
+N("die", "Ostsee", null, "Балтийско море", "an die Ostsee");
+N("der", "Strand", "Strände", "плаж", "an den Strand · am Strand (къде?)");
+W("phrase", "an den Strand fahren", "отивам на плаж", "an + Akk (der → den)");
+N("die", "Insel", "Inseln", "остров", "auf eine Insel fahren · auf der Insel (къде?)");
+W("phrase", "auf eine Insel fahren", "пътувам до остров", "(в бележките „an eine Insel“ — правилно е auf) · остров → auf");
+W("phrase", "verfügen über + Akk", "разполагам с", "Das Hotel verfügt über einen Pool. (писмено, в обяви)");
+N("der", "Berg", "Berge", "планина, връх", "in die Berge fahren · in den Bergen (къде?)");
+N("die", "Übernachtung", "Übernachtungen", "нощувка", "-ung → die · Übernachtung mit Frühstück");
+
+T("Багаж и дрехи");
+N("das", "Gepäck", null, "багаж", "само ед.ч.");
+N("der", "Koffer", "Koffer", "куфар", "den Koffer packen");
+N("der", "Rucksack", "Rucksäcke", "раница", "u → ä в мн.ч.");
+N("die", "Reisetasche", "Reisetaschen", "пътна чанта", "die Reise + die Tasche");
+N("die", "Handtasche", "Handtaschen", "дамска чанта", "die Hand + die Tasche");
+N("die", "Kleidung", null, "облекло, дрехи", "-ung → die · само ед.ч.");
+N("die", "Badehose", "Badehosen", "мъжки бански", "baden + die Hose");
+N("der", "Anzug", "Anzüge", "костюм", "u → ü в мн.ч.");
+N("pl", "Jeans", null, "дънки", "die Jeans (обикновено мн.ч.)");
+N("das", "Hemd", "Hemden", "риза", "(мн.ч. Hemden, не „Hemde“)");
+N("das", "T-Shirt", "T-Shirts", "тениска", "чуждица → -s");
+N("pl", "Turnschuhe", null, "маратонки", "der Turnschuh, die Turnschuhe");
+N("die", "Regenjacke", "Regenjacken", "дъждобран (яке)", "der Regen + die Jacke");
+N("die", "Socke", "Socken", "чорап", "(в бележките „der Socke“ — правилно е die Socke)");
+N("der", "Schlafanzug", "Schlafanzüge", "пижама", "schlafen + der Anzug");
+N("der", "Bikini", "Bikinis", "бикини (бански)", "");
+N("der", "Rock", "Röcke", "пола", "o → ö в мн.ч.");
+N("die", "Bluse", "Blusen", "блуза (дамска риза)", "");
+N("der", "Pullover", "Pullover", "пуловер", "мн.ч. без окончание · разг. der Pulli");
+N("pl", "Absatzschuhe", null, "обувки на ток", "der Absatz = ток · der Absatzschuh");
+N("die", "Strumpfhose", "Strumpfhosen", "чорапогащник", "der Strumpf + die Hose");
+N("das", "Nachthemd", "Nachthemden", "нощница", "die Nacht + das Hemd → das");
+N("das", "Kleid", "Kleider", "рокля", "die Kleider = и „дрехите“");
+N("die", "Hose", "Hosen", "панталон", "");
+N("der", "Mantel", "Mäntel", "палто", "a → ä в мн.ч.");
+N("die", "Strickjacke", "Strickjacken", "плетена жилетка", "(в бележките „Strickjache“) · stricken = плета");
+N("das", "Geld", "Gelder", "пари", "обикновено само ед.ч.");
+N("der", "Pass", "Pässe", "паспорт", "a → ä в мн.ч. · der Reisepass");
+N("die", "Sonnencreme", "Sonnencremes", "слънцезащитен крем", "die Sonne + die Creme");
+N("die", "Kreditkarte", "Kreditkarten", "кредитна карта", "");
+N("der", "Fotoapparat", "Fotoapparate", "фотоапарат", "");
+N("das", "Handy", "Handys", "мобилен телефон", "чуждица → -s");
+N("der", "Laptop", "Laptops", "лаптоп", "");
+N("der", "Führerschein", "Führerscheine", "шофьорска книжка", "");
+N("das", "Aspirin", null, "аспирин", "(в бележките „Asprin“)");
+N("die", "Sonnenbrille", "Sonnenbrillen", "слънчеви очила", "(в бележките „Sonnebrille“) · die Sonne + die Brille");
+N("der", "Regenschirm", "Regenschirme", "чадър", "der Regen + der Schirm");
+V("abhängen", "завися (от)", ["hänge ab", "hängst ab", "hängt ab", "hängen ab", "hängt ab", "hängen ab"], "abhängen von + Dat: Das hängt vom Wetter ab. = Зависи от времето.");
+
+T("lassen и пазаруване на дрехи");
+V("lassen", "оставям; карам (някой да направи)", ["lasse", "lässt", "lässt", "lassen", "lasst", "lassen"], "a → ä: du lässt, er lässt · ließ · hat gelassen");
+W("phrase", "Ich lasse mir die Haare schneiden.", "Подстригвам се (на фризьор).", "lassen + инфинитив = някой друг го прави за мен");
+W("phrase", "Lass mich in Ruhe!", "Остави ме на мира!", "Imperativ du: lass");
+W("phrase", "Lass das!", "Остави това! Престани!", "(в бележките „lass dass“) · das = това");
+W("phrase", "Lass! – Lasst! – Lassen Sie!", "Остави! (ти – вие – Вие)", "Imperativ: du lässt → lass (без умлаут!)");
+V("umtauschen", "заменям (стока)", ["tausche um", "tauschst um", "tauscht um", "tauschen um", "tauscht um", "tauschen um"], "разделим · Kann ich den Rock umtauschen? · hat umgetauscht");
+V("zurückgeben", "връщам", ["gebe zurück", "gibst zurück", "gibt zurück", "geben zurück", "gebt zurück", "geben zurück"], "e → i · hat zurückgegeben");
+V("anprobieren", "пробвам (дреха)", ["probiere an", "probierst an", "probiert an", "probieren an", "probiert an", "probieren an"], "разделим + -ieren → hat anprobiert (без ge-)");
+
+T("Dativ: глаголи + членове");
+V("gratulieren", "честитя", ["gratuliere", "gratulierst", "gratuliert", "gratulieren", "gratuliert", "gratulieren"], "+ Dativ (на кого?) + zu: Ich gratuliere Ihnen zum Geburtstag!");
+W("phrase", "Ich gratuliere Ihnen zum Geburtstag!", "Честит рожден ден! (учтиво)", "Ihnen = Dativ на Sie · zum = zu dem");
+W("q", "wem?", "на кого?", "въпрос за Dativ: Wem hilfst du? – Dem Mann.");
+V("helfen", "помагам", ["helfe", "hilfst", "hilft", "helfen", "helft", "helfen"], "+ Dativ · e → i · hat geholfen");
+W("phrase", "Ich helfe dem Mann.", "Помагам на мъжа.", "der Mann → dem Mann (Dativ)");
+W("phrase", "Ich helfe meiner Schwester.", "Помагам на сестра си.", "die Schwester → meiner Schwester");
+W("phrase", "Ich gratuliere dem Geburtstagskind.", "Честитя на рожденика.", "das Kind → dem Kind");
+W("phrase", "Den Kindern gefällt das Fahrrad nicht.", "На децата не им харесва колелото.", "мн.ч. Dativ: den + -n · (в бележките „Rahrrad“)");
+V("gefallen", "харесвам се (на някого)", ["gefalle", "gefällst", "gefällt", "gefallen", "gefallt", "gefallen"], "+ Dativ: Das Kleid gefällt mir. (рокля → подлог!)");
+V("passen", "подхождам, ставам (по размер)", ["passe", "passt", "passt", "passen", "passt", "passen"], "+ Dativ: Die Hose passt mir nicht.");
+V("schmecken", "вкусен съм (на някого)", ["schmecke", "schmeckst", "schmeckt", "schmecken", "schmeckt", "schmecken"], "+ Dativ: Das schmeckt mir.");
+V("gehören", "принадлежа", ["gehöre", "gehörst", "gehört", "gehören", "gehört", "gehören"], "+ Dativ: Das gehört mir.");
+W("phrase", "dem, einem, keinem, meinem (der/das)", "Dativ на мъжки и среден род", "der Mann → dem/einem/keinem/meinem Mann");
+W("phrase", "der, einer, keiner, meiner (die)", "Dativ на женски род", "die Frau → der/einer/keiner/meiner Frau");
+W("phrase", "den Kindern (мн.ч.)", "Dativ мн.ч.: den + -n", "die Kinder → den Kindern");
 
 ITEMS.forEach((it) => {
   it.id = (it.art ? it.art + " " : "") + it.de + "#" + it.type + (it.lesson === 0 ? "@0" : "");
