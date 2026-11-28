@@ -1076,7 +1076,7 @@ function genBGDE(it0) {
 }
 function genDEBG(it0) {
   const it = it0 || rnd(exPool((i) => ["noun", "verb", "adj", "adv"].includes(i.type)));
-  const opts = shuffle([it.bg, ...shuffle(exPool((o) => o.type === it.type && o !== it && o.bg !== it.bg)).slice(0, 3).map((o) => o.bg)]);
+  const opts = shuffle([it.bg, ...[...new Set(shuffle(exPool((o) => o.type === it.type && o !== it && o.bg !== it.bg)).map((o) => o.bg))].slice(0, 3)]);
   return { kind: "mc", task: "Какво значи?", prompt: `<div class="exw">${deHTML(it)}</div>${trHTML(deFull(it))}`, autoSay: deFull(it), options: opts, answer: it.bg, item: it, say: deFull(it), full: exampleFor(it)?.[0], bg: exampleFor(it)?.[1], keys: true,
     explain: `${deHTML(it)} = <b>${esc(it.bg)}</b>` };
 }

@@ -544,3 +544,107 @@ function ex17Texts() {
 UNIT_MAP[17] = { g: ["wetter", "denn", "wohin", "dativ", "lassen"], ex: ["wetterpaar", "wetterbild", "jahreszeit", "wohin", "koffer", "denn", "lassen", "dativverb", "kleidverb", "modal", "dativart"] };
 G2EX.wetter = ["wetterpaar", "wetterbild", "jahreszeit"]; G2EX.denn = ["denn"]; G2EX.wohin = ["wohin", "koffer"]; G2EX.lassen = ["lassen"]; G2EX.dativ = [...new Set([...(G2EX.dativ || []), "dativverb", "kleidverb"])];
 UNITS.forEach((U) => { U.g = ((UNIT_MAP[U.id] || {}).g || []).filter((id) => GRAMMAR.some((x) => x.id === id)); U.ex = ((UNIT_MAP[U.id] || {}).ex || []).filter(exByK); });
+
+// ───────── урок 18: Wie geht es dir/Ihnen? · dieser · цветове · womit? (mit + Dat) · магазин · пътуване в Perfekt ─────────
+Object.assign(V3, { umsteigen: ["stieg um", "s", "umgestiegen", "прекачвам се"], abholen: ["holte ab", "h", "abgeholt", "взимам"], anziehen: ["zog an", "h", "angezogen", "обличам"], planen: ["plante", "h", "geplant", "планирам"],
+  gewinnen: ["gewann", "h", "gewonnen", "печеля"], gefallen: ["gefiel", "h", "gefallen", "харесвам се"], danken: ["dankte", "h", "gedankt", "благодаря"] });
+Object.assign(PERF, { umgestiegen: ["umsteigen", "s", "sep"], abgeholt: ["abholen", "h", "sep"], angezogen: ["anziehen", "h", "sep"], geplant: ["planen", "h", "w"], gewonnen: ["gewinnen", "h", "s"], gedankt: ["danken", "h", "w"] });
+Object.assign(SEP_PRE14, { um: 1 });
+const Z18 = [["Ich", 0, "umsteigen", "in Köln", "Прекачвам се в Кьолн.", "Прекачих се в Кьолн."], ["Mein Bruder", 2, "abholen", "mich vom Flughafen", "Брат ми ме взима от летището.", "Брат ми ме взе от летището."],
+  ["Du", 1, "anziehen", "einen Mantel", "Обличаш палто.", "Облече палто."], ["Wir", 3, "planen", "einen Ausflug", "Планираме излет.", "Планирахме излет."], ["Er", 2, "gewinnen", "im Lotto", "Той печели от лотарията.", "Той спечели от лотарията."],
+  ["Ich", 0, "fahren", "mit dem Zug an die Ostsee", "Пътувам с влака до Балтийско море.", "Пътувах с влака до Балтийско море."], ["Wir", 3, "bleiben", "drei Tage in den Bergen", "Оставаме три дни в планината.", "Останахме три дни в планината."],
+  ["Sie (тя)", 2, "ankommen", "erst um zehn Uhr", "Тя пристига чак в десет.", "Тя пристигна чак в десет."]];
+Z18.forEach((z) => { const z2 = [...z]; z2[0] = z2[0].replace(" (тя)", ""); if (presF(z2[2], z2[1])) { Z3.push(z2); const r = z3(z2); if (PERF[r.part]) PERF_S.push([r.perf, z2[5]]); } });
+// dieser
+const DIES = { der: ["dieser", "diesen", "diesem"], die: ["diese", "diese", "dieser"], das: ["dieses", "dieses", "diesem"], pl: ["diese", "diese", "diesen"] };
+const DIES_N = ["Pullover", "Bluse", "Kleid", "Rock", "Mantel", "Hemd", "Hose", "Schuh", "Jacke", "Anzug", "Handtasche", "T-Shirt", "Schal", "Strickjacke", "Buch", "Auto"];
+function genDieser() {
+  const it = ITEMS.find((i) => i.type === "noun" && i.de === rnd(DIES_N) && ["der", "die", "das"].includes(i.art)) || ITEMS.find((i) => i.de === "Bluse");
+  const plural = Math.random() < 0.2 && it.pl, g = plural ? "pl" : it.art, c = rnd([0, 0, 1, 1, 2]), noun = plural ? (c === 2 && !/[ns]$/.test(it.pl) ? it.pl + "n" : it.pl) : it.de;
+  const fr = [[`___ ${noun} ${plural ? "gefallen" : "gefällt"} mir.`, "Nominativ (подлог)"], [`Ich nehme ___ ${noun}.`, "Akkusativ (nehmen + кого/какво?)"], [`Was kostet es mit ___ ${noun}?`, "Dativ (mit +)"]][c];
+  const fr2 = c === 2 ? [`Ich bin mit ___ ${noun} nicht zufrieden.`, "Dativ (mit +)"] : fr, ans = DIES[g][c], full = fr2[0].replace("___", c === 0 ? ans[0].toUpperCase() + ans.slice(1) : ans);
+  const shown = c === 0 ? fr2[0] : fr2[0];
+  return { kind: "mc", mode: "use", errCat: "case", item: it, task: "dieser, diese, dieses?", prompt: `<div class="exs">${esc(shown)}</div><div class="meta">${plural ? "мн.ч." : it.art} ${esc(noun)} · ${fr2[1]}</div>`,
+    options: shuffle([...new Set(["dieser", "diese", "dieses", "diesen", "diesem"])].map((x) => (c === 0 ? cap(x) : x))).slice(0, 5), answer: c === 0 ? cap(ans) : ans, say: full, full, keys: true,
+    explain: `<b>dieser</b> има окончанията на der/die/das: der → dies<b>er</b>, die → dies<b>e</b>, das → dies<b>es</b>, мн.ч. → dies<b>e</b>. Akkusativ мъжки → dies<b>en</b>, Dativ → dies<b>em</b> / dies<b>er</b> / мн.ч. dies<b>en</b>. Тук: ${plural ? "мн.ч." : it.art} + ${fr2[1]} → <b>${ans}</b>.` };
+}
+// цветове
+const FARB = [["rot", "🟥", "червен"], ["blau", "🟦", "син"], ["grün", "🟩", "зелен"], ["gelb", "🟨", "жълт"], ["schwarz", "⬛", "черен"], ["weiß", "⬜", "бял"], ["braun", "🟫", "кафяв"], ["orange", "🟧", "оранжев"], ["lila", "🟪", "лилав"]];
+function genFarbe() {
+  const [f, ic, bg] = rnd(FARB), mode = rnd(["sym", "in", "hell"]);
+  if (mode === "in") { const full = `Haben Sie die Bluse auch in ${cap(f)}?`; return { kind: "type", mode: "recall", task: "Попълни цвета (като съществително)", prompt: `<div class="exs">Haben Sie die Bluse auch in ___? ${ic}</div><div class="meta">${bg}</div>`, answer: cap(f), say: full, full,
+    check: (v) => (v.trim() === cap(f) ? { ok: true, level: "exact" } : v.trim().toLowerCase() === f ? { ok: true, level: "typo", cat: "spell", msg: `След <b>in</b> цветът е съществително → с <b>главна</b>: in ${cap(f)}.` } : { ok: false, level: "wrong", cat: "word", msg: `Правилно: in <b>${cap(f)}</b>.` }),
+    explain: `<b>in Rot / in Blau</b> — цветът тук е съществително (das Rot) → главна буква. Иначе прилагателно: <i>eine rote Bluse</i>.` }; }
+  if (mode === "hell" && ["blau", "grün", "rot", "braun"].includes(f)) { const h = Math.random() < 0.5, ans = (h ? "hell" : "dunkel") + f;
+    return { kind: "mc", mode: "rec", task: "Светло или тъмно?", prompt: `<div class="exw">${h ? "светло" : "тъмно"}${bg.slice(0, -1)}о</div>`, options: shuffle(["hell" + f, "dunkel" + f, "pech" + f, f]), answer: ans, say: ans, keys: true, explain: `<b>hell-</b> = светло-, <b>dunkel-</b> = тъмно- (пише се слято): hellblau, dunkelgrün. <b>pechschwarz</b> = катраненочерно.` }; }
+  return { kind: "mc", mode: "rec", task: "Кой цвят?", prompt: `<div style="font-size:60px;text-align:center">${ic}</div>`, options: shuffle([f, ...shuffle(FARB.filter((x) => x[0] !== f)).slice(0, 3).map((x) => x[0])]), answer: f, say: f, keys: true, explain: `${ic} = <b>${f}</b> (${bg}).` };
+}
+// womit? mit + Dativ
+const VM = [["der", "Zug", "влака"], ["der", "Bus", "автобуса"], ["das", "Auto", "колата"], ["das", "Fahrrad", "колелото"], ["die", "Bahn", "влака"], ["die", "Straßenbahn", "трамвая"], ["das", "Flugzeug", "самолета"], ["das", "Schiff", "кораба"], ["die", "Fähre", "ферибота"], ["das", "Motorrad", "мотора"], ["das", "Taxi", "таксито"], ["die", "U-Bahn", "метрото"]];
+function genWomit() {
+  if (Math.random() < 0.15) return { kind: "mc", errCat: "prep", task: "Как казваш „пеша“?", prompt: `<div class="exs">Ich gehe ___. 🚶</div>`, options: ["zu Fuß", "mit dem Fuß", "mit Fuß", "auf Fuß"], answer: "zu Fuß", say: "Ich gehe zu Fuß.", full: "Ich gehe zu Fuß.", keys: true, explain: "Пеша = <b>zu Fuß</b> (изключение — без mit)." };
+  const [g, n, bg] = rnd(VM), a = g === "die" ? "der" : "dem", v = n === "Flugzeug" ? "fliege" : "fahre", full = `Ich ${v} mit ${a} ${n}.`, perf = Math.random() < 0.4;
+  const s = perf ? `Ich bin mit ___ ${n} ${n === "Flugzeug" ? "geflogen" : "gefahren"}.` : `Ich ${v} mit ___ ${n}.`, f2 = s.replace("___", a);
+  return { kind: "mc", mode: "use", errCat: "case", task: "Womit? (mit + Dativ)", prompt: `<div class="exs">${esc(s)}</div><div class="meta">с ${bg} · ${g} ${n}</div>`, options: ["dem", "der", "den", "die"], answer: a, say: f2, full: f2, keys: true,
+    explain: `<b>mit</b> винаги иска <b>Dativ</b>: der/das → <b>dem</b>, die → <b>der</b>. Въпрос: <b>Womit</b> fährst du? (неща) · <b>Mit wem</b>? (хора) – Mit meinem Sohn.` };
+}
+// ти или Вие?
+const DUSIE = [["Anna (приятелка)", "dir"], ["Frau Müller", "Ihnen"], ["Herr Klein (шефът)", "Ihnen"], ["Paul (брат ти)", "dir"], ["Oma", "dir"], ["der Arzt", "Ihnen"], ["ein Kind", "dir"], ["Herr und Frau Weber", "Ihnen"]];
+function genDuSie() {
+  const [w, a] = rnd(DUSIE), full = `Wie geht es ${a}?`;
+  return { kind: "mc", errCat: "case", task: `Говориш с: <b>${esc(w)}</b>`, prompt: `<div class="exs">Wie geht es ___?</div>`, options: ["dir", "Ihnen", "dich", "Sie"], answer: a, say: full, full, keys: true,
+    explain: `<b>Wie geht es …?</b> иска <b>Dativ</b>: на ти → <b>dir</b> (duzen), учтиво → <b>Ihnen</b> (siezen). Отговор: <i>Es geht mir gut, danke. Und ${a}?</i>` };
+}
+const BANK18 = [
+  { title: "В магазина", parts: ["Guten Tag, kann ich {Ihnen} helfen?", "Danke, ich {schaue} nur.", "… Ich {hätte} gern {diese} Bluse aus dem Schaufenster.", "Welche {Größe} haben Sie? – 38.", "Kann ich die Bluse {anprobieren}?", "Sie {steht} Ihnen ausgezeichnet!", "Die Bluse {gefällt} mir, aber die Schuhe {drücken}."] },
+  { title: "Пътуването ми (Perfekt)", parts: ["Im Sommer {bin} ich an die Ostsee {gefahren}.", "Ich bin {mit} dem Zug gefahren und {bin} in Hamburg {umgestiegen}.", "Wir {haben} in einem Hotel {gewohnt}.", "Ich bin drei Tage {geblieben}.", "Leider {war} das Wetter schrecklich: Es gab einen heftigen Sturm.", "Aber die Reise hat mir gut {gefallen}."] },
+  { title: "На гарата", parts: ["Wann ist die {Abfahrt} nach München?", "Der Zug fährt um 9.15 Uhr von {Gleis} 4.", "Muss ich {umsteigen}? – Ja, in Nürnberg.", "Wo ist der {Fahrkartenschalter}?", "Der Zug hat zehn Minuten {Verspätung}.", "Mein Bruder {holt} mich vom Bahnhof {ab}."] },
+];
+let b18 = 0;
+function genBank18() { const t = BANK18[b18++ % BANK18.length], blanks = [], sentences = []; t.parts.forEach((p) => { sentences.push(p.replace(/[{}]/g, "")); (p.match(/\{([^}]+)\}/g) || []).forEach((m) => blanks.push(m.slice(1, -1))); });
+  return { kind: "bank", mode: "use", task: `Попълни: <b>${esc(t.title)}</b>`, parts: t.parts, blanks, bank: shuffle(blanks), sentences, answer: blanks.join(" · "), explain: "Цъкни дума в текста за „Защо?“. <i>Ich hätte gern …</i> = учтиво „бих искал“ · <i>gefallen/passen/stehen + Dativ</i> · <i>mit + Dativ</i> · Perfekt: <i>bin … gefahren, bin … geblieben</i>." }; }
+const VPAAR = [["die Abfahrt", "die Ankunft"], ["der Abflug", "die Landung"], ["abfahren", "ankommen"], ["einsteigen", "aussteigen"], ["der Fahrplan", "der Flugplan"], ["der Bahnhof", "der Flughafen"]];
+function genVPaar() { const [a, b] = rnd(VPAAR), d = Math.random() < 0.5, [x, y] = d ? [a, b] : [b, a];
+  return { kind: "mc", mode: "rec", task: "Двойка: кое върви с …?", prompt: `<div class="exw">${esc(x)} ↔ ___</div>`, options: shuffle([y, ...shuffle(VPAAR.flat().filter((z) => z !== x && z !== y)).slice(0, 3)]), answer: y, say: `${x}, ${y}`, keys: true,
+    explain: `${esc(a)} ↔ ${esc(b)} · влак: die Abfahrt (тръгване) – die Ankunft (пристигане) · самолет: der Abflug (излитане) – die Landung (кацане).` }; }
+EX_TYPES.push(
+  { k: "dieser", skill: "Граматика", ic: "👉", t: "dieser, diese, dieses (diesen, diesem)", d: "___ Bluse gefällt mir. → Diese", gen: genDieser },
+  { k: "farbe18", skill: "Думи", ic: "🎨", t: "Цветове: rot, hellblau, in Rot", d: "🟦 → blau", gen: genFarbe },
+  { k: "womit", skill: "Граматика", ic: "🚆", t: "Womit? mit dem Zug / mit der Bahn", d: "Ich fahre mit ___ Bus. → dem", gen: genWomit },
+  { k: "dusie", skill: "Граматика", ic: "🤝", t: "Wie geht es dir / Ihnen? (ти или Вие)", d: "Frau Müller → Ihnen", gen: genDuSie },
+  { k: "bank18", skill: "Четене", ic: "🛍️", t: "Магазин, гара, разказ за пътуване", d: "попълни с банка думи", gen: genBank18 },
+  { k: "vpaar", skill: "Думи", ic: "✈️", t: "Abfahrt ↔ Ankunft, Abflug ↔ Landung", d: "двойки думи за транспорт", gen: genVPaar },
+);
+Object.assign(EX_CAT, { dieser: "case", womit: "case", dusie: "case" });
+CAT_EX.case = [...CAT_EX.case, "dieser", "womit"];
+wrapGens();
+GRAMMAR.push({ id: "dieser", title: "dieser · mit + Dativ (womit?) · Wie geht es dir/Ihnen?", icon: "👉", html: `
+<h4>dieser, diese, dieses — „този“</h4>
+<p>Окончанията са като на определителния член: <b>der → dies<u>er</u></b>, <b>die → dies<u>e</u></b>, <b>das → dies<u>es</u></b>.</p>
+<table class="g"><tr><th></th><th>мъжки</th><th>женски</th><th>среден</th><th>мн.ч.</th></tr>
+<tr><td>Nominativ</td><td>dies<b>er</b> Pullover</td><td>dies<b>e</b> Bluse</td><td>dies<b>es</b> Kleid</td><td>dies<b>e</b> Schuhe</td></tr>
+<tr><td>Akkusativ</td><td>dies<b>en</b> Pullover</td><td>dies<b>e</b> Bluse</td><td>dies<b>es</b> Kleid</td><td>dies<b>e</b> Schuhe</td></tr>
+<tr><td>Dativ</td><td>dies<b>em</b> Pullover</td><td>dies<b>er</b> Bluse</td><td>dies<b>em</b> Kleid</td><td>dies<b>en</b> Schuhe<b>n</b></td></tr></table>
+<p class="tip">💡 <i><b>Dieser</b> Pullover gefällt mir.</i> (подлог) · <i>Ich nehme <b>diesen</b> Pullover.</i> (Akkusativ)</p>
+<h4>mit + Dativ: womit? mit wem?</h4>
+<table class="g"><tr><th>въпрос</th><th>отговор</th></tr><tr><td><b>Womit</b> fährst du? (неща)</td><td>Mit <b>dem</b> Zug / Bus / Auto · mit <b>der</b> Bahn / Fähre</td></tr><tr><td><b>Mit wem</b> fährst du? (хора)</td><td>Mit <b>meinem</b> Sohn · mit <b>meiner</b> Frau · mit <b>meinen</b> Kinder<b>n</b></td></tr><tr><td>пеша</td><td><b>zu Fuß</b> (без mit)</td></tr></table>
+<h4>Wie geht es …? — Dativ</h4>
+<table class="g"><tr><th>на ти (duzen)</th><th>учтиво (siezen)</th><th>отговор</th></tr><tr><td>Wie geht es <b>dir</b>?</td><td>Wie geht es <b>Ihnen</b>?</td><td>Es geht <b>mir</b> gut. / Danke, gut.</td></tr></table>
+<h4>В магазина</h4>
+<table class="g"><tr><th>продавач</th><th>купувач</th></tr><tr><td>Kann ich Ihnen helfen?</td><td>Danke, ich schaue nur. / Ich sehe mich nur um.</td></tr><tr><td>Welche Größe haben Sie?</td><td>Ich hätte gern diese Bluse in Größe 38.</td></tr>
+<tr><td>Möchten Sie sie anprobieren?</td><td>Haben Sie die Bluse auch in Rot?</td></tr><tr><td>Sie steht Ihnen ausgezeichnet!</td><td>Die Schuhe passen mir nicht – sie drücken.</td></tr></table>
+<p class="tip">gefallen / passen / stehen + <b>Dativ</b>: <i>Die Bluse steht <b>dir</b> gut.</i> · Цветовете в <i>in Rot</i> са с главна (съществително).</p>` });
+UNIT_MAP[18] = { g: ["dieser", "wohin", "dativ", "farben", "perfekt"], ex: ["dieser", "farbe18", "womit", "dusie", "bank18", "vpaar", "dativverb", "kleidverb", "wohin", "perfhs", "t5"] };
+G2EX.dieser = ["dieser", "womit", "dusie", "bank18"];
+UNITS.forEach((U) => { U.g = ((UNIT_MAP[U.id] || {}).g || []).filter((id) => GRAMMAR.some((x) => x.id === id)); U.ex = ((UNIT_MAP[U.id] || {}).ex || []).filter(exByK); });
+function ex18Texts() {
+  const out = [];
+  Z18.forEach((z) => { const z2 = [...z]; z2[0] = z2[0].replace(" (тя)", ""); if (presF(z2[2], z2[1])) { const r = z3(z2); out.push(r.pres, r.praet, r.perf); } });
+  DIES_N.forEach((d) => { const it = ITEMS.find((i) => i.type === "noun" && i.de === d && ["der", "die", "das"].includes(i.art)); if (!it) return; const D = DIES[it.art];
+    out.push(`${cap(D[0])} ${d} gefällt mir.`, `Ich nehme ${D[1]} ${d}.`, `Ich bin mit ${D[2]} ${d} nicht zufrieden.`); if (it.pl) { out.push(`Diese ${it.pl} gefallen mir.`, `Ich nehme diese ${it.pl}.`, `Ich bin mit diesen ${/[ns]$/.test(it.pl) ? it.pl : it.pl + "n"} nicht zufrieden.`); } });
+  FARB.forEach(([f]) => out.push(f, `Haben Sie die Bluse auch in ${cap(f)}?`)); ["blau", "grün", "rot", "braun"].forEach((f) => out.push("hell" + f, "dunkel" + f, "pech" + f));
+  VM.forEach(([g, n]) => { const a = g === "die" ? "der" : "dem"; out.push(`Ich ${n === "Flugzeug" ? "fliege" : "fahre"} mit ${a} ${n}.`, `Ich bin mit ${a} ${n} ${n === "Flugzeug" ? "geflogen" : "gefahren"}.`); }); out.push("Ich gehe zu Fuß.");
+  ["dir", "Ihnen"].forEach((a) => out.push(`Wie geht es ${a}?`)); BANK18.forEach((t) => t.parts.forEach((p) => out.push(p.replace(/[{}]/g, ""))));
+  VPAAR.forEach(([a, b]) => out.push(`${a}, ${b}`));
+  return out;
+}

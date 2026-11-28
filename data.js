@@ -22,6 +22,7 @@ const LESSONS = [
   { id: 15, date: "21.11.2026", title: "Трите времена: Präsens, Präteritum, Perfekt · лош ден · на компютъра" },
   { id: 16, date: "24.11.2026", title: "Ремонт и уговорка, телевизия, противоположности, dürfen, смесени глаголи" },
   { id: 17, date: "26.11.2026", title: "Времето и сезоните, denn, пътуване (wohin?), дрехи, lassen, Dativ-глаголи" },
+  { id: 18, date: "28.11.2026", title: "Wie geht es dir? · в магазина (dieser, цветове) · транспорт · разказ за пътуване (womit?)" },
 ];
 // Домашни: due = ДД.ММ.ГГГГ; черновата и „готово“ се пазят в localStorage (dl:hw:<id>)
 const HOMEWORK = [
@@ -2451,6 +2452,131 @@ V("gehören", "принадлежа", ["gehöre", "gehörst", "gehört", "gehör
 W("phrase", "dem, einem, keinem, meinem (der/das)", "Dativ на мъжки и среден род", "der Mann → dem/einem/keinem/meinem Mann");
 W("phrase", "der, einer, keiner, meiner (die)", "Dativ на женски род", "die Frau → der/einer/keiner/meiner Frau");
 W("phrase", "den Kindern (мн.ч.)", "Dativ мн.ч.: den + -n", "die Kinder → den Kindern");
+
+
+L(18); T("Как си? · ти или Вие? · Dativ-глаголи");
+W("q", "Wie geht es dir?", "Как си?", "буквално „Как върви на теб?“ → dir = Dativ");
+W("q", "Wie geht es Ihnen?", "Как сте? (учтиво)", "Ihnen = Dativ на Sie");
+W("phrase", "Es geht mir gut.", "Добре съм.", "mir = Dativ · Es geht mir schlecht. = Зле съм.");
+V("duzen", "говоря на „ти“", ["duze", "duzt", "duzt", "duzen", "duzt", "duzen"], "du → duzen · Wir duzen uns. = Говорим си на ти.");
+V("siezen", "говоря на „Вие“", ["sieze", "siezt", "siezt", "siezen", "siezt", "siezen"], "Sie → siezen");
+W("q", "Dürfen wir uns duzen?", "Може ли да си говорим на ти?", "(в бележките „Dürfen wir duzen?“ — обичайно е с uns) · отговор: Ja, gern! Ich bin Anna.");
+V("schmecken", "вкусен съм (на някого)", ["schmecke", "schmeckst", "schmeckt", "schmecken", "schmeckt", "schmecken"], "+ Dativ: Der Kuchen schmeckt mir.");
+W("q", "Wie schmeckt dir der Kuchen?", "Как ти се струва тортата (на вкус)?", "подлог = der Kuchen · dir = Dativ");
+N("der", "Kürbis", "Kürbisse", "тиква", "-is → мн.ч. -isse · die Kürbissuppe");
+V("passen", "ставам (по размер), подхождам", ["passe", "passt", "passt", "passen", "passt", "passen"], "+ Dativ: Die Schuhe passen mir.");
+V("drücken", "стягам, убивам (за обувки); натискам", ["drücke", "drückst", "drückt", "drücken", "drückt", "drücken"], "Die Schuhe drücken. = Обувките ме стягат.");
+N("der", "Schuh", "Schuhe", "обувка", "ein Paar Schuhe = чифт обувки");
+N("pl", "Handschuhe", null, "ръкавици", "der Handschuh (die Hand + der Schuh)");
+V("anziehen", "обличам", ["ziehe an", "ziehst an", "zieht an", "ziehen an", "zieht an", "ziehen an"], "разделим · Ich ziehe einen Mantel an. · sich anziehen = обличам се · zog an · hat angezogen");
+V("gefallen", "харесвам се (на някого)", ["gefalle", "gefällst", "gefällt", "gefallen", "gefallt", "gefallen"], "+ Dativ · a → ä · gefiel · hat gefallen");
+W("phrase", "Das Auto gefällt mir.", "Колата ми харесва.", "подлог = das Auto · mir = Dativ");
+W("phrase", "Die Farbe des neuen Autos gefällt mir.", "Цветът на новата кола ми харесва.", "des neuen Autos = Genitiv (чий?)");
+V("gehören", "принадлежа", ["gehöre", "gehörst", "gehört", "gehören", "gehört", "gehören"], "+ Dativ: Das gehört mir.");
+W("q", "Wem gehört das rote Auto?", "Чия е червената кола?", "wem? = на кого? (Dativ)");
+W("q", "Wie steht es mit deiner Gesundheit?", "Как е здравето ти?", "mit + Dativ: deine Gesundheit → mit deiner Gesundheit");
+N("die", "Gesundheit", null, "здраве", "gesund + -heit → die · Gesundheit! = Наздраве! (при кихане)");
+W("q", "Wem soll ich helfen?", "На кого да помогна?", "helfen + Dativ → wem?");
+V("danken", "благодаря", ["danke", "dankst", "dankt", "danken", "dankt", "danken"], "+ Dativ: Ich danke dir.");
+W("phrase", "Ich danke dir ganz herzlich.", "Благодаря ти от сърце.", "herzlich = сърдечно");
+N("der", "Schlafsack", "Schlafsäcke", "спален чувал", "schlafen + der Sack → der · a → ä");
+
+T("В магазина за дрехи");
+W("q", "Kann ich Ihnen helfen?", "С какво мога да помогна?", "helfen + Dativ: Ihnen");
+W("phrase", "Ich hätte gern …", "Бих искал …", "учтива молба (Konjunktiv II на haben) · Ich hätte gern eine Bluse.");
+N("das", "Schaufenster", "Schaufenster", "витрина", "schauen + das Fenster → das");
+W("phrase", "im Schaufenster", "на витрината", "im = in dem (къде? → Dativ)");
+W("phrase", "diese Bluse", "тази блуза", "die → diese");
+W("phrase", "dieser Pullover, diese Bluse, dieses Buch, diese Schuhe", "този пуловер, тази блуза, тази книга, тези обувки", "окончания като der/die/das: der → dies-er, die → dies-e, das → dies-es, мн.ч. → dies-e");
+W("adv", "genau", "точно", "Genau! = Точно така!");
+N("die", "Größe", "Größen", "размер, ръст", "groß + -e → die · Welche Größe haben Sie?");
+W("phrase", "Ich schaue nur.", "Само разглеждам.", "= Ich sehe mich nur um.");
+V("sich umsehen", "оглеждам се, разглеждам", ["sehe mich um", "siehst dich um", "sieht sich um", "sehen uns um", "seht euch um", "sehen sich um"], "разделим + sich · e → ie · Ich sehe mich nur um.");
+W("phrase", "in Rot", "в червено", "Haben Sie die Bluse auch in Rot? (цвят като съществително → с главна)");
+V("anprobieren", "пробвам (дреха)", ["probiere an", "probierst an", "probiert an", "probieren an", "probiert an", "probieren an"], "разделим + -ieren → hat anprobiert");
+W("adj", "ausgezeichnet", "отличен, отлично", "Die Bluse steht Ihnen ausgezeichnet!");
+N("der", "Euro", "Euro", "евро", "das kostet 30 Euro (мн.ч. без -s при цени)");
+N("das", "Geschäft", "Geschäfte", "магазин; бизнес", "Ge- → das");
+W("phrase", "ein Paar Schuhe", "чифт обувки", "das Paar = чифт (с главна) · ≠ ein paar = няколко");
+
+T("Цветове");
+W("adj", "blau", "син", "");
+W("adj", "hellblau", "светлосин", "hell- = светло-");
+W("adj", "dunkelblau", "тъмносин", "dunkel- = тъмно-");
+W("adj", "grau", "сив", "");
+W("adj", "rot", "червен", "das rote Auto");
+W("adj", "braun", "кафяв", "");
+W("adj", "grün", "зелен", "");
+W("adj", "schwarz", "черен", "");
+W("adj", "pechschwarz", "катраненочерен", "das Pech = катран · засилва: pechschwarz = съвсем черен");
+W("adj", "gelb", "жълт", "");
+W("adj", "weiß", "бял", "");
+
+T("Транспорт (Verkehr)");
+N("der", "Verkehr", null, "движение, трафик", "");
+N("pl", "Verkehrsmittel", null, "превозни средства", "das Verkehrsmittel · mit dem Bus/Zug fahren");
+V("umsteigen", "прекачвам се", ["steige um", "steigst um", "steigt um", "steigen um", "steigt um", "steigen um"], "разделим · In Köln steige ich um. · ist umgestiegen");
+N("die", "Fahrkarte", "Fahrkarten", "билет (за влак/автобус)", "");
+N("das", "Gleis", "Gleise", "коловоз, перон", "(в бележките и „der Gleis“ — правилно е das Gleis) · auf Gleis 3");
+N("der", "Zug", "Züge", "влак", "mit dem Zug fahren");
+N("die", "Bahn", "Bahnen", "железница, влак", "die Deutsche Bahn · mit der Bahn");
+N("das", "Motorrad", "Motorräder", "мотоциклет", "das Rad → das");
+N("der", "Bus", "Busse", "автобус", "mit dem Bus");
+N("das", "Schiff", "Schiffe", "кораб", "mit dem Schiff");
+N("die", "Fähre", "Fähren", "ферибот", "mit der Fähre");
+N("das", "Flugzeug", "Flugzeuge", "самолет", "mit dem Flugzeug fliegen");
+N("der", "Parkplatz", "Parkplätze", "паркинг, място за паркиране", "a → ä в мн.ч.");
+N("der", "Hafen", "Häfen", "пристанище", "a → ä в мн.ч.");
+N("der", "Bahnhof", "Bahnhöfe", "гара", "am Bahnhof / zum Bahnhof");
+N("der", "Flughafen", "Flughäfen", "летище", "am Flughafen / zum Flughafen");
+N("das", "Flugticket", "Flugtickets", "самолетен билет", "");
+N("der", "Fahrplan", "Fahrpläne", "разписание", "fahren + der Plan");
+N("der", "Fahrkartenschalter", "Fahrkartenschalter", "билетно гише", "die Fahrkarte + der Schalter → der");
+N("der", "Stau", "Staus", "задръстване", "im Stau stehen = стоя в задръстване");
+N("die", "Verspätung", "Verspätungen", "закъснение", "-ung → die · Der Zug hat 10 Minuten Verspätung.");
+N("die", "Ampel", "Ampeln", "светофар", "Die Ampel ist rot.");
+N("der", "Sitzplatz", "Sitzplätze", "място за сядане", "sitzen + der Platz");
+N("die", "Abfahrt", "Abfahrten", "заминаване, тръгване", "abfahren → die Abfahrt");
+N("der", "Abflug", "Abflüge", "излитане", "abfliegen → der Abflug");
+N("die", "Landung", "Landungen", "кацане", "landen → die Landung (-ung)");
+N("der", "Flugplan", "Flugpläne", "разписание на полетите", "");
+N("die", "Ankunft", "Ankünfte", "пристигане", "ankommen → die Ankunft");
+N("die", "Tankstelle", "Tankstellen", "бензиностанция", "");
+N("die", "Straße", "Straßen", "улица, път", "auf der Straße");
+N("die", "Autobahn", "Autobahnen", "магистрала", "auf der Autobahn");
+N("die", "Haltestelle", "Haltestellen", "спирка", "halten (спирам) + die Stelle · an der Haltestelle");
+N("der", "Fahrgast", "Fahrgäste", "пътник (в превоз)", "a → ä в мн.ч.");
+N("der", "Passagier", "Passagiere", "пасажер", "произнася се „пасажир“");
+N("die", "Passkontrolle", "Passkontrollen", "паспортна проверка", "");
+V("abholen", "посрещам, вземам (някого)", ["hole ab", "holst ab", "holt ab", "holen ab", "holt ab", "holen ab"], "разделим · Ich hole dich vom Bahnhof ab. · hat abgeholt");
+
+T("Разказ за пътуване (Perfekt, wo/wohin, womit)");
+N("die", "Ostsee", null, "Балтийско море", "an der Ostsee (къде) · in der Ostsee (във водата)");
+W("phrase", "auf der Insel", "на острова", "auf + Dativ (къде?)");
+W("phrase", "ankommen – kam an – ist angekommen", "пристигам – пристигнах – пристигнал съм", "(в бележките „kam - an - angekomen“)");
+W("word", "bei", "при, у; край (+ Dativ)", "bei meiner Oma · beim Arzt · bei Berlin = край Берлин");
+W("adj", "schrecklich", "ужасен", "Das Wetter war schrecklich.");
+W("phrase", "in der Ostsee", "в Балтийско море (във водата)", "Wir haben in der Ostsee gebadet.");
+W("phrase", "heftiger Sturm", "силна буря", "heftig = силен, буен · ein heftiger Sturm");
+W("adv", "erst", "едва, чак; първо", "erst um 10 Uhr = чак в 10 ч. · Ich bin erst gestern angekommen.");
+W("phrase", "an den Strand fahren", "отивам на плаж", "wohin? → Akk");
+W("phrase", "am Strand sein", "на плажа съм", "wo? → Dat (am = an dem)");
+N("der", "Ausflug", "Ausflüge", "екскурзия, излет", "einen Ausflug machen");
+N("die", "Ausstellung", "Ausstellungen", "изложба", "-ung → die");
+W("phrase", "fahren mit + Dativ", "пътувам с (превозно средство)", "mit dem Zug, mit der Bahn, mit dem Auto");
+W("q", "womit?", "с какво?", "wo + mit → womit · Womit fährst du? – Mit dem Bus.");
+W("q", "Womit sind Sie gefahren?", "С какво пътувахте?", "Perfekt: sind … gefahren");
+W("phrase", "Ich bin mit dem Zug gefahren.", "Пътувах с влака.", "mit + Dativ: der Zug → dem Zug");
+W("q", "Mit wem sind Sie gefahren?", "С кого пътувахте?", "за хора: mit wem? (Dativ)");
+W("phrase", "Ich bin mit meinem Sohn gefahren.", "Пътувах със сина си.", "mein Sohn → mit meinem Sohn");
+W("phrase", "wohin + Akk / wo + Dat", "накъде (Akk) / къде (Dat)", "in die Berge (wohin) · in den Bergen (wo)");
+W("phrase", "in einem Hotel in den Bergen", "в един хотел в планината", "wo? → Dativ: in einem Hotel, in den Bergen (+n)");
+W("phrase", "Ich bin drei Tage geblieben.", "Останах три дни.", "bleiben → ist geblieben (със sein!)");
+W("phrase", "gefallen – gefiel – hat gefallen", "харесвам се – хареса – харесал", "Perfekt: Es hat mir gut gefallen.");
+V("planen", "планирам", ["plane", "planst", "plant", "planen", "plant", "planen"], "einen Ausflug planen · hat geplant");
+V("gewinnen", "печеля", ["gewinne", "gewinnst", "gewinnt", "gewinnen", "gewinnt", "gewinnen"], "ge- е част от думата (не представка за Perfekt!) · gewann · hat gewonnen");
+W("phrase", "gewinnen – gewann – hat gewonnen", "печеля – спечелих – спечелил съм", "силен глагол: i → a → o");
+W("phrase", "im Lotto gewinnen", "печеля от лотарията", "das Lotto → im Lotto");
 
 ITEMS.forEach((it) => {
   it.id = (it.art ? it.art + " " : "") + it.de + "#" + it.type + (it.lesson === 0 ? "@0" : "");
